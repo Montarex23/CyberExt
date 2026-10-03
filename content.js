@@ -5,12 +5,14 @@
  *
  * Injected into every page (all_frames: true).
  * Responsibilities:
- *   1. Monitor <input type="password"> fields for user input.
- *   2. When the user types >= MIN_PASSWORD_LENGTH chars, hash the value
- *      with SHA-256 (Web Crypto API — no plain text ever stored).
- *   3. Store a mapping of  hash → [domains]  in chrome.storage.local.
- *   4. If the hash already exists but the current domain is NOT in the list,
- *      intercept form submission and inject a visible red warning banner.
+ *   1. PASSWORD ORIGIN BINDING — Monitor <input type="password"> fields,
+ *      hash input with SHA-256, and detect credential reuse across domains.
+ *   2. FORM ACTION VALIDATION — Detect cross-origin form submissions on
+ *      forms containing password fields and block them.
+ *   3. PUNYCODE DETECTION — Warn users if the current domain uses
+ *      internationalized (xn--) encoding, indicating a potential homograph attack.
+ *   4. INSECURE HTTP WARNING — Warn users if password fields exist on
+ *      a page served over plain HTTP (credentials sent in clear text).
  *
  * Privacy guarantee: passwords are NEVER stored or transmitted in plain text.
  * ============================================================================
@@ -29,11 +31,122 @@
   /** Debounce delay (ms) — avoids hashing on every single keystroke. */
   const DEBOUNCE_MS = 500;
 
-  /** CSS class used for the injected warning banner (scoped to avoid collisions). */
-  const BANNER_CLASS = 'cyberguard-reuse-warning';
-
   /** Current page's hostname (normalized to lowercase). */
   const CURRENT_DOMAIN = window.location.hostname.toLowerCase();
+
+  /** Current page's protocol (e.g., "http:" or "https:"). */
+  const CURRENT_PROTOCOL = window.location.protocol;
+
+  // -------------------------------------------------------------------------
+  // Banner System — supports multiple concurrent banners with unique IDs
+  // -------------------------------------------------------------------------
+
+  /**
+   * Each banner type gets a unique ID so they don't overwrite each other
+   * and we can avoid injecting the same banner twice.
+   */
+  const BANNER_IDS = {
+    CREDENTIAL_REUSE: 'cyberguard-banner-credential-reuse',
+    CROSS_ORIGIN:     'cyberguard-banner-cross-origin',
+    PUNYCODE:         'cyberguard-banner-punycode',
+    INSECURE_HTTP:    'cyberguard-banner-insecure-http',
+  };
+
+  /** Tracks how many banners are currently stacked so we can offset them. */
+  let bannerStackCount = 0;
+
+  /**
+   * Creates and injects a warning banner at the top of the page.
+   * Multiple banners stack vertically without overlapping.
+   *
+   * @param {object} options
+   * @param {string} options.id           Unique DOM ID for the banner.
+   * @param {string} options.htmlContent  Inner HTML for the banner text.
+   * @param {string} [options.bgColor]    Background color (default: red).
+   * @param {string} [options.shadowColor] Box-shadow color (default: red glow).
+   * @returns {HTMLElement|null} The injected banner element, or null if already exists.
+   */
+  function injectBanner({ id, htmlContent, bgColor = '#dc2626', shadowColor = 'rgba(220, 38, 38, 0.45)' }) {
+    // Don't inject the same banner twice.
+    if (document.getElementById(id)) return null;
+
+    const banner = document.createElement('div');
+    banner.id = id;
+
+    // Calculate vertical offset based on how many banners are already showing.
+    const topOffset = bannerStackCount * 60; // ~60px per banner
+    bannerStackCount++;
+
+    // Inline styles to guarantee visibility regardless of page CSS.
+    Object.assign(banner.style, {
+      position: 'fixed',
+      top: `${topOffset}px`,
+      left: '0',
+      width: '100%',
+      zIndex: String(2147483647 - bannerStackCount), // High z-index, slight stagger.
+      backgroundColor: bgColor,
+      color: '#ffffff',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      fontSize: '14px',
+      fontWeight: '600',
+      padding: '14px 24px',
+      boxShadow: `0 4px 24px ${shadowColor}`,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: '16px',
+      lineHeight: '1.5',
+      boxSizing: 'border-box',
+      animation: 'cyberguard-slide-in 0.35s ease-out',
+    });
+
+    // Warning text
+    const textSpan = document.createElement('span');
+    textSpan.innerHTML = htmlContent;
+    banner.appendChild(textSpan);
+
+    // Dismiss button
+    const dismissBtn = document.createElement('button');
+    dismissBtn.textContent = '✕';
+    Object.assign(dismissBtn.style, {
+      background: 'rgba(255,255,255,0.2)',
+      border: 'none',
+      color: '#fff',
+      fontSize: '18px',
+      cursor: 'pointer',
+      borderRadius: '6px',
+      padding: '4px 12px',
+      flexShrink: '0',
+      transition: 'background 0.2s',
+    });
+    dismissBtn.addEventListener('mouseenter', () => {
+      dismissBtn.style.background = 'rgba(255,255,255,0.35)';
+    });
+    dismissBtn.addEventListener('mouseleave', () => {
+      dismissBtn.style.background = 'rgba(255,255,255,0.2)';
+    });
+    dismissBtn.addEventListener('click', () => {
+      banner.remove();
+      // Note: we don't decrement bannerStackCount to keep spacing stable.
+    });
+    banner.appendChild(dismissBtn);
+
+    // Inject keyframe animation via a <style> tag (only once).
+    if (!document.getElementById('cyberguard-banner-styles')) {
+      const style = document.createElement('style');
+      style.id = 'cyberguard-banner-styles';
+      style.textContent = `
+        @keyframes cyberguard-slide-in {
+          from { transform: translateY(-100%); opacity: 0; }
+          to   { transform: translateY(0);     opacity: 1; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    document.body.prepend(banner);
+    return banner;
+  }
 
   // -------------------------------------------------------------------------
   // Utility: SHA-256 hashing via Web Crypto API
@@ -70,9 +183,9 @@
     };
   }
 
-  // -------------------------------------------------------------------------
-  // Core: Handle password input
-  // -------------------------------------------------------------------------
+  // =========================================================================
+  // FEATURE 1: Password Origin Binding (Credential Reuse Detection)
+  // =========================================================================
 
   /**
    * Called (debounced) whenever the user types in a password field.
@@ -106,8 +219,14 @@
         window.__cyberguardReuseHash = hash;
         window.__cyberguardKnownDomains = knownDomains;
 
-        // Inject the warning banner immediately so the user sees it.
-        injectWarningBanner(knownDomains);
+        // Inject the credential-reuse warning banner.
+        injectBanner({
+          id: BANNER_IDS.CREDENTIAL_REUSE,
+          htmlContent:
+            `🛡️ <strong>CyberGuard Alert:</strong> You are reusing a password on an <u>unknown domain</u>! ` +
+            `This password was previously used on: <strong>${knownDomains.join(', ')}</strong>. ` +
+            `Submitting this form has been blocked for your safety.`,
+        });
 
         // Notify the service worker (for logging — no data leaves the browser).
         try {
@@ -129,124 +248,191 @@
     }
   }
 
-  // -------------------------------------------------------------------------
-  // Core: Inject DOM warning banner
-  // -------------------------------------------------------------------------
+  // =========================================================================
+  // FEATURE 2: Form Action Validation (Cross-Origin Form Post Detection)
+  // =========================================================================
 
   /**
-   * Injects a prominent, full-width red banner at the top of the page
-   * warning the user about credential reuse.
+   * Checks whether a <form> containing a password field submits to a
+   * different domain than the current page. Cross-origin form posts are
+   * a common phishing technique — the page looks legitimate but sends
+   * credentials to an attacker-controlled server.
    *
-   * @param {string[]} knownDomains  Domains where this password was previously used.
+   * @param {HTMLFormElement} form  The form element to validate.
    */
-  function injectWarningBanner(knownDomains) {
-    // Don't inject more than one banner.
-    if (document.querySelector(`.${BANNER_CLASS}`)) return;
+  function validateFormAction(form) {
+    // Skip forms we've already checked.
+    if (form.__cyberguardActionChecked) return;
+    form.__cyberguardActionChecked = true;
 
-    const banner = document.createElement('div');
-    banner.className = BANNER_CLASS;
+    // Only care about forms that contain a password input.
+    const hasPasswordField = form.querySelector('input[type="password"]');
+    if (!hasPasswordField) return;
 
-    // Inline styles to guarantee visibility regardless of page CSS.
-    Object.assign(banner.style, {
-      position: 'fixed',
-      top: '0',
-      left: '0',
-      width: '100%',
-      zIndex: '2147483647', // Max z-index — always on top.
-      backgroundColor: '#dc2626',
-      color: '#ffffff',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      fontSize: '15px',
-      fontWeight: '600',
-      padding: '16px 24px',
-      boxShadow: '0 4px 24px rgba(220, 38, 38, 0.45)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      gap: '16px',
-      lineHeight: '1.5',
-      boxSizing: 'border-box',
-      animation: 'cyberguard-slide-in 0.35s ease-out',
-    });
+    // Resolve the form's action URL (falls back to current page if empty).
+    const actionUrl = form.action || window.location.href;
 
-    // Warning text
-    const textSpan = document.createElement('span');
-    textSpan.innerHTML =
-      `🛡️ <strong>CyberGuard Alert:</strong> You are reusing a password on an <u>unknown domain</u>! ` +
-      `This password was previously used on: <strong>${knownDomains.join(', ')}</strong>. ` +
-      `Submitting this form has been blocked for your safety.`;
-    banner.appendChild(textSpan);
+    try {
+      const actionHostname = new URL(actionUrl, window.location.href).hostname.toLowerCase();
 
-    // Dismiss button
-    const dismissBtn = document.createElement('button');
-    dismissBtn.textContent = '✕';
-    Object.assign(dismissBtn.style, {
-      background: 'rgba(255,255,255,0.2)',
-      border: 'none',
-      color: '#fff',
-      fontSize: '18px',
-      cursor: 'pointer',
-      borderRadius: '6px',
-      padding: '4px 12px',
-      flexShrink: '0',
-      transition: 'background 0.2s',
-    });
-    dismissBtn.addEventListener('mouseenter', () => {
-      dismissBtn.style.background = 'rgba(255,255,255,0.35)';
-    });
-    dismissBtn.addEventListener('mouseleave', () => {
-      dismissBtn.style.background = 'rgba(255,255,255,0.2)';
-    });
-    dismissBtn.addEventListener('click', () => {
-      banner.remove();
-    });
-    banner.appendChild(dismissBtn);
+      // Compare the form's target domain against the current page's domain.
+      // We allow same-domain and subdomain matches (e.g., login.example.com → example.com).
+      if (actionHostname !== CURRENT_DOMAIN && !actionHostname.endsWith('.' + CURRENT_DOMAIN) && !CURRENT_DOMAIN.endsWith('.' + actionHostname)) {
+        console.warn(
+          `[CyberGuard] ⚠ Cross-origin form detected! Page: "${CURRENT_DOMAIN}", Form action: "${actionHostname}"`
+        );
 
-    // Inject keyframe animation via a <style> tag (only once).
-    if (!document.getElementById('cyberguard-banner-styles')) {
-      const style = document.createElement('style');
-      style.id = 'cyberguard-banner-styles';
-      style.textContent = `
-        @keyframes cyberguard-slide-in {
-          from { transform: translateY(-100%); opacity: 0; }
-          to   { transform: translateY(0);     opacity: 1; }
-        }
-      `;
-      document.head.appendChild(style);
+        // Flag this form for submission blocking.
+        form.__cyberguardCrossOriginBlocked = true;
+
+        // Inject the cross-origin warning banner.
+        injectBanner({
+          id: BANNER_IDS.CROSS_ORIGIN,
+          htmlContent:
+            `⚠️ <strong>CyberGuard Alert:</strong> This page is attempting to send your password to a <u>different domain</u> ` +
+            `(<strong>${actionHostname}</strong>). This is suspicious — the form submission has been blocked.`,
+          bgColor: '#dc2626',
+          shadowColor: 'rgba(220, 38, 38, 0.45)',
+        });
+      }
+    } catch (e) {
+      // Malformed action URL — treat as suspicious.
+      console.warn('[CyberGuard] Could not parse form action URL:', actionUrl, e);
     }
-
-    document.body.prepend(banner);
   }
 
-  // -------------------------------------------------------------------------
-  // Core: Intercept form submissions when reuse is detected
-  // -------------------------------------------------------------------------
+  /**
+   * Scans all <form> elements on the page for cross-origin actions.
+   * Called on initial load and whenever new DOM nodes are added.
+   */
+  function scanFormsForCrossOrigin() {
+    document.querySelectorAll('form').forEach(validateFormAction);
+  }
+
+  // =========================================================================
+  // FEATURE 3: Punycode (Homograph) Attack Detection
+  // =========================================================================
+
+  /**
+   * Checks if the current domain uses internationalized domain name (IDN)
+   * encoding (punycode). Domains starting with "xn--" are punycode-encoded,
+   * which can be used for homograph attacks where characters from different
+   * scripts (e.g., Cyrillic "а" vs Latin "a") make a domain look identical
+   * to a legitimate one.
+   *
+   * This check runs once on page load.
+   */
+  function checkForPunycode() {
+    // Check if any label in the hostname starts with "xn--".
+    // A hostname like "xn--pple-43d.com" would render as "аpple.com" in some browsers.
+    const domainLabels = CURRENT_DOMAIN.split('.');
+    const hasPunycode = domainLabels.some((label) => label.startsWith('xn--'));
+
+    if (hasPunycode) {
+      console.warn(
+        `[CyberGuard] ⚠ Punycode/homograph domain detected: "${CURRENT_DOMAIN}"`
+      );
+
+      injectBanner({
+        id: BANNER_IDS.PUNYCODE,
+        htmlContent:
+          `🔤 <strong>CyberGuard Alert — Homograph Attack:</strong> This domain (<strong>${CURRENT_DOMAIN}</strong>) ` +
+          `uses internationalized characters (punycode) that can disguise it as a well-known website. ` +
+          `Verify the URL carefully before entering any credentials.`,
+        bgColor: '#b91c1c', // Darker red — this is a serious threat.
+        shadowColor: 'rgba(185, 28, 28, 0.5)',
+      });
+    }
+  }
+
+  // =========================================================================
+  // FEATURE 4: Insecure HTTP Password Warning
+  // =========================================================================
+
+  /**
+   * If the page is served over plain HTTP (not HTTPS) and contains a
+   * password field, any credentials submitted will be sent over the
+   * network in clear text — trivially interceptable by an attacker
+   * on the same network (e.g., public Wi-Fi).
+   *
+   * This check runs when password fields are first detected.
+   */
+  let insecureHttpWarningShown = false;
+
+  function checkInsecureHttp() {
+    // Only warn once per page, and only on HTTP pages.
+    if (insecureHttpWarningShown) return;
+    if (CURRENT_PROTOCOL !== 'http:') return;
+
+    // Check if there's at least one password field on the page.
+    const hasPasswordField = document.querySelector('input[type="password"]');
+    if (!hasPasswordField) return;
+
+    insecureHttpWarningShown = true;
+
+    console.warn(
+      `[CyberGuard] ⚠ Password field detected on insecure HTTP page: "${CURRENT_DOMAIN}"`
+    );
+
+    injectBanner({
+      id: BANNER_IDS.INSECURE_HTTP,
+      htmlContent:
+        `🔓 <strong>CyberGuard Alert — Insecure Connection:</strong> This page is served over <u>unencrypted HTTP</u>. ` +
+        `Any password you enter will be transmitted in <strong>plain text</strong> and can be intercepted ` +
+        `by attackers on your network. Do NOT enter sensitive credentials here.`,
+      bgColor: '#d97706', // Amber — serious but not necessarily malicious.
+      shadowColor: 'rgba(217, 119, 6, 0.45)',
+    });
+  }
+
+  // =========================================================================
+  // Core: Intercept form submissions (credential reuse + cross-origin)
+  // =========================================================================
 
   /**
    * Attaches a capturing-phase 'submit' listener to the document.
-   * If credential reuse has been flagged, the submission is blocked.
+   * Blocks form submissions when:
+   *   - Credential reuse has been detected, OR
+   *   - The form posts to a cross-origin domain.
    */
   document.addEventListener(
     'submit',
     (event) => {
+      const form = event.target;
+
+      // Block 1: Credential reuse detected.
       if (window.__cyberguardReuseDetected) {
         event.preventDefault();
         event.stopImmediatePropagation();
-
         console.warn('[CyberGuard] Form submission BLOCKED due to credential reuse.');
 
         // Re-inject the banner in case the user dismissed it and tried again.
         if (window.__cyberguardKnownDomains) {
-          injectWarningBanner(window.__cyberguardKnownDomains);
+          injectBanner({
+            id: BANNER_IDS.CREDENTIAL_REUSE,
+            htmlContent:
+              `🛡️ <strong>CyberGuard Alert:</strong> You are reusing a password on an <u>unknown domain</u>! ` +
+              `This password was previously used on: <strong>${window.__cyberguardKnownDomains.join(', ')}</strong>. ` +
+              `Submitting this form has been blocked for your safety.`,
+          });
         }
+        return;
+      }
+
+      // Block 2: Cross-origin form action detected.
+      if (form.__cyberguardCrossOriginBlocked) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        console.warn('[CyberGuard] Form submission BLOCKED due to cross-origin action.');
+        return;
       }
     },
     true // ← Capturing phase: runs BEFORE any page-level handlers.
   );
 
-  // -------------------------------------------------------------------------
+  // =========================================================================
   // Wiring: Attach listeners to password fields (including dynamic ones)
-  // -------------------------------------------------------------------------
+  // =========================================================================
 
   /** Attach the debounced input handler to a single password field. */
   function attachToField(input) {
@@ -262,17 +448,38 @@
     input.addEventListener('change', (e) => handlePasswordInput(e.target.value));
   }
 
-  /** Scan the DOM for all current password fields and wire them up. */
+  /**
+   * Scan the DOM for all current password fields and wire them up.
+   * Also triggers the insecure HTTP check and cross-origin form scan
+   * since password fields are a prerequisite for those features.
+   */
   function scanAndAttach() {
     const fields = document.querySelectorAll('input[type="password"]');
     fields.forEach(attachToField);
+
+    // If we found password fields, run the insecure HTTP check.
+    if (fields.length > 0) {
+      checkInsecureHttp();
+    }
+
+    // Scan forms for cross-origin actions.
+    scanFormsForCrossOrigin();
   }
 
-  // Initial scan.
+  // =========================================================================
+  // Initialization — run all checks on page load
+  // =========================================================================
+
+  // FEATURE 3: Punycode check runs immediately (no DOM dependency).
+  checkForPunycode();
+
+  // Initial scan for password fields + form validation.
   scanAndAttach();
 
-  // Watch for dynamically-added password fields (e.g., SPAs).
+  // Watch for dynamically-added password fields and forms (e.g., SPAs).
   const observer = new MutationObserver((mutations) => {
+    let needsRescan = false;
+
     for (const mutation of mutations) {
       for (const node of mutation.addedNodes) {
         if (node.nodeType !== Node.ELEMENT_NODE) continue;
@@ -280,13 +487,29 @@
         // Check if the added node itself is a password input.
         if (node.matches && node.matches('input[type="password"]')) {
           attachToField(node);
+          needsRescan = true;
         }
 
-        // Check children of the added node.
+        // Check children of the added node for password inputs.
         if (node.querySelectorAll) {
-          node.querySelectorAll('input[type="password"]').forEach(attachToField);
+          const pwFields = node.querySelectorAll('input[type="password"]');
+          pwFields.forEach(attachToField);
+          if (pwFields.length > 0) needsRescan = true;
+        }
+
+        // Check if the added node is a form or contains forms.
+        if (node.matches && node.matches('form')) {
+          validateFormAction(node);
+        }
+        if (node.querySelectorAll) {
+          node.querySelectorAll('form').forEach(validateFormAction);
         }
       }
+    }
+
+    // Re-run insecure HTTP check if new password fields were found.
+    if (needsRescan) {
+      checkInsecureHttp();
     }
   });
 
@@ -301,6 +524,13 @@
     (e) => {
       if (e.target && e.target.matches && e.target.matches('input[type="password"]')) {
         attachToField(e.target);
+        checkInsecureHttp();
+
+        // Also validate the parent form if there is one.
+        const parentForm = e.target.closest('form');
+        if (parentForm) {
+          validateFormAction(parentForm);
+        }
       }
     },
     true
