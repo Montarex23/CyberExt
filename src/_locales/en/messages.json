@@ -1,0 +1,644 @@
+{
+  "extName": {
+    "message": "CyberGuard – protection from online scams"
+  },
+  "extShortName": {
+    "message": "CyberGuard"
+  },
+  "extDescription": {
+    "message": "Protects you from fake websites and password theft. Works on your computer – sends no data anywhere."
+  },
+  "langCode": {
+    "message": "en"
+  },
+  "actionTitle": {
+    "message": "CyberGuard – check this page"
+  },
+  "pwAlertTitle": {
+    "message": "Stop! This may be a scam"
+  },
+  "pwAlertUsedOn": {
+    "message": "You are typing the password you use for $P1$ ($P2$).",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "pwAlertThisSite": {
+    "message": "But this page is $P1$ – it is NOT $P2$.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "pwAlertExplain": {
+    "message": "Scammers build pages that look just like the real ones to steal passwords. The safest thing is to leave this page now."
+  },
+  "btnLeave": {
+    "message": "Take me away from here"
+  },
+  "pwAlertTrustLink": {
+    "message": "This is a site I trust"
+  },
+  "pwConfirmTitle": {
+    "message": "Are you sure?"
+  },
+  "pwConfirmText": {
+    "message": "Only continue if you are certain this site belongs to $P1$, or you knowingly use the same password here.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "pwConfirmNewAccount": {
+    "message": "If you are creating a new account here, choose a different password – never reuse your bank or e-mail password on other sites."
+  },
+  "btnNoLeave": {
+    "message": "No, take me away"
+  },
+  "pwConfirmYes": {
+    "message": "Yes, I trust this site"
+  },
+  "reuseTitle": {
+    "message": "Safety tip"
+  },
+  "reuseBody": {
+    "message": "The same password is also used on: $P1$.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "reuseAdvice": {
+    "message": "It is safer to have a different password for every site. If someone learns it on one site, they can't get into the others."
+  },
+  "btnUnderstood": {
+    "message": "Got it"
+  },
+  "btnUnderstoodRemember": {
+    "message": "Got it, don't show again on this site"
+  },
+  "findLookalikeTitle": {
+    "message": "Careful: this page may be pretending to be $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "findLookalikeBody": {
+    "message": "This address ($P1$) resembles $P2$, but it is NOT the company's real website. The real address is $P3$. Don't enter passwords or card details here.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      },
+      "p3": {
+        "content": "$3"
+      }
+    }
+  },
+  "findHomographTitle": {
+    "message": "Careful: forged website address"
+  },
+  "findHomographBody": {
+    "message": "The address $P1$ contains letters from another alphabet that only look like normal ones. It imitates $P2$ (the real address is $P3$). Don't enter any data here.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      },
+      "p3": {
+        "content": "$3"
+      }
+    }
+  },
+  "findMixedTitle": {
+    "message": "Unusual website address"
+  },
+  "findMixedBody": {
+    "message": "The address $P1$ mixes letters from different alphabets. Forged sites often look like this. Check the address carefully before typing anything.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "findInsecureTitle": {
+    "message": "This page is not secure"
+  },
+  "findInsecureBody": {
+    "message": "The connection to this page is not encrypted (no padlock next to the address). Someone on the same Wi-Fi could see your password. Don't log in here."
+  },
+  "findCrossFormTitle": {
+    "message": "Your password would go to another site"
+  },
+  "findCrossFormBody": {
+    "message": "This login form sends the password to a different address: $P1$. If you don't know why, don't log in.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "findBlocklistedTitle": {
+    "message": "This page is on the dangerous list"
+  },
+  "findBlocklistedBody": {
+    "message": "$P1$ is on the list of data-stealing sites, but it was unblocked. Don't enter passwords, card details or payment codes here.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "btnTrustSite": {
+    "message": "I trust this site"
+  },
+  "btnClose": {
+    "message": "Close"
+  },
+  "warnPageTitle": {
+    "message": "Dangerous page blocked – CyberGuard"
+  },
+  "leftPageTitle": {
+    "message": "You left the page safely – CyberGuard"
+  },
+  "warnTitle": {
+    "message": "Stop! This page may try to trick you"
+  },
+  "warnLead": {
+    "message": "We stopped a page that is on a list of data-stealing websites."
+  },
+  "warnDomainLabel": {
+    "message": "Address of the blocked page:"
+  },
+  "srcCert": {
+    "message": "Source: CERT Polska warning list"
+  },
+  "srcOpenphish": {
+    "message": "Source: OpenPhish – international list of phishing sites"
+  },
+  "leftTitle": {
+    "message": "Good! The suspicious page is closed"
+  },
+  "leftLead": {
+    "message": "The page $P1$ has been closed.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "leftLeadNoDomain": {
+    "message": "The suspicious page has been closed."
+  },
+  "leftNothingSent": {
+    "message": "If a password was typed on that page, change it right away – on the service's real website."
+  },
+  "btnLeaveSafe": {
+    "message": "Take me somewhere safe"
+  },
+  "btnHome": {
+    "message": "Go to the start page"
+  },
+  "warnWhyTitle": {
+    "message": "What does this mean?"
+  },
+  "warnWhy1": {
+    "message": "Such pages pretend to be a bank, courier, shop or government office to steal passwords, card details or payment codes."
+  },
+  "warnWhy2": {
+    "message": "Links to them often arrive by text message or e-mail, e.g. about a parcel fee or a blocked account."
+  },
+  "warnWhy3": {
+    "message": "A real bank never asks for your password or code through a link in a message."
+  },
+  "warnAlreadyTitle": {
+    "message": "Already entered data on this page?"
+  },
+  "warnAlreadyText": {
+    "message": "Stay calm – there are simple steps worth taking right now."
+  },
+  "btnWhatNow": {
+    "message": "See what to do now"
+  },
+  "proceedSummary": {
+    "message": "I know what I'm doing – let me in anyway"
+  },
+  "proceedText": {
+    "message": "We don't recommend this. Only continue if you are absolutely sure the page is safe. The page stays unblocked only until you close the browser."
+  },
+  "proceedAck": {
+    "message": "I understand this page may steal my data or money."
+  },
+  "proceedBtn": {
+    "message": "Open the page"
+  },
+  "proceedWait": {
+    "message": "Please wait $P1$ s…",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "proceedError": {
+    "message": "Could not unblock the page. Please try again."
+  },
+  "footerPrivacy": {
+    "message": "CyberGuard works on your computer. It never sends anyone information about the pages you visit or your passwords."
+  },
+  "popupActive": {
+    "message": "Protection on"
+  },
+  "popupHelpBtn": {
+    "message": "A scammer may have my data – what now?"
+  },
+  "popupSettings": {
+    "message": "Settings"
+  },
+  "statusOfficialTitle": {
+    "message": "Real website: $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusOfficialText": {
+    "message": "The address $P1$ belongs to this company.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusKnownTitle": {
+    "message": "Known site"
+  },
+  "statusKnownText": {
+    "message": "You have logged in to $P1$ before.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusWarningTitle": {
+    "message": "Be careful with this page"
+  },
+  "statusWarningText": {
+    "message": "The address $P1$ looks suspicious. Don't enter passwords or card details here.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusAllowedTitle": {
+    "message": "Page from the dangerous list"
+  },
+  "statusAllowedText": {
+    "message": "$P1$ is on the list of data-stealing sites. It stays unblocked until you close the browser.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusBlockedTitle": {
+    "message": "Dangerous page stopped"
+  },
+  "statusBlockedText": {
+    "message": "This tab shows a warning instead of the scam page."
+  },
+  "statusInsecureTitle": {
+    "message": "Unsecured page"
+  },
+  "statusInsecureText": {
+    "message": "The connection to $P1$ is not encrypted. Don't type passwords here.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusUnknownTitle": {
+    "message": "Unknown site"
+  },
+  "statusUnknownText": {
+    "message": "We don't know $P1$. That doesn't mean it's bad – but don't enter passwords or card details unless you are sure.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusInternalTitle": {
+    "message": "Browser page"
+  },
+  "statusInternalText": {
+    "message": "Nothing to check here."
+  },
+  "popupBlockedCount": {
+    "message": "Dangerous pages stopped: $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupDatabase": {
+    "message": "Warning list: $P1$ sites (from $P2$)",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "helpPageTitle": {
+    "message": "What to do after a scam – CyberGuard"
+  },
+  "helpTitle": {
+    "message": "A scammer may have my data – what now?"
+  },
+  "helpIntro": {
+    "message": "Stay calm. This can happen to anyone. Take the steps below right away – the sooner, the better."
+  },
+  "helpBankTitle": {
+    "message": "Card, payment code or online banking details"
+  },
+  "helpBank1": {
+    "message": "Call your bank. The number is on the back of your payment card or in your banking app. Never call numbers from text messages or e-mails."
+  },
+  "helpBank2": {
+    "message": "Ask them to block your card and your online banking access."
+  },
+  "helpBank3": {
+    "message": "Check with the bank whether there are transfers or payments you did not make."
+  },
+  "helpPasswordTitle": {
+    "message": "Password for e-mail, a shop or another site"
+  },
+  "helpPassword1": {
+    "message": "Change the password on the service's real website – ideally from another, trusted device."
+  },
+  "helpPassword2": {
+    "message": "If the same password works anywhere else, change it there too."
+  },
+  "helpPassword3": {
+    "message": "Turn on two-step login (text message or app code) if the service offers it."
+  },
+  "helpIdTitle": {
+    "message": "ID number, identity card details or a photo of a document"
+  },
+  "helpId1": {
+    "message": "In Poland: block your PESEL number in the mObywatel app or on gov.pl (search for: zastrzeż PESEL). It's free."
+  },
+  "helpId2": {
+    "message": "Report the identity document as compromised at any bank branch (Dokumenty Zastrzeżone system) or at your local office."
+  },
+  "helpRemoteTitle": {
+    "message": "Someone talked you into installing a program (e.g. AnyDesk, TeamViewer)"
+  },
+  "helpRemote1": {
+    "message": "Disconnect the computer from the internet and ask a trusted person to help remove the program. The scammer may be able to see and control your screen through it."
+  },
+  "helpReportTitle": {
+    "message": "Report the scam"
+  },
+  "helpReport1": {
+    "message": "Report the page to CERT Polska:"
+  },
+  "helpReport2": {
+    "message": "In Poland, forward a suspicious text message free of charge to 8080."
+  },
+  "helpReport3": {
+    "message": "If money is gone, also report it to the police (emergency number 112)."
+  },
+  "helpTalkTitle": {
+    "message": "Talk to someone close to you"
+  },
+  "helpTalk1": {
+    "message": "Scammers frighten and rush people so there is no time to think. There is nothing to be ashamed of – talking to someone you trust helps you go through these steps calmly."
+  },
+  "helpCleanTitle": {
+    "message": "Clear the last hour (optional)"
+  },
+  "helpCleanText": {
+    "message": "Removes history, cookies, cache and form data from the last hour."
+  },
+  "helpCleanNote": {
+    "message": "Note: you will be logged out of some sites. This does NOT undo data that already reached the scammer – the steps above matter most."
+  },
+  "helpCleanBtn": {
+    "message": "Clear the last hour"
+  },
+  "helpCleanConfirm": {
+    "message": "Really clear the last hour?"
+  },
+  "helpCleanYes": {
+    "message": "Yes, clear it"
+  },
+  "btnCancel": {
+    "message": "Cancel"
+  },
+  "helpCleanDone": {
+    "message": "Done. Data from the last hour has been removed."
+  },
+  "helpCleanDenied": {
+    "message": "Data can't be cleared without the browser's permission."
+  },
+  "helpCleanFailed": {
+    "message": "Could not clear the data. You can do it in the browser settings (Ctrl+Shift+Delete)."
+  },
+  "optionsPageTitle": {
+    "message": "Settings – CyberGuard"
+  },
+  "welcomeTitle": {
+    "message": "CyberGuard is already protecting you"
+  },
+  "welcomeLead": {
+    "message": "There is nothing to set up. The extension works on its own:"
+  },
+  "welcome1": {
+    "message": "It stops known scam pages (CERT Polska and OpenPhish lists)."
+  },
+  "welcome2": {
+    "message": "It warns you when your bank, e-mail or government password is typed on a foreign site."
+  },
+  "welcome3": {
+    "message": "It warns about pages pretending to be well-known companies."
+  },
+  "welcomeNothingToDo": {
+    "message": "The shield icon next to the address bar tells you whether a page is known. You can close this tab now."
+  },
+  "optionsTitle": {
+    "message": "Settings"
+  },
+  "optFeedTitle": {
+    "message": "List of dangerous pages"
+  },
+  "optFeedToggle": {
+    "message": "Download new CERT Polska warnings (every 12 hours)"
+  },
+  "optFeedPrivacy": {
+    "message": "The extension only downloads a public list. It never sends information about the pages you visit or about you."
+  },
+  "optFeedUpdateNow": {
+    "message": "Check now"
+  },
+  "optFeedUpdating": {
+    "message": "Checking…"
+  },
+  "optFeedLast": {
+    "message": "Last update: $P1$ (new pages: $P2$).",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "optFeedNever": {
+    "message": "No update downloaded yet."
+  },
+  "optFeedError": {
+    "message": "The last attempt failed – we'll try again later."
+  },
+  "optFeedBuilt": {
+    "message": "Built-in list from $P1$: $P2$ pages.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "optPasswordsTitle": {
+    "message": "Remembered passwords"
+  },
+  "optPasswordsText": {
+    "message": "CyberGuard does not store passwords. It keeps only a \"fingerprint\" that can't be turned back into the password, so it knows where each password is used."
+  },
+  "optPasswordsEmpty": {
+    "message": "Nothing remembered yet. The list appears after your first login."
+  },
+  "optForgetAll": {
+    "message": "Forget all passwords"
+  },
+  "optForgetAllConfirm": {
+    "message": "Are you sure? Password protection will start learning from scratch."
+  },
+  "optForgetAllYes": {
+    "message": "Yes, forget all"
+  },
+  "optPasswordN": {
+    "message": "Password $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optUsedOn": {
+    "message": "used on: $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optProtectedBadge": {
+    "message": "protected"
+  },
+  "optForget": {
+    "message": "Forget"
+  },
+  "optTrustedTitle": {
+    "message": "Sites with warnings turned off"
+  },
+  "optTrustedText": {
+    "message": "Sites where you clicked \"I trust this site\" or \"Got it, don't show again\". The warning about your bank or e-mail password always works, here too."
+  },
+  "optTrustedWhole": {
+    "message": "trusted site (all warnings off)"
+  },
+  "optHiddenWarnings": {
+    "message": "hidden warning: $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optShowAgain": {
+    "message": "Show again"
+  },
+  "findShortInsecure": {
+    "message": "not secure (no padlock)"
+  },
+  "findShortCrossForm": {
+    "message": "password sent to another site"
+  },
+  "findShortLookalike": {
+    "message": "address resembles a known company"
+  },
+  "findShortMixed": {
+    "message": "unusual letters in the address"
+  },
+  "findShortOther": {
+    "message": "other"
+  },
+  "optEmptyList": {
+    "message": "The list is empty."
+  },
+  "optAllowedTitle": {
+    "message": "Pages unblocked until the browser closes"
+  },
+  "optAllowedText": {
+    "message": "These pages are on the dangerous list but were unblocked. They will be blocked again when you close the browser."
+  },
+  "optBlockAgain": {
+    "message": "Block again"
+  },
+  "optAboutTitle": {
+    "message": "About"
+  },
+  "optAbout1": {
+    "message": "CyberGuard checks everything on your computer. Passwords are never sent or stored anywhere."
+  },
+  "optAbout2": {
+    "message": "Dangerous page lists: CERT Polska (hole.cert.pl) and OpenPhish."
+  },
+  "optVersion": {
+    "message": "Version $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  }
+}

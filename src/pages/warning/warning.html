@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pl" data-i18n-title="warnPageTitle">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CyberGuard</title>
+  <link rel="stylesheet" href="../common.css" />
+  <link rel="stylesheet" href="warning.css" />
+</head>
+<body data-mode="blocked">
+  <main class="container fade-in">
+
+    <!-- Blocked by the phishing list -->
+    <section class="hero hero-danger" id="hero-blocked" aria-labelledby="title-blocked">
+      <svg class="hero-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        <line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <h1 id="title-blocked" data-i18n="warnTitle"></h1>
+      <p class="lead" data-i18n="warnLead"></p>
+      <div class="domain-box" id="domain-box">
+        <span class="domain-label" data-i18n="warnDomainLabel"></span>
+        <strong class="domain-value" id="blocked-domain"></strong>
+      </div>
+      <p class="source" id="source"></p>
+    </section>
+
+    <!-- The user left a suspicious page from our in-page warning -->
+    <section class="hero hero-ok" id="hero-left" aria-labelledby="title-left">
+      <svg class="hero-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="8.5 12 11 14.5 15.5 9.5"/>
+      </svg>
+      <h1 id="title-left" data-i18n="leftTitle"></h1>
+      <p class="lead" id="left-lead"></p>
+      <p data-i18n="leftNothingSent"></p>
+    </section>
+
+    <button id="btn-leave" class="btn btn-primary btn-block btn-xl" type="button">
+      <span id="btn-leave-text"></span>
+    </button>
+
+    <section class="card" id="why" aria-labelledby="why-title">
+      <h2 id="why-title" data-i18n="warnWhyTitle"></h2>
+      <ul class="list">
+        <li data-i18n="warnWhy1"></li>
+        <li data-i18n="warnWhy2"></li>
+        <li data-i18n="warnWhy3"></li>
+      </ul>
+    </section>
+
+    <section class="card card-info" aria-labelledby="already-title">
+      <h2 id="already-title" data-i18n="warnAlreadyTitle"></h2>
+      <p data-i18n="warnAlreadyText"></p>
+      <a class="btn btn-secondary" href="../help/help.html" data-i18n="btnWhatNow"></a>
+    </section>
+
+    <details class="proceed" id="proceed">
+      <summary data-i18n="proceedSummary"></summary>
+      <div class="proceed-body">
+        <p data-i18n="proceedText"></p>
+        <label class="ack">
+          <input type="checkbox" id="risk-ack" />
+          <span data-i18n="proceedAck"></span>
+        </label>
+        <button id="btn-proceed" class="btn btn-danger" type="button" disabled></button>
+        <p class="proceed-error" id="proceed-error" role="alert" hidden></p>
+      </div>
+    </details>
+
+    <footer class="footer muted" data-i18n="footerPrivacy"></footer>
+  </main>
+
+  <script src="../i18n.js"></script>
+  <script src="warning.js"></script>
+</body>
+</html>

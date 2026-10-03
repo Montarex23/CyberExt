@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pl" data-i18n-title="helpPageTitle">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CyberGuard</title>
+  <link rel="stylesheet" href="../common.css" />
+  <link rel="stylesheet" href="help.css" />
+</head>
+<body>
+  <main class="container">
+    <header class="intro">
+      <h1 data-i18n="helpTitle"></h1>
+      <p class="lead" data-i18n="helpIntro"></p>
+    </header>
+
+    <ol class="steps">
+      <li class="card step step-urgent">
+        <h2 data-i18n="helpBankTitle"></h2>
+        <ul class="list">
+          <li data-i18n="helpBank1"></li>
+          <li data-i18n="helpBank2"></li>
+          <li data-i18n="helpBank3"></li>
+        </ul>
+      </li>
+
+      <li class="card step">
+        <h2 data-i18n="helpPasswordTitle"></h2>
+        <ul class="list">
+          <li data-i18n="helpPassword1"></li>
+          <li data-i18n="helpPassword2"></li>
+          <li data-i18n="helpPassword3"></li>
+        </ul>
+      </li>
+
+      <li class="card step">
+        <h2 data-i18n="helpIdTitle"></h2>
+        <ul class="list">
+          <li data-i18n="helpId1"></li>
+          <li data-i18n="helpId2"></li>
+        </ul>
+      </li>
+
+      <li class="card step">
+        <h2 data-i18n="helpRemoteTitle"></h2>
+        <ul class="list">
+          <li data-i18n="helpRemote1"></li>
+        </ul>
+      </li>
+
+      <li class="card step">
+        <h2 data-i18n="helpReportTitle"></h2>
+        <ul class="list">
+          <li><span data-i18n="helpReport1"></span> <a href="https://incydent.cert.pl" target="_blank" rel="noopener noreferrer">incydent.cert.pl</a></li>
+          <li data-i18n="helpReport2"></li>
+          <li data-i18n="helpReport3"></li>
+        </ul>
+      </li>
+
+      <li class="card step">
+        <h2 data-i18n="helpTalkTitle"></h2>
+        <p data-i18n="helpTalk1"></p>
+      </li>
+    </ol>
+
+    <section class="card cleanup" aria-labelledby="cleanup-title">
+      <h2 id="cleanup-title" data-i18n="helpCleanTitle"></h2>
+      <p data-i18n="helpCleanText"></p>
+      <p class="muted" data-i18n="helpCleanNote"></p>
+      <div id="clean-start">
+        <button class="btn btn-secondary" id="btn-clean" type="button" data-i18n="helpCleanBtn"></button>
+      </div>
+      <div id="clean-confirm" hidden>
+        <p><strong data-i18n="helpCleanConfirm"></strong></p>
+        <div class="row">
+          <button class="btn btn-danger" id="btn-clean-yes" type="button" data-i18n="helpCleanYes"></button>
+          <button class="btn btn-secondary" id="btn-clean-no" type="button" data-i18n="btnCancel"></button>
+        </div>
+      </div>
+      <p class="result" id="clean-result" role="status" hidden></p>
+    </section>
+  </main>
+
+  <script src="../i18n.js"></script>
+  <script src="help.js"></script>
+</body>
+</html>
