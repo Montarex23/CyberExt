@@ -7,8 +7,13 @@
  * blocked by declarativeNetRequest. Responsibilities:
  *
  *   1. Parse the `?domain=...` query parameter to show which domain was blocked.
- *   2. Wire up the "Go Back" and "Proceed Anyway" buttons.
- *   3. Provide keyboard accessibility (Escape key = go back).
+ *   2. Wire up the "Go Back" button.
+ *   3. Wire up the "Proceed Anyway" button with dynamic whitelisting:
+ *      - First click: show a confirmation prompt.
+ *      - Second click: send a WHITELIST_DOMAIN message to the service worker,
+ *        which adds a dynamic "allow" rule overriding the static blocklist.
+ *        On success, navigate the user to the originally blocked URL.
+ *   4. Provide keyboard accessibility (Escape key = go back).
  *
  * This file has zero external dependencies.
  * ============================================================================
@@ -51,18 +56,29 @@
   }
 
   // -------------------------------------------------------------------------
-  // 3. "Proceed Anyway" button (risky — user takes full responsibility)
+  // 3. "Proceed Anyway" button — Dynamic Whitelisting
+  // -------------------------------------------------------------------------
+  //
+  // Flow:
+  //   Click 1 → Change button text to "Are you sure? Click again."
+  //   Click 2 → Send WHITELIST_DOMAIN to background.js → background adds a
+  //             dynamic "allow" rule via updateDynamicRules → on success,
+  //             navigate to the unblocked URL.
   // -------------------------------------------------------------------------
 
   const btnProceed = document.getElementById('btn-proceed');
   if (btnProceed) {
     let confirmCount = 0;
+    let isProcessing = false; // Prevents double-clicks during async work.
 
-    btnProceed.addEventListener('click', () => {
+    btnProceed.addEventListener('click', async () => {
+      // Guard against rapid clicks while the whitelist request is in-flight.
+      if (isProcessing) return;
+
       confirmCount++;
 
+      // ----- First click: show confirmation prompt -----
       if (confirmCount === 1) {
-        // First click: change button text to a confirmation prompt.
         btnProceed.textContent = '⚠ Are you sure? Click again to confirm.';
         btnProceed.style.color = '#f87171';
         btnProceed.style.borderColor = 'rgba(248, 113, 113, 0.4)';
@@ -76,10 +92,68 @@
             btnProceed.style.borderColor = '';
           }
         }, 5000);
-      } else if (confirmCount >= 2) {
-        // Second click: actually navigate to the domain (the user accepts the risk).
-        // We navigate to the HTTP version; the site may redirect to HTTPS on its own.
-        window.location.href = `http://${blockedDomain}`;
+
+        return;
+      }
+
+      // ----- Second click: send whitelist request to service worker -----
+      if (confirmCount >= 2) {
+        isProcessing = true;
+
+        // Show a loading state on the button.
+        btnProceed.textContent = '⏳ Adding exception…';
+        btnProceed.style.color = '#fbbf24'; // Amber.
+        btnProceed.disabled = true;
+
+        try {
+          // Send the WHITELIST_DOMAIN message to background.js.
+          // The service worker will:
+          //   1. Create a dynamic "allow" rule with higher priority.
+          //   2. Persist the whitelist entry in chrome.storage.local.
+          //   3. Respond with { success: true, ruleId: ... }.
+          const response = await chrome.runtime.sendMessage({
+            type: 'WHITELIST_DOMAIN',
+            domain: blockedDomain,
+          });
+
+          if (response && response.success) {
+            console.log(
+              `[CyberGuard] Domain "${blockedDomain}" whitelisted successfully (rule ID: ${response.ruleId}).`
+            );
+
+            // Update button to success state briefly before navigating.
+            btnProceed.textContent = '✔ Exception added — redirecting…';
+            btnProceed.style.color = '#34d399'; // Green.
+
+            // Navigate to the originally blocked domain.
+            // Use http:// — the site will redirect to HTTPS on its own if configured.
+            // Small delay so the user sees the success state.
+            setTimeout(() => {
+              window.location.href = `http://${blockedDomain}`;
+            }, 600);
+          } else {
+            // The service worker returned an error.
+            console.error(
+              '[CyberGuard] Whitelist request failed:',
+              response ? response.error : 'No response received.'
+            );
+
+            btnProceed.textContent = '✖ Failed to add exception. Try again.';
+            btnProceed.style.color = '#f87171';
+            btnProceed.disabled = false;
+            isProcessing = false;
+            confirmCount = 0; // Reset so the user can retry.
+          }
+        } catch (err) {
+          // Communication with the service worker failed entirely.
+          console.error('[CyberGuard] Could not communicate with service worker:', err);
+
+          btnProceed.textContent = '✖ Extension error. Try reloading.';
+          btnProceed.style.color = '#f87171';
+          btnProceed.disabled = false;
+          isProcessing = false;
+          confirmCount = 0;
+        }
       }
     });
   }
