@@ -40,7 +40,7 @@ Następnie w Chrome otwórz `chrome://extensions` (w Edge: `edge://extensions`),
 ## Testy
 
 ```bash
-npm test                    # 44 testy jednostkowe (domeny, podróbki, logika haseł, builder, tłumaczenia)
+npm test                    # 45 testów jednostkowych (domeny, podróbki, logika haseł, builder, tłumaczenia)
 npm run test:e2e            # 23 scenariusze w prawdziwym Chrome, zrzuty ekranu w tmp/e2e/
 npm run measure:lookalike   # skuteczność wykrywania podróbek na liście CERT Polska
 npm run test:manual         # fałszywe strony + osobne okno Chrome do testów ręcznych

@@ -100,6 +100,16 @@ function findBrowser() {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+/** Polls an async condition (e.g. a storage write that happens in the background). */
+async function waitFor(condition, what, timeout = 3000) {
+  const end = Date.now() + timeout;
+  while (Date.now() < end) {
+    if (await condition()) return;
+    await sleep(100);
+  }
+  throw new Error(`Timed out waiting for: ${what}`);
+}
+
 /** All text on the page INCLUDING closed shadow roots (our warnings live there). */
 async function pageText(page) {
   const client = await page.createCDPSession();
@@ -299,6 +309,8 @@ async function main() {
       await sleep(600);
       await Promise.all([page.waitForNavigation(), page.click('#submit')]);
       assert.ok(posts.some((p) => p.host === 'online.mbank.pl'), 'login POST should go through');
+      // The fingerprint is saved asynchronously by the service worker — wait for it.
+      await waitFor(async () => Object.keys(await storage('passwords')).length === 1, 'password remembered');
       const passwords = await storage('passwords');
       const entries = Object.values(passwords);
       assert.equal(entries.length, 1);
@@ -336,8 +348,10 @@ async function main() {
       await sleep(500);
       await Promise.all([page.waitForNavigation(), page.click('#submit')]);
       assert.ok(posts.some((p) => p.host === 'moj-nowy-sklep.pl'));
-      const sites = Object.values(await storage('passwords')).flatMap((e) => e.sites);
-      assert.ok(sites.includes('moj-nowy-sklep.pl'));
+      await waitFor(
+        async () => Object.values(await storage('passwords')).some((e) => e.sites.includes('moj-nowy-sklep.pl')),
+        'trusted site remembered'
+      );
     });
 
     await step('Fast typist: Enter right after typing is held until checked, then sent', async () => {
@@ -509,6 +523,15 @@ async function main() {
       assert.ok(!r.error, `update failed: ${r.error}`);
       const dynamic = await worker.evaluate(() => chrome.declarativeNetRequest.getDynamicRules());
       console.log(`      live list: +${r.added} new domains, ${r.removed} withdrawn, ${dynamic.length} dynamic rules`);
+
+      // The total shown to the user = built-in list + live additions − withdrawn.
+      await page.goto(extUrl('pages/options/options.html'));
+      const overview = await page.evaluate(() => chrome.runtime.sendMessage({ type: 'GET_OVERVIEW' }));
+      const p = overview.protection;
+      assert.equal(p.total, p.builtIn + r.added - r.removed);
+      const total = p.total.toLocaleString('pl');
+      await waitForText(page, r.added || r.removed ? `Razem chronimy przed ${total}` : `Chronimy przed ${total}`);
+      await shot(page, '15-options-live-total');
     });
   } finally {
     await browser.close();

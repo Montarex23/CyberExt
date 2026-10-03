@@ -118,7 +118,7 @@ Na dole jest opcjonalne **„Wyczyść ostatnią godzinę”** (historia, ciaste
 
 ### 3.7 Ustawienia
 
-- **Lista niebezpiecznych stron:** włącznik pobierania nowych ostrzeżeń CERT Polska co 12 h, „Sprawdź teraz”, data ostatniej aktualizacji.
+- **Lista niebezpiecznych stron:** włącznik pobierania nowych ostrzeżeń CERT Polska co 12 h, „Sprawdź teraz”, data ostatniej aktualizacji i łączna liczba blokowanych stron z rozbiciem: lista wbudowana w rozszerzenie + domeny dodane przez CERT od tego czasu − domeny wycofane.
 - **Zapamiętane hasła:** „Hasło 1 — używane na: mbank.pl, moj-sklep.pl [chronione]”, przycisk „Zapomnij” i „Zapomnij wszystkie”. Same hasła nie są pokazywane, bo nie są przechowywane.
 - **Strony z wyłączonymi ostrzeżeniami:** zaufane strony i ukryte ostrzeżenia z przyciskiem „Pokazuj znowu”.
 - **Strony odblokowane do zamknięcia przeglądarki** z przyciskiem „Zablokuj ponownie”.
@@ -314,6 +314,7 @@ Usunięte względem 1.x: `declarativeNetRequestFeedback` (pokazywało ostrzeżen
 | Zmiana tekstu | `locales/pl.json` i `locales/en.json`, potem `npm run build:locales` (sprawdza zgodność kluczy i parametrów) |
 | Odświeżenie list | `npm run build:rules` (CI robi to co poniedziałek) |
 | Public Suffix List | `npm run build:psl` (rzadko) |
+| Ikony | grafika źródłowa w `design/icon-source.jpg`; `powershell -ExecutionPolicy Bypass -File scripts/build-icons.ps1` tworzy `src/icons/icon16/32/48/128.png` (test sprawdza, czy to prawdziwe PNG we właściwym rozmiarze) |
 | Paczka do sklepu | `npm run build && npm run package` → `dist/cyberguard-<wersja>.zip` |
 
 CI (`.github/workflows/ci.yml`) przy każdym pushu i PR oraz co tydzień: sprawdza tłumaczenia, uruchamia testy jednostkowe, buduje listy, uruchamia test end-to-end w Chrome, buduje paczkę `.zip` i zapisuje zrzuty ekranu.
@@ -331,4 +332,4 @@ CI (`.github/workflows/ci.yml`) przy każdym pushu i PR oraz co tydzień: sprawd
 | Alarm na każdej domenie z polskimi znakami (punycode) | Wykrywanie tylko podrobionych liter / podobieństwa do marek |
 | 15 testowych domen | ~109 tys. domen z CERT Polska i OpenPhish + aktualizacja co 12 h |
 | Brak popupu, ustawień, pomocy; interfejs po angielsku | Popup, ustawienia, strona pomocy, PL/EN, projekt dla seniorów |
-| Brak testów | 44 testy jednostkowe, 23 scenariusze w prawdziwym Chrome, pomiar skuteczności, CI |
+| Brak testów | 45 testów jednostkowych, 23 scenariusze w prawdziwym Chrome, pomiar skuteczności, CI |

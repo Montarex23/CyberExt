@@ -62,22 +62,41 @@
   }
 
   async function refresh() {
-    const data = await send({ type: 'GET_OVERVIEW' });
-    if (!data || data.error) return;
+    const response = await send({ type: 'GET_OVERVIEW' });
+    if (!response || response.error) return;
+    // Defaults keep the page working even if the service worker is an older
+    // version (during development: files changed, extension not reloaded yet).
+    const data = {
+      settings: {},
+      feed: {},
+      passwords: [],
+      trustedSites: [],
+      dismissedFindings: [],
+      sessionAllowed: [],
+      ...response,
+    };
+    data.protection = data.protection || { total: 0, builtIn: 0, live: 0, removed: 0, builtAt: null };
 
     // --- Live list ---
     $('auto-update').checked = data.settings.autoUpdate !== false;
     const feed = data.feed || {};
-    let status = '';
-    if (feed.lastUpdate) status = t('optFeedLast', [formatDate(feed.lastUpdate), String(feed.added || 0)]);
-    else status = t('optFeedNever');
+    const p = data.protection;
+    const num = (n) => n.toLocaleString(lang);
+    const lines = [];
+    lines.push(feed.lastUpdate ? t('optFeedLast', [formatDate(feed.lastUpdate)]) : t('optFeedNever'));
     if (feed.error && feed.lastAttempt && (!feed.lastUpdate || feed.lastAttempt > feed.lastUpdate)) {
-      status += ` ${t('optFeedError')}`;
+      lines.push(t('optFeedError'));
     }
-    if (data.meta && data.meta.generatedAt) {
-      status += ` ${t('optFeedBuilt', [new Date(data.meta.generatedAt).toLocaleDateString(lang), (data.meta.totalDomains || 0).toLocaleString(lang)])}`;
+    if (p.builtAt) {
+      const builtDate = new Date(p.builtAt).toLocaleDateString(lang);
+      lines.push(
+        p.live || p.removed
+          ? t('optFeedTotal', [num(p.total), num(p.builtIn), builtDate, num(p.live)])
+          : t('optFeedBuilt', [num(p.builtIn), builtDate])
+      );
+      if (p.removed) lines.push(t('optFeedRemoved', [num(p.removed)]));
     }
-    $('feed-status').textContent = status;
+    $('feed-status').textContent = lines.join(' ');
 
     // --- Remembered passwords (fingerprints) ---
     renderList(

@@ -364,7 +364,7 @@
     }
   },
   "popupDatabase": {
-    "message": "Lista ostrzeżeń: $P1$ stron (z dnia $P2$)",
+    "message": "Lista ostrzeżeń: $P1$ stron (aktualizacja: $P2$)",
     "placeholders": {
       "p1": {
         "content": "$1"
@@ -510,13 +510,10 @@
     "message": "Sprawdzanie…"
   },
   "optFeedLast": {
-    "message": "Ostatnia aktualizacja: $P1$ (nowych stron: $P2$).",
+    "message": "Ostatnia aktualizacja: $P1$.",
     "placeholders": {
       "p1": {
         "content": "$1"
-      },
-      "p2": {
-        "content": "$2"
       }
     }
   },
@@ -527,13 +524,38 @@
     "message": "Ostatnia próba się nie udała – spróbujemy ponownie później."
   },
   "optFeedBuilt": {
-    "message": "Wbudowana lista z dnia $P1$: $P2$ stron.",
+    "message": "Chronimy przed $P1$ niebezpiecznymi stronami (lista z dnia $P2$).",
     "placeholders": {
       "p1": {
         "content": "$1"
       },
       "p2": {
         "content": "$2"
+      }
+    }
+  },
+  "optFeedTotal": {
+    "message": "Razem chronimy przed $P1$ niebezpiecznymi stronami: $P2$ z listy wbudowanej w rozszerzenie (z dnia $P3$) i $P4$ nowych, dodanych od tego czasu przez CERT Polska.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      },
+      "p3": {
+        "content": "$3"
+      },
+      "p4": {
+        "content": "$4"
+      }
+    }
+  },
+  "optFeedRemoved": {
+    "message": "Pominięto $P1$ stron, które CERT Polska wycofał z listy.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
       }
     }
   },

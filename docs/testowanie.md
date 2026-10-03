@@ -19,7 +19,7 @@
 
 | Poziom | Komenda | Czas | Co sprawdza |
 |---|---|---|---|
-| Testy jednostkowe | `npm test` | ~1 s | 44 testy logiki: domeny, podróbki adresów, hasła, builder list, tłumaczenia, manifest |
+| Testy jednostkowe | `npm test` | ~1 s | 45 testów logiki: domeny, podróbki adresów, hasła, builder list, tłumaczenia, manifest i ikony |
 | Test end-to-end | `npm run test:e2e` | ~1 min | 23 scenariusze w prawdziwym Chrome z wtyczką, ze zrzutami ekranu |
 | Pomiar wykrywania podróbek | `npm run measure:lookalike` | ~5 s | skuteczność na 126 tys. prawdziwych domen z CERT Polska i fałszywe alarmy na legalnych domenach |
 | Testy ręczne (fałszywe strony) | `npm run test:manual` | ~20 min | wszystkie funkcje oczami użytkownika, bez ryzyka |
@@ -55,7 +55,7 @@ npm run build
 npm test
 ```
 
-Oczekiwany wynik: `ℹ pass 44`, `ℹ fail 0`. Testy są w `tests/unit/`:
+Oczekiwany wynik: `ℹ pass 45`, `ℹ fail 0`. Testy są w `tests/unit/`:
 
 | Plik | Zakres |
 |---|---|
@@ -64,7 +64,7 @@ Oczekiwany wynik: `ℹ pass 44`, `ℹ fail 0`. Testy są w `tests/unit/`:
 | `page-risk.test.js` | baner: brak HTTPS, formularz na inną stronę, kolejność ostrzeżeń, zaufane strony |
 | `password-logic.test.js` | werdykty haseł (`none`/`ok`/`reuse`/`danger`), limity pamięci, odciski PBKDF2 |
 | `build-rules.test.js` | parsowanie list, pomijanie platform (`docs.google.com`), budowa reguł |
-| `extension.test.js` | pliki z manifestu istnieją, minimalne uprawnienia, każdy tekst istnieje po polsku i angielsku, brak `innerHTML` z danymi |
+| `extension.test.js` | pliki z manifestu istnieją, ikony to prawdziwe PNG, minimalne uprawnienia, każdy tekst istnieje po polsku i angielsku, brak `innerHTML` z danymi |
 
 ### 3.2 Test end-to-end w prawdziwym Chrome
 
@@ -215,7 +215,7 @@ Każdy scenariusz ma oczekiwany wynik. Zaznaczaj ✅/❌.
 | T44 | … na stronie ostrzeżenia z T01 | „✓ Niebezpieczna strona zatrzymana”. Licznik „Zatrzymane niebezpieczne strony” rośnie z każdą blokadą (odświeżenie tej samej strony się nie liczy). |
 | T45 | „Oszust może mieć moje dane – co robić?” | Otwiera się strona pomocy z 6 ponumerowanymi krokami. Link do incydent.cert.pl działa. |
 | T46 | Pomoc → „Wyczyść ostatnią godzinę” → „Tak, wyczyść” | Przeglądarka pyta o zgodę na „usuwanie danych przeglądania”. Po zgodzie: „Gotowe…”. Po odmowie: „Bez zgody przeglądarki…”. „Anuluj” wraca bez pytania. |
-| T47 | Ustawienia → „Sprawdź teraz” (wymaga internetu) | Po kilku sekundach „Ostatnia aktualizacja: … (nowych stron: N)”. |
+| T47 | Ustawienia → „Sprawdź teraz” (wymaga internetu) | Po kilku sekundach: „Ostatnia aktualizacja: … Razem chronimy przed X niebezpiecznymi stronami: Y z listy wbudowanej (z dnia …) i N nowych…”. X = Y + N − wycofane. Kolejne „Sprawdź teraz” może zmienić N, bo CERT dodaje domeny na bieżąco. N to zawsze różnica względem listy wbudowanej, a nie suma z poprzednich aktualizacji. Ta sama łączna liczba jest w okienku pod ikoną. |
 | T48 | Ustawienia → wyłącz „Pobieraj nowe ostrzeżenia…” → odśwież stronę ustawień | Włącznik zostaje wyłączony. |
 | T49 | Ustawienia → „Zapomnij” przy haśle bankowym → wróć do T12 | Okno „Stop!” się nie pojawia, bo hasło zostało zapomniane. „Zapomnij wszystkie hasła” wymaga potwierdzenia. |
 
@@ -274,7 +274,7 @@ Najważniejszy test dla tej wtyczki: czy osoba nietechniczna zrozumie komunikaty
 
 ## 7. Lista kontrolna przed wydaniem
 
-- [ ] `npm test`: 44/44
+- [ ] `npm test`: 45/45
 - [ ] `npm run build`: liczba domen podobna do poprzedniej wersji (nagły spadek = problem ze źródłem)
 - [ ] `npm run measure:lookalike`: wykrywanie ≥ 99%, 0 fałszywych alarmów
 - [ ] `npm run test:e2e`: 23/23, przejrzane zrzuty w `tmp/e2e/`
@@ -296,4 +296,6 @@ Najważniejszy test dla tej wtyczki: czy osoba nietechniczna zrozumie komunikaty
 | Wtyczka nie ładuje się: „Could not load … rules/main.json” | Brak zbudowanych list | `npm run build` |
 | Ostrzeżenie wraca mimo „Rozumiem” | Karta otwarta z bardzo starą kopią wtyczki | Odśwież wtyczkę na `chrome://extensions` i kartę. Od wersji 2.0 dzieje się to samo. |
 | Błędy w działaniu | — | `chrome://extensions` → „service worker” przy CyberGuard (konsola rozszerzenia); F12 na stronie (konsola content scriptu) |
+| Przycisk „Błędy” przy CyberGuard na `chrome://extensions` ze starymi wpisami | Chrome pamięta błędy do wyczyszczenia, także te sprzed poprawki. Typowa przyczyna w trakcie pracy nad kodem: pliki zmienione, ale wtyczka nieprzeładowana. Strony ustawień/popupu biorą wtedy nowy kod z dysku, a service worker działa jeszcze w starej wersji. | Kliknij „Wyczyść wszystko”, potem odśwież wtyczkę. Jeśli błąd wróci po przeładowaniu, to prawdziwy błąd i trzeba go zgłosić. |
+| Szare „C” zamiast ikony na `chrome://extensions` | Ikona nie jest prawidłowym PNG (tak było w wersji 1.x) | `scripts/build-icons.ps1`; test `icons are real PNG files…` pilnuje tego automatycznie |
 | Fałszywy alarm na legalnej stronie | Heurystyka podróbek | Dopisz domenę do `tests/unit/legit-domains.js`, popraw `known-sites.js` lub `lookalike.js`, uruchom `npm test` i `npm run measure:lookalike`. |

@@ -309,11 +309,25 @@ const pageHandlers = {
 
   async GET_OVERVIEW() {
     const state = await CG.store.get(['passwords', 'trustedSites', 'dismissedFindings', 'stats', 'settings', 'feed']);
+    const meta = await CG.rules.loadMeta();
+    // Built-in list (fixed per extension version) + domains CERT added since (live
+    // dynamic rules, recomputed on every update — not cumulative) − domains CERT withdrew.
+    const builtIn = (meta && meta.totalDomains) || 0;
+    const live = state.feed.lastUpdate ? state.feed.added || 0 : 0;
+    const removed = state.feed.lastUpdate ? state.feed.removed || 0 : 0;
     return {
       stats: state.stats,
       settings: state.settings,
       feed: state.feed,
-      meta: await CG.rules.loadMeta(),
+      meta,
+      protection: {
+        total: builtIn + live - removed,
+        builtIn,
+        builtAt: meta ? meta.generatedAt : null,
+        live,
+        removed,
+        updatedAt: state.feed.lastUpdate || (meta ? Date.parse(meta.generatedAt) : null),
+      },
       passwords: CG.passwordLogic.summarize(state.passwords),
       trustedSites: Object.keys(state.trustedSites).sort(),
       dismissedFindings: Object.entries(state.dismissedFindings)

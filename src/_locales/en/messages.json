@@ -364,7 +364,7 @@
     }
   },
   "popupDatabase": {
-    "message": "Warning list: $P1$ sites (from $P2$)",
+    "message": "Warning list: $P1$ sites (updated: $P2$)",
     "placeholders": {
       "p1": {
         "content": "$1"
@@ -510,13 +510,10 @@
     "message": "Checking…"
   },
   "optFeedLast": {
-    "message": "Last update: $P1$ (new pages: $P2$).",
+    "message": "Last update: $P1$.",
     "placeholders": {
       "p1": {
         "content": "$1"
-      },
-      "p2": {
-        "content": "$2"
       }
     }
   },
@@ -527,13 +524,38 @@
     "message": "The last attempt failed – we'll try again later."
   },
   "optFeedBuilt": {
-    "message": "Built-in list from $P1$: $P2$ pages.",
+    "message": "Protecting you from $P1$ dangerous pages (list from $P2$).",
     "placeholders": {
       "p1": {
         "content": "$1"
       },
       "p2": {
         "content": "$2"
+      }
+    }
+  },
+  "optFeedTotal": {
+    "message": "In total we protect you from $P1$ dangerous pages: $P2$ from the list built into the extension (from $P3$) and $P4$ new ones added by CERT Polska since then.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      },
+      "p3": {
+        "content": "$3"
+      },
+      "p4": {
+        "content": "$4"
+      }
+    }
+  },
+  "optFeedRemoved": {
+    "message": "$P1$ pages that CERT Polska withdrew from its list are no longer blocked.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
       }
     }
   },

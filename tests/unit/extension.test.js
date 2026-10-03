@@ -34,6 +34,17 @@ test('files referenced by the manifest exist', () => {
   for (const p of paths) assert.ok(fs.existsSync(path.join(SRC, p)), p);
 });
 
+test('icons are real PNG files with the declared size', () => {
+  const declared = { ...manifest.icons, ...manifest.action.default_icon };
+  for (const [size, file] of Object.entries(declared)) {
+    const buf = fs.readFileSync(path.join(SRC, file));
+    assert.equal(buf.subarray(0, 8).toString('hex'), '89504e470d0a1a0a', `${file} is not a PNG`);
+    // IHDR chunk: width and height are big-endian uint32 at bytes 16 and 20.
+    assert.equal(buf.readUInt32BE(16), Number(size), `${file} width`);
+    assert.equal(buf.readUInt32BE(20), Number(size), `${file} height`);
+  }
+});
+
 test('service worker importScripts paths exist', () => {
   const sw = fs.readFileSync(path.join(SRC, manifest.background.service_worker), 'utf-8');
   const block = sw.match(/importScripts\(([\s\S]*?)\);/)[1];

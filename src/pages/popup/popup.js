@@ -77,10 +77,10 @@
   const overview = await chrome.runtime.sendMessage({ type: 'GET_OVERVIEW' });
   if (overview && !overview.error) {
     $('stat-blocked').textContent = t('popupBlockedCount', [String(overview.stats.blocked || 0)]);
-    const meta = overview.meta;
-    if (meta && meta.totalDomains) {
-      const date = new Date(meta.generatedAt).toLocaleDateString(t('langCode'));
-      $('stat-db').textContent = t('popupDatabase', [meta.totalDomains.toLocaleString(t('langCode')), date]);
+    const p = overview.protection;
+    if (p && p.total) {
+      const date = new Date(p.updatedAt).toLocaleDateString(t('langCode'));
+      $('stat-db').textContent = t('popupDatabase', [p.total.toLocaleString(t('langCode')), date]);
     }
   }
 })();
