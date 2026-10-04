@@ -12,6 +12,8 @@
   const $ = (id) => document.getElementById(id);
   const ONE_HOUR_MS = 60 * 60 * 1000;
 
+  $('help-mascot').innerHTML = self.CyberGuard.mascot.svg('calm', 80); // Static SVG.
+
   function showResult(key, ok) {
     const el = $('clean-result');
     el.textContent = t(key);

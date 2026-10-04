@@ -164,6 +164,7 @@
       brandName: state.verdict.brandName,
       brandSite: state.verdict.brandSite,
       site: state.verdict.site,
+      diff: state.verdict.diff || null,
     };
     if (IS_TOP) return CG.ui.showPasswordAlert(alert);
     // In a login iframe: the top page shows the dialog (a tiny frame can't).
@@ -357,7 +358,7 @@
   let linkBypass = false; // True while we re-play a click the user confirmed.
 
   function presentLinkAlert(verdict) {
-    const alert = { kind: 'link-mismatch', shown: verdict.shown, real: verdict.real };
+    const alert = { kind: 'link-mismatch', shown: verdict.shown, real: verdict.real, diff: verdict.diff || null };
     if (IS_TOP) return CG.ui.showLinkAlert(alert);
     // E-mail bodies are often shown in an iframe — the top page draws the dialog.
     return send({ type: 'RELAY_ALERT', alert }).then((r) => (r && r.choice) || 'stay');

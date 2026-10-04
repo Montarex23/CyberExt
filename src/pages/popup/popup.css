@@ -1,15 +1,28 @@
 body {
   width: 380px;
-  padding: 16px;
+  padding: 0 0 12px;
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
+body > *:not(.header) {
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+/* Brand strip in the colours of the icon (navy + teal). */
 .header {
   display: flex;
   align-items: center;
   gap: 12px;
+  padding: 14px 16px;
+  background: var(--navy);
+  color: #ffffff;
+}
+
+.header img {
+  border-radius: 8px;
 }
 
 .brand {
@@ -22,7 +35,7 @@ body {
   align-items: center;
   gap: 6px;
   font-size: 0.9rem;
-  color: var(--ok-text);
+  color: #bff2e8;
   font-weight: 600;
 }
 
@@ -30,30 +43,21 @@ body {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--ok);
+  background: #5ed3be;
 }
 
 .status {
   display: flex;
   gap: 14px;
-  align-items: flex-start;
+  align-items: center;
   border-radius: 16px;
-  padding: 16px;
+  padding: 14px 16px;
   border: 2px solid var(--border);
   background: var(--surface);
 }
 
 .status-icon {
   flex-shrink: 0;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-size: 24px;
-  font-weight: 800;
-  background: var(--border);
-  color: var(--text);
 }
 
 .status-title {
@@ -73,10 +77,6 @@ body {
   border-color: var(--ok);
   background: var(--ok-bg);
 }
-.status[data-tone="ok"] .status-icon {
-  background: var(--ok);
-  color: var(--surface);
-}
 .status[data-tone="ok"] .status-title {
   color: var(--ok-text);
 }
@@ -84,10 +84,6 @@ body {
 .status[data-tone="warn"] {
   border-color: var(--warn);
   background: var(--warn-bg);
-}
-.status[data-tone="warn"] .status-icon {
-  background: var(--warn);
-  color: var(--surface);
 }
 .status[data-tone="warn"] .status-title {
   color: var(--warn-text);
@@ -97,17 +93,8 @@ body {
   border-color: var(--danger);
   background: var(--danger-bg);
 }
-.status[data-tone="danger"] .status-icon {
-  background: var(--danger);
-  color: var(--surface);
-}
 .status[data-tone="danger"] .status-title {
   color: var(--danger-text);
-}
-
-.status[data-tone="neutral"] .status-icon {
-  background: var(--info-bg);
-  color: var(--info-text);
 }
 
 .stats {

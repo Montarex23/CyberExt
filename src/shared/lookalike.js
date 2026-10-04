@@ -236,8 +236,13 @@
         return {
           kind: homograph ? 'homograph' : 'lookalike',
           level: homograph ? 'danger' : 'warn',
-          brand: { id: brand.id, name: brand.name, site: brand.domains[0] },
+          brand: { id: brand.id, name: brand.name, site: brand.domains[0], domains: brand.domains },
           matchedBy: m.disguised && m.how !== 'typo' ? 'disguised' : m.how,
+          // Details for address-diff.js ("which letter is different?")
+          keyword: parseKeyword(kw).word,
+          how: m.how,
+          disguised: m.disguised,
+          inMain: m.inMain,
         };
       }
     }

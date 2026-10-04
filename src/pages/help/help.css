@@ -9,6 +9,20 @@
 
 .lead {
   font-size: 1.2rem;
+  margin-bottom: 0;
+}
+
+.intro {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+@media (max-width: 480px) {
+  .intro {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
 .steps {
@@ -39,8 +53,8 @@
   place-items: center;
   font-weight: 800;
   font-size: 1.2rem;
-  background: var(--info-bg);
-  color: var(--info-text);
+  background: var(--brand-soft);
+  color: var(--brand-strong);
 }
 
 .step-urgent {

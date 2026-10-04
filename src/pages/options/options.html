@@ -10,7 +10,10 @@
 <body>
   <main class="container">
     <section class="card welcome" id="welcome" hidden>
-      <h1 data-i18n="welcomeTitle"></h1>
+      <div class="welcome-head">
+        <div class="pop-in" id="welcome-mascot"></div>
+        <h1 data-i18n="welcomeTitle"></h1>
+      </div>
       <p class="lead" data-i18n="welcomeLead"></p>
       <ul class="list">
         <li data-i18n="welcome1"></li>
@@ -72,6 +75,7 @@
     </section>
   </main>
 
+  <script src="../../shared/mascot.js"></script>
   <script src="../i18n.js"></script>
   <script src="options.js"></script>
 </body>

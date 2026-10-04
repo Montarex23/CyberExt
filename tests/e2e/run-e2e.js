@@ -603,6 +603,29 @@ async function main() {
       await shot(page, '13-help');
     });
 
+    await step('Design screenshots in light and dark mode (warning, left safely, popup, welcome)', async () => {
+      const screens = [
+        ['warning', `pages/warning/warning.html?domain=${encodeURIComponent('allegro.pl-oferta24.xyz')}&src=cert_pl`, 'udaje Allegro'],
+        ['left', 'pages/warning/warning.html?mode=left&domain=super-promocje24.com', 'Dobrze!'],
+        ['welcome', 'pages/options/options.html?welcome=1', 'CyberGuard już Cię chroni'],
+        ['help', 'pages/help/help.html', 'Oszust może mieć moje dane'],
+      ];
+      for (const scheme of ['light', 'dark']) {
+        await page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: scheme }]);
+        for (const [name, path_, text] of screens) {
+          await page.goto(extUrl(path_));
+          await waitForText(page, text);
+          await shot(page, `design-${name}-${scheme}`);
+        }
+        await page.setViewport({ width: 400, height: 460 });
+        await page.goto(extUrl('pages/popup/popup.html'));
+        await waitForText(page, 'Ochrona włączona');
+        await shot(page, `design-popup-${scheme}`);
+        await page.setViewport({ width: 1200, height: 860 });
+      }
+      await page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: 'light' }]);
+    });
+
     await step('Popup status for a known bank and for a lookalike', async () => {
       const status = (url) => page.evaluate((u) => chrome.runtime.sendMessage({ type: 'GET_TAB_STATUS', url: u }), url);
       assert.equal((await status('https://online.mbank.pl/')).kind, 'official');

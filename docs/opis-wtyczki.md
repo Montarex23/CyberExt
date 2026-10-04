@@ -44,15 +44,24 @@ Do tego dochodzi pomoc **po** oszustwie: przycisk „Oszust może mieć moje dan
 3. **Nie krzyczeć bez potrzeby.** Ostrzeżenie pojawia się tylko wtedy, gdy realnie coś grozi. Ktoś zasypywany banerami nauczy się je zamykać bez czytania i przeoczy ten jeden ważny.
 4. **Prosty język.** Bez słów „phishing”, „domena”, „certyfikat”. Polskie teksty są neutralne płciowo („Wpisujesz hasło…”, a nie „Wpisałeś…”).
 5. **Czytelność.** Tekst min. 18 px, kontrast na poziomie WCAG AAA, przyciski o wysokości min. 52 px, widoczny fokus klawiatury, tryb jasny i ciemny.
+6. **Najpierw spokój, potem konkret, potem działanie.** Każde ostrzeżenie zaczyna się od uspokojenia („Spokojnie – zatrzymaliśmy tę stronę, zanim się otworzyła”), potem mówi wprost, co jest nie tak („Ta strona udaje Allegro”), a na końcu daje jeden bezpieczny przycisk. Na stronie ostrzeżenia jest też analogia, którą zna każdy: oszust „na wnuczka”.
+
+### Wygląd
+
+- **Kolory z ikony.** Turkus i granat z tarczy z kłódką to kolory marki. Turkus oznacza też każdą bezpieczną akcję („Zabierz mnie stąd”). Bursztyn (podejrzane) i czerwień (pewne zagrożenie) pojawiają się **tylko jako akcent**: pasek, ramka, podkreślenie. Nigdy nie ma całego czerwonego ekranu, bo taki ekran wywołuje panikę.
+- **Maskotka-tarcza** to ikona z twarzą (`src/shared/mascot.js`, SVG) w czterech nastrojach: *spokojna* (zwykłe strony, pomoc), *zadowolona* (znana lub prawdziwa strona, „dobrze, że wyszedłeś”, ekran powitalny), *zmartwiona* (podejrzane: podróbka adresu, link, brak HTTPS) i *zaniepokojona* (pewne zagrożenie: lista oszustw, hasło do banku). Maskotka nie ma imienia i nie zastępuje tekstu. Pomaga rozpoznać prawdziwe ostrzeżenia CyberGuard i od razu pokazuje „nastrój” strony w okienku pod ikoną.
+- **Porównanie adresów** (`src/shared/compare-view.js`) to stały znak rozpoznawczy wszystkich ostrzeżeń: prawdziwy adres i adres tej strony jeden pod drugim, z **podświetloną różnicą** i jednym zdaniem wyjaśnienia (np. „Brakuje jednej litery: „l””). Uczy patrzeć na adres, co chroni także bez wtyczki.
+- **Okna blokujące** mają rozmyte tło, żeby strona oszusta nie przyciągała wzroku. Poważne banery (strona z listy, podrobione litery) nie mają „×”.
+- Krótkie animacje (pojawienie się maskotki) wyłączają się, gdy system ma ustawione „ograniczenie ruchu”.
 6. **Prywatność.** Wszystko dzieje się na komputerze użytkownika. Hasła nie są nigdzie zapisywane ani wysyłane.
 
 ## 3. Co widzi użytkownik
 
 ### 3.1 Strona ostrzeżenia (zablokowana strona z listy)
 
-Czerwona karta „Stop! Ta strona może Cię oszukać”, adres zablokowanej strony, źródło (CERT Polska / OpenPhish) i duży przycisk **„Zabierz mnie w bezpieczne miejsce”** (otwiera stronę startową). Pod spodem:
+Spokojna karta z czerwonym paskiem u góry i zaniepokojoną maskotką. Na niej: „Spokojnie – zatrzymaliśmy tę stronę, zanim się otworzyła”, tytuł „Stop! Ta strona może Cię oszukać” (albo „Stop! Ta strona udaje Allegro”, gdy adres podszywa się pod znaną firmę), zdanie z analogią do oszusta „na wnuczka”, adres zablokowanej strony i źródło (CERT Polska / OpenPhish). Gdy adres udaje firmę, zamiast samego adresu pojawia się porównanie z prawdziwym adresem i podświetloną różnicą. Pod kartą duży przycisk **„Zabierz mnie w bezpieczne miejsce”** (otwiera stronę startową), a dalej:
 
-- „Co to znaczy?”: trzy zdania o tym, jak działają takie oszustwa,
+- „Jak działa takie oszustwo?”: trzy piktogramy (SMS z linkiem → strona wyglądająca jak prawdziwa → dane trafiają do oszusta) i wskazówka „Prawdziwy bank nigdy nie prosi o hasło przez link”,
 - „Dane mogły już trafić na tę stronę?”: link do strony pomocy,
 - mały link **„Wiem, co robię – chcę wejść mimo to”**: wymaga zaznaczenia „Rozumiem, że ta strona może ukraść moje dane lub pieniądze” i odczekania 5 sekund. Odblokowanie działa **tylko do zamknięcia przeglądarki**, a na odblokowanej stronie cały czas widać czerwony baner.
 
@@ -60,11 +69,15 @@ Czerwona karta „Stop! Ta strona może Cię oszukać”, adres zablokowanej str
 
 Pojawia się w trakcie wpisywania hasła, gdy to hasło jest używane w ważnym serwisie, a obecna strona do niego nie należy:
 
+> *(zaniepokojona maskotka)* Spokojnie – zatrzymaliśmy wysyłanie tego hasła.
 > **Stop! To może być oszustwo**
-> Wpisujesz hasło, którego używasz w serwisie **mBank** (**mbank.pl**).
-> Ale ta strona to **super-promocje24.com** – to NIE jest **mBank**.
+> To hasło jest Twoim hasłem do: **mBank – mbank.pl**
+> A ta strona to: **super-promocje24.com** *(podświetlone)*
+> To NIE jest mBank. Oszuści robią strony łudząco podobne do prawdziwych…
 > [ Zabierz mnie stąd ]
 > To jest moja zaufana strona
+
+Gdy ta strona dodatkowo udaje adres mBanku (np. `mbank-logowanie.com`), w porównaniu podświetlona jest dokładnie ta część, która się różni, wraz z jednym zdaniem wyjaśnienia (zob. 4.4b).
 
 „Zabierz mnie stąd” czyści pola haseł i przenosi na zieloną stronę „Dobrze! Podejrzana strona jest zamknięta”. „To jest moja zaufana strona” ma drugi krok z potwierdzeniem i podpowiedzią, żeby przy zakładaniu nowego konta wymyślić inne hasło. Dopóki użytkownik nie wybierze, formularz nie zostanie wysłany.
 
@@ -119,11 +132,11 @@ Na ikonie pojawia się „!”, gdy strona budzi wątpliwości. Po kliknięciu o
 
 | Stan | Znaczenie |
 |---|---|
-| ✓ **Prawdziwa strona: mBank** | adres należy do jednej z ok. 46 znanych firm (lista w kodzie) |
-| ✓ **Znana strona** | użytkownik logował się tu wcześniej |
-| ? **Nieznana strona** | nic o niej nie wiemy (to nie znaczy, że jest zła) |
-| ! **Uwaga na tę stronę** / **Strona bez zabezpieczenia** | podróbka adresu / brak HTTPS |
-| ! **Strona z listy niebezpiecznych** | odblokowana przez użytkownika |
+| Maskotka zadowolona (turkus), **Prawdziwa strona: mBank** | adres należy do jednej z ok. 46 znanych firm (lista w kodzie) |
+| Maskotka zadowolona, **Znana strona** | użytkownik logował się tu wcześniej |
+| Maskotka spokojna, **Nieznana strona** | nic o niej nie wiemy (to nie znaczy, że jest zła) |
+| Maskotka zmartwiona (bursztyn), **Uwaga na tę stronę** / **Strona bez zabezpieczenia** | podróbka adresu / brak HTTPS |
+| Maskotka zaniepokojona (czerwień), **Strona z listy niebezpiecznych** | odblokowana przez użytkownika |
 
 Zielony kolor celowo **nie** znaczy „strona jest bezpieczna”, bo bez połączenia z internetem nie da się tego wiedzieć. Znaczy tylko „to prawdziwy adres tej firmy” albo „byłeś tu już”.
 
@@ -171,7 +184,7 @@ graph TD
 |---|---|
 | `src/background/` | `service-worker.js` (obsługa wiadomości, cykl życia, ikona), `store.js` (pamięć z kolejką zapisów), `rules.js` (wyjątki sesyjne, aktualizacja listy CERT) |
 | `src/content/` | `content.js` (pola haseł, formularze, wstrzymywanie wysyłki, kliknięcia w linki), `ui.js` (okna i banery w zamkniętym Shadow DOM) |
-| `src/shared/` | `domain.js` (eTLD+1), `psl-data.js` (Public Suffix List), `punycode.js`, `known-sites.js`, `lookalike.js`, `page-risk.js`, `password-logic.js`, `crypto.js`, `blocklist-filter.js`, `link-text.js`, `link-check.js` |
+| `src/shared/` | `domain.js` (eTLD+1), `psl-data.js` (Public Suffix List), `punycode.js`, `known-sites.js`, `lookalike.js`, `page-risk.js`, `password-logic.js`, `crypto.js`, `blocklist-filter.js`, `link-text.js`, `link-check.js`, `address-diff.js` (co różni podróbkę od oryginału), `compare-view.js` (porównanie adresów), `mascot.js` (maskotka SVG) |
 | `src/pages/` | `warning`, `popup`, `options`, `help`, wspólne `common.css` i `i18n.js` |
 | `src/rules/` | reguły generowane przez builder (poza repozytorium) |
 | `locales/` | teksty PL/EN do edycji; `scripts/build-locales.js` generuje z nich `src/_locales` |
@@ -257,6 +270,23 @@ Działa w pełni offline (`src/shared/lookalike.js`):
 - **0 fałszywych alarmów** na 49 legalnych domenach firm (`tests/unit/legit-domains.js`).
 
 Każdy zgłoszony fałszywy alarm należy dopisać do `legit-domains.js`. Test jednostkowy pilnuje, żeby nie wrócił.
+
+### 4.4b Co dokładnie się różni (porównanie adresów)
+
+`src/shared/address-diff.js` zamienia wynik wykrywania podróbki na coś, co da się **zobaczyć**:
+
+| Przykład | Wyświetlane (podświetlenie w [ ]) | Wyjaśnienie |
+|---|---|---|
+| `alegro.pl` | `a[_]legro.pl` | Brakuje jednej litery: „l”. |
+| `allegrro.pl` | `alleg[r]ro.pl` | Dopisana jest dodatkowa litera „r”. |
+| `paypa1.com` | `paypa[1].com` | Jedna litera jest podmieniona: „1” zamiast „l”. |
+| `santnader.pl` | `sant[na]der.pl` | Dwie litery są zamienione miejscami. |
+| `xn--pypal-4ve.com` | `p[а]ypal.com` | „а” to litera z innego alfabetu – tylko udaje „a”. |
+| `allegro.pl-oferta24.xyz` | `allegro.[pl-oferta24.xyz]` | Liczy się końcówka adresu: ta strona należy do „pl-oferta24.xyz”, a nie do Allegro. |
+| `mbank-logowanie.com` | `mbank[-logowanie.com]` | Liczy się końcówka adresu: … należy do „mbank-logowanie.com” … |
+| `mbank.top` | `mbank.[top]` | Inna końcówka adresu: „.top” zamiast „.pl”. |
+
+Literówki wylicza algorytm odległości edycyjnej z odtworzeniem kroków (wstawienie, usunięcie, podmiana, zamiana sąsiednich liter). Wynik (`parts` + `note`) to czyste dane JSON. Rysuje je `compare-view.js` wyłącznie przez `textContent`, a klucze wyjaśnień są z zamkniętej listy. Porównanie pojawia się w oknie hasła, oknie linku, banerze podróbki i na stronie ostrzeżenia.
 
 ### 4.4a Linki z fałszywym napisem
 
@@ -376,4 +406,5 @@ CI (`.github/workflows/ci.yml`) przy każdym pushu i PR oraz co tydzień: sprawd
 | 15 testowych domen | ~109 tys. domen z CERT Polska i OpenPhish + aktualizacja co 12 h |
 | Brak popupu, ustawień, pomocy; interfejs po angielsku | Popup, ustawienia, strona pomocy, PL/EN, projekt dla seniorów |
 | Brak sprawdzania linków | Ostrzeżenie o linku, którego napis udaje inny adres (także w poczcie i za Outlook Safe Links) |
-| Brak testów | 53 testy jednostkowe, 29 scenariuszy w prawdziwym Chrome, pomiar skuteczności, CI |
+| Ciemny „glassmorphism”, czerwone ekrany, ikona JPEG | Jasny, spokojny wygląd w kolorach ikony, maskotka-tarcza, porównanie adresów z podświetloną różnicą, prawdziwe ikony PNG |
+| Brak testów | 60 testów jednostkowych, 30 scenariuszy w prawdziwym Chrome (ze zrzutami w obu motywach), pomiar skuteczności, CI |

@@ -28,11 +28,44 @@
   // Content
   // -------------------------------------------------------------------------
 
+  const CG = self.CyberGuard;
+  $('mascot').innerHTML = CG.mascot.svg(mode === 'left' ? 'happy' : 'alarmed', 96); // Static SVG, no page data.
+
+  /** Address box: plain address, or real-vs-fake comparison when the domain imitates a company. */
+  function renderDomain(diff) {
+    const rows = diff
+      ? [
+          { label: t('compareRealBrand', [diff.brandName]), value: diff.realSite },
+          { label: t('warnDomainLabel'), parts: diff.parts, bad: true },
+        ]
+      : [{ label: t('warnDomainLabel'), parts: [{ t: domain, m: true }], bad: true }];
+    $('domain-box').replaceChildren(CG.compareView.render(document, { rows, note: diff ? diff.note : null }, t));
+  }
+
   if (mode === 'left') {
-    $('left-lead').append(domain ? rich('leftLead', [domain]) : t('leftLeadNoDomain'));
+    $('title').textContent = t('leftTitle');
+    $('lead').append(domain ? rich('leftLead', [domain]) : t('leftLeadNoDomain'));
+    $('domain-box').hidden = true;
+    $('source').hidden = true;
   } else {
-    if (domain) $('blocked-domain').textContent = domain;
-    else $('domain-box').hidden = true;
+    $('kicker').textContent = t('warnKicker');
+    $('title').textContent = t('warnTitle');
+    $('lead').textContent = t('warnLead');
+
+    if (domain) {
+      renderDomain(null);
+      // Does the blocked address imitate a known company? Then show exactly how.
+      chrome.runtime
+        .sendMessage({ type: 'GET_DOMAIN_INFO', domain })
+        .then((info) => {
+          if (!info || !info.diff) return;
+          $('title').textContent = t('warnTitleBrand', [info.diff.brandName]);
+          renderDomain(info.diff);
+        })
+        .catch(() => {});
+    } else {
+      $('domain-box').hidden = true;
+    }
 
     const sourceKey = { cert_pl: 'srcCert', cert_pl_live: 'srcCert', openphish: 'srcOpenphish' }[src];
     if (sourceKey) $('source').textContent = t(sourceKey);

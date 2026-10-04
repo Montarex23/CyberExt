@@ -16,6 +16,7 @@
     if (!CG.domain) require('./domain.js');
     if (!CG.knownSites) require('./known-sites.js');
     if (!CG.linkText) require('./link-text.js');
+    if (!CG.addressDiff) require('./address-diff.js');
   }
   const api = (CG.linkCheck = factory(CG));
   if (typeof module === 'object' && module.exports) module.exports = api;
@@ -78,6 +79,8 @@
       shown: shownHost.replace(/^www\./, ''),
       real: realHost.replace(/^www\./, ''),
       realUrl: target,
+      // If the real target imitates a known company, show exactly how.
+      diff: CG.addressDiff.describe(realHost),
     };
   }
 

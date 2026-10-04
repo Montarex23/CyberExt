@@ -2,25 +2,36 @@
  * CyberGuard — shared styles for extension pages (warning, popup, options, help).
  * Built for every age: 18px base text, AAA contrast for text, 56px buttons,
  * clear focus rings, no glass/blur effects. Follows the system light/dark mode.
+ *
+ * Brand colours come from the icon (teal shield on navy): teal is the colour of
+ * CyberGuard and of every "safe" action. Amber and red are used ONLY for warnings,
+ * and only as accents (bars, borders, highlights) — never as full red screens.
  */
 
 :root {
-  --bg: #f4f5f7;
+  --bg: #f3f5f6;
   --surface: #ffffff;
   --text: #111111;
   --muted: #3a3a3a;
   --border: #c4c9d0;
 
-  --primary-bg: #075e26;
-  --primary-bg-hover: #054a1e;
+  --brand: #0b6158;
+  --brand-strong: #064a43;
+  --brand-soft: #e3f4f1;
+  --navy: #0d1b2a;
+
+  --primary-bg: #0b6158;
+  --primary-bg-hover: #084c45;
   --primary-text: #ffffff;
 
   --danger: #b00020;
   --danger-text: #8a0018;
   --danger-bg: #fdecee;
-  --ok: #075e26;
-  --ok-text: #064d1f;
-  --ok-bg: #e7f5ec;
+  --mark-bg: #ffe1e3;
+  --mark-line: #e5484d;
+  --ok: #0b6158;
+  --ok-text: #064a43;
+  --ok-bg: #e3f4f1;
   --warn: #b45309;
   --warn-text: #6b2900;
   --warn-bg: #fff3e0;
@@ -41,16 +52,23 @@
     --muted: #d4d4d4;
     --border: #444b55;
 
-    --primary-bg: #86efac;
-    --primary-bg-hover: #a7f3c0;
-    --primary-text: #052e14;
+    --brand: #5ed3be;
+    --brand-strong: #bff2e8;
+    --brand-soft: #0b2e2a;
+    --navy: #0d1b2a;
+
+    --primary-bg: #7ee0cf;
+    --primary-bg-hover: #a5ebdf;
+    --primary-text: #032b26;
 
     --danger: #ff7a8a;
     --danger-text: #ffc2ca;
     --danger-bg: #3b1219;
-    --ok: #86efac;
-    --ok-text: #c6f6d5;
-    --ok-bg: #0f2e1b;
+    --mark-bg: #5c1520;
+    --mark-line: #ff7a8a;
+    --ok: #7ee0cf;
+    --ok-text: #bff2e8;
+    --ok-bg: #0b2e2a;
     --warn: #fbbf24;
     --warn-text: #fde68a;
     --warn-bg: #3a2608;
@@ -206,9 +224,95 @@ strong {
   white-space: nowrap;
 }
 
+/* --- Mascot (shared/mascot.js) ----------------------------------------- */
+
+.cg-mascot {
+  display: block;
+  flex-shrink: 0;
+}
+
+.kicker {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  color: var(--muted);
+}
+
+/* --- Address comparison (shared/compare-view.js) ----------------------- */
+
+.cg-compare {
+  margin: 4px 0 12px;
+  text-align: left;
+}
+
+.cg-compare-rows {
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 2px 16px;
+  background: var(--surface);
+}
+
+.cg-compare-row {
+  padding: 10px 0;
+}
+
+.cg-compare-row + .cg-compare-row {
+  border-top: 1px solid var(--border);
+}
+
+.cg-compare-label {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.cg-compare-value {
+  display: block;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.cg-mk {
+  background: var(--mark-bg);
+  color: var(--danger-text);
+  border-radius: 4px;
+  padding: 0 2px;
+  box-shadow: inset 0 -3px 0 var(--mark-line);
+  font: inherit;
+}
+
+.cg-gap {
+  display: inline-block;
+  min-width: 0.8em;
+  text-align: center;
+}
+
+.cg-compare-note {
+  margin: 8px 0 0;
+  font-weight: 700;
+  color: var(--danger-text);
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .fade-in {
     animation: fade-in 0.25s ease-out;
+  }
+
+  .pop-in {
+    animation: pop-in 0.45s cubic-bezier(0.3, 1.6, 0.5, 1);
+  }
+}
+
+@keyframes pop-in {
+  from {
+    scale: 0.6;
+    rotate: -8deg;
+  }
+  to {
+    scale: 1;
+    rotate: 0deg;
   }
 }
 

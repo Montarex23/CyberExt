@@ -18,6 +18,7 @@
     if (!CG.domain) require('./domain.js');
     if (!CG.knownSites) require('./known-sites.js');
     if (!CG.lookalike) require('./lookalike.js');
+    if (!CG.addressDiff) require('./address-diff.js');
   }
   const api = (CG.pageRisk = factory(CG));
   if (typeof module === 'object' && module.exports) module.exports = api;
@@ -57,6 +58,7 @@
         host,
         brandName: look.brand ? look.brand.name : '',
         brandSite: look.brand ? look.brand.site : '',
+        diff: look.brand ? CG.addressDiff.describe(host, look) : null,
       });
     }
 

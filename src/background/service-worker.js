@@ -15,12 +15,14 @@ importScripts(
   '../shared/domain.js',
   '../shared/known-sites.js',
   '../shared/lookalike.js',
+  '../shared/address-diff.js',
   '../shared/page-risk.js',
   '../shared/password-logic.js',
   '../shared/crypto.js',
   '../shared/blocklist-filter.js',
   '../shared/link-text.js',
   '../shared/link-check.js',
+  '../shared/compare-view.js',
   'store.js',
   'rules.js'
 );
@@ -136,6 +138,20 @@ function shortText(value, max = 200) {
   return String(value == null ? '' : value).slice(0, max);
 }
 
+/** Re-checks an address-diff that came back from a content script (iframe relay). */
+function sanitizeDiff(diff) {
+  if (!diff || !Array.isArray(diff.parts)) return null;
+  const note = diff.note && CG.compareView.NOTE_KEYS.has(diff.note.key)
+    ? { key: diff.note.key, params: (Array.isArray(diff.note.params) ? diff.note.params : []).slice(0, 3).map((p) => shortText(p, 100)) }
+    : null;
+  return {
+    brandName: shortText(diff.brandName),
+    realSite: shortText(diff.realSite),
+    parts: diff.parts.slice(0, 80).map((p) => ({ t: shortText(p && p.t, 64), m: !!(p && p.m), gap: !!(p && p.gap) })),
+    note,
+  };
+}
+
 async function looksFake(host) {
   const look = CG.lookalike.analyzeHost(host);
   return (look && look.kind !== 'mixedScripts') || (await CG.rules.isSessionAllowed(host));
@@ -161,7 +177,10 @@ const contentHandlers = {
     const host = senderHost(sender);
     if (!host) return { level: 'none' };
     const { passwords } = await CG.store.get('passwords');
-    return CG.passwordLogic.evaluate(passwords, hash, host);
+    const verdict = CG.passwordLogic.evaluate(passwords, hash, host);
+    // If this page also imitates a known company's address, show exactly how.
+    if (verdict.level === 'danger') verdict.diff = CG.addressDiff.describe(host);
+    return verdict;
   },
 
   /** Called when a login form is actually submitted. */
@@ -258,8 +277,14 @@ const contentHandlers = {
     const safeChoice = isLink ? 'stay' : 'leave';
     if (!sender.tab) return { choice: safeChoice };
     const alert = isLink
-      ? { kind: 'link-mismatch', shown: shortText(a.shown), real: shortText(a.real) }
-      : { kind: 'password-danger', brandName: shortText(a.brandName), brandSite: shortText(a.brandSite), site: shortText(a.site) };
+      ? { kind: 'link-mismatch', shown: shortText(a.shown), real: shortText(a.real), diff: sanitizeDiff(a.diff) }
+      : {
+          kind: 'password-danger',
+          brandName: shortText(a.brandName),
+          brandSite: shortText(a.brandSite),
+          site: shortText(a.site),
+          diff: sanitizeDiff(a.diff),
+        };
     try {
       const response = await chrome.tabs.sendMessage(sender.tab.id, { type: 'SHOW_ALERT', alert }, { frameId: 0 });
       return response && response.choice ? { choice: response.choice } : { choice: safeChoice };
@@ -285,6 +310,13 @@ const pageHandlers = {
     if (!sender.url.startsWith(WARNING_PAGE)) throw new Error('not-allowed');
     await CG.rules.allowForSession(msg.domain);
     return { ok: true };
+  },
+
+  /** Warning page: does the blocked domain imitate a known company? How exactly? */
+  async GET_DOMAIN_INFO(msg) {
+    const host = CG.domain.normalizeHost(shortText(msg.domain, 253));
+    if (!/^[a-z0-9.-]+$/.test(host)) return { diff: null };
+    return { diff: CG.addressDiff.describe(host) };
   },
 
   async BLOCKED_PAGE_SHOWN() {

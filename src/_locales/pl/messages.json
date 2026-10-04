@@ -14,33 +14,107 @@
   "actionTitle": {
     "message": "CyberGuard – sprawdź tę stronę"
   },
+  "pwAlertCalm": {
+    "message": "Spokojnie – zatrzymaliśmy wysyłanie tego hasła."
+  },
   "pwAlertTitle": {
     "message": "Stop! To może być oszustwo"
   },
-  "pwAlertUsedOn": {
-    "message": "Wpisujesz hasło, którego używasz w serwisie $P1$ ($P2$).",
-    "placeholders": {
-      "p1": {
-        "content": "$1"
-      },
-      "p2": {
-        "content": "$2"
-      }
-    }
+  "pwCompareYours": {
+    "message": "To hasło jest Twoim hasłem do:"
   },
-  "pwAlertThisSite": {
-    "message": "Ale ta strona to $P1$ – to NIE jest $P2$.",
-    "placeholders": {
-      "p1": {
-        "content": "$1"
-      },
-      "p2": {
-        "content": "$2"
-      }
-    }
+  "pwCompareThis": {
+    "message": "A ta strona to:"
   },
   "pwAlertExplain": {
-    "message": "Oszuści tworzą strony łudząco podobne do prawdziwych, żeby wykraść hasła. Najbezpieczniej jest od razu opuścić tę stronę."
+    "message": "To NIE jest $P1$. Oszuści robią strony łudząco podobne do prawdziwych, żeby wykraść hasła. Najbezpieczniej jest od razu stąd wyjść.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "compareRealBrand": {
+    "message": "Prawdziwa strona $P1$:",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "compareThisSite": {
+    "message": "Ta strona:"
+  },
+  "diffSub": {
+    "message": "Jedna litera jest podmieniona: „$P1$” zamiast „$P2$”.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "diffExtra": {
+    "message": "Dopisana jest dodatkowa litera „$P1$”.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "diffMissing": {
+    "message": "Brakuje jednej litery: „$P1$”.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "diffSwap": {
+    "message": "Dwie litery są zamienione miejscami: „$P1$”.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "diffSeveral": {
+    "message": "Kilka liter różni się od prawdziwego adresu."
+  },
+  "diffSuffix": {
+    "message": "Inna końcówka adresu: „.$P1$” zamiast „.$P2$”.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "diffHomograph": {
+    "message": "„$P1$” to litera z innego alfabetu – tylko udaje „$P2$”.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "diffOwner": {
+    "message": "Liczy się końcówka adresu: ta strona należy do „$P1$”, a nie do $P2$.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
   },
   "btnLeave": {
     "message": "Zabierz mnie stąd"
@@ -67,6 +141,9 @@
   },
   "pwConfirmYes": {
     "message": "Tak, ufam tej stronie"
+  },
+  "linkAlertCalm": {
+    "message": "Spokojnie – ten link nie został otwarty."
   },
   "linkAlertTitle": {
     "message": "Uwaga: ten link prowadzi gdzie indziej"
@@ -115,35 +192,18 @@
     }
   },
   "findLookalikeBody": {
-    "message": "Adres tej strony ($P1$) przypomina $P2$, ale to NIE jest prawdziwa strona tej firmy. Prawdziwy adres to $P3$. Nie wpisuj tu hasła ani danych karty.",
-    "placeholders": {
-      "p1": {
-        "content": "$1"
-      },
-      "p2": {
-        "content": "$2"
-      },
-      "p3": {
-        "content": "$3"
-      }
-    }
+    "message": "Adres tylko przypomina prawdziwy. Nie wpisuj tu hasła ani danych karty."
   },
   "findHomographTitle": {
-    "message": "Uwaga: podrobiony adres strony"
-  },
-  "findHomographBody": {
-    "message": "Adres $P1$ zawiera litery z innego alfabetu, które tylko wyglądają jak zwykłe. Udaje $P2$ (prawdziwy adres to $P3$). Nie wpisuj tu żadnych danych.",
+    "message": "Uwaga: ta strona udaje $P1$ podrobionymi literami",
     "placeholders": {
       "p1": {
         "content": "$1"
-      },
-      "p2": {
-        "content": "$2"
-      },
-      "p3": {
-        "content": "$3"
       }
     }
+  },
+  "findHomographBody": {
+    "message": "Adres wygląda jak prawdziwy, ale zawiera litery z innego alfabetu. Nie wpisuj tu żadnych danych."
   },
   "findMixedTitle": {
     "message": "Nietypowy adres strony"
@@ -196,11 +256,22 @@
   "leftPageTitle": {
     "message": "Bezpiecznie opuszczono stronę – CyberGuard"
   },
+  "warnKicker": {
+    "message": "Spokojnie – zatrzymaliśmy tę stronę, zanim się otworzyła."
+  },
   "warnTitle": {
     "message": "Stop! Ta strona może Cię oszukać"
   },
+  "warnTitleBrand": {
+    "message": "Stop! Ta strona udaje $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
   "warnLead": {
-    "message": "Zatrzymaliśmy stronę, która jest na liście stron wyłudzających dane."
+    "message": "Jest na liście stron oszukańczych. Działa jak oszust „na wnuczka”: podszywa się pod kogoś, komu ufasz – bank, kuriera albo sklep – żeby wyłudzić pieniądze."
   },
   "warnDomainLabel": {
     "message": "Adres zablokowanej strony:"
@@ -234,16 +305,19 @@
   "btnHome": {
     "message": "Przejdź do strony startowej"
   },
-  "warnWhyTitle": {
-    "message": "Co to znaczy?"
+  "warnHowTitle": {
+    "message": "Jak działa takie oszustwo?"
   },
-  "warnWhy1": {
-    "message": "Takie strony udają bank, kuriera, sklep lub urząd, żeby wyłudzić hasło, dane karty albo kod BLIK."
+  "warnHow1": {
+    "message": "Przychodzi SMS albo e-mail z linkiem – np. o dopłacie do paczki lub blokadzie konta."
   },
-  "warnWhy2": {
-    "message": "Link do nich często przychodzi SMS-em lub e-mailem, np. o dopłacie do paczki albo blokadzie konta."
+  "warnHow2": {
+    "message": "Link otwiera stronę, która wygląda jak prawdziwa."
   },
-  "warnWhy3": {
+  "warnHow3": {
+    "message": "Wpisane hasło, dane karty albo kod BLIK trafiają prosto do oszusta."
+  },
+  "warnTip": {
     "message": "Prawdziwy bank nigdy nie prosi o hasło ani kod przez link w wiadomości."
   },
   "warnAlreadyTitle": {

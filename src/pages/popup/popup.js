@@ -20,16 +20,19 @@
     window.close();
   });
 
-  function render(tone, icon, title, text) {
+  /** The mascot's mood mirrors the page: happy (known), calm (unknown), worried, alarmed. */
+  const MOOD = { ok: 'happy', neutral: 'calm', warn: 'worried', danger: 'alarmed' };
+
+  function render(tone, title, text) {
     $('status').dataset.tone = tone;
-    $('status-icon').textContent = icon;
+    $('status-icon').innerHTML = self.CyberGuard.mascot.svg(MOOD[tone], 56); // Static SVG.
     $('status-title').textContent = title;
     $('status-text').textContent = text;
   }
 
   const FINDING_TITLES = {
     lookalike: (f) => t('findLookalikeTitle', [f.brandName]),
-    homograph: () => t('findHomographTitle'),
+    homograph: (f) => t('findHomographTitle', [f.brandName]),
     mixedScripts: () => t('findMixedTitle'),
   };
 
@@ -44,33 +47,32 @@
 
   switch (status.kind) {
     case 'official':
-      render('ok', '✓', t('statusOfficialTitle', [status.brandName]), t('statusOfficialText', [status.site]));
+      render('ok', t('statusOfficialTitle', [status.brandName]), t('statusOfficialText', [status.site]));
       break;
     case 'known':
-      render('ok', '✓', t('statusKnownTitle'), t('statusKnownText', [status.site]));
+      render('ok', t('statusKnownTitle'), t('statusKnownText', [status.site]));
       break;
     case 'warning': {
       const f = status.finding;
       const title = (FINDING_TITLES[f.id] || (() => t('statusWarningTitle')))(f);
-      render(f.level === 'danger' ? 'danger' : 'warn', '!', title, t('statusWarningText', [status.site]));
+      render(f.level === 'danger' ? 'danger' : 'warn', title, t('statusWarningText', [status.site]));
       break;
     }
     case 'allowedBlocked':
-      render('danger', '!', t('statusAllowedTitle'), t('statusAllowedText', [status.site]));
+      render('danger', t('statusAllowedTitle'), t('statusAllowedText', [status.site]));
       break;
     case 'blocked':
-      render('ok', '✓', t('statusBlockedTitle'), t('statusBlockedText'));
+      render('ok', t('statusBlockedTitle'), t('statusBlockedText'));
       break;
     case 'unknown':
       render(
         status.insecure ? 'warn' : 'neutral',
-        status.insecure ? '!' : '?',
         t(status.insecure ? 'statusInsecureTitle' : 'statusUnknownTitle'),
         t(status.insecure ? 'statusInsecureText' : 'statusUnknownText', [status.site])
       );
       break;
     default:
-      render('neutral', 'i', t('statusInternalTitle'), t('statusInternalText'));
+      render('neutral', t('statusInternalTitle'), t('statusInternalText'));
   }
 
   // --- Stats ---

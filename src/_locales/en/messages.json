@@ -14,33 +14,107 @@
   "actionTitle": {
     "message": "CyberGuard – check this page"
   },
+  "pwAlertCalm": {
+    "message": "Don't worry – we stopped this password from being sent."
+  },
   "pwAlertTitle": {
     "message": "Stop! This may be a scam"
   },
-  "pwAlertUsedOn": {
-    "message": "You are typing the password you use for $P1$ ($P2$).",
-    "placeholders": {
-      "p1": {
-        "content": "$1"
-      },
-      "p2": {
-        "content": "$2"
-      }
-    }
+  "pwCompareYours": {
+    "message": "This is your password for:"
   },
-  "pwAlertThisSite": {
-    "message": "But this page is $P1$ – it is NOT $P2$.",
-    "placeholders": {
-      "p1": {
-        "content": "$1"
-      },
-      "p2": {
-        "content": "$2"
-      }
-    }
+  "pwCompareThis": {
+    "message": "But this page is:"
   },
   "pwAlertExplain": {
-    "message": "Scammers build pages that look just like the real ones to steal passwords. The safest thing is to leave this page now."
+    "message": "This is NOT $P1$. Scammers build pages that look just like the real ones to steal passwords. The safest thing is to leave now.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "compareRealBrand": {
+    "message": "Real $P1$ website:",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "compareThisSite": {
+    "message": "This page:"
+  },
+  "diffSub": {
+    "message": "One letter is swapped: \"$P1$\" instead of \"$P2$\".",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "diffExtra": {
+    "message": "An extra letter \"$P1$\" was added.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "diffMissing": {
+    "message": "One letter is missing: \"$P1$\".",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "diffSwap": {
+    "message": "Two letters are switched around: \"$P1$\".",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "diffSeveral": {
+    "message": "Several letters differ from the real address."
+  },
+  "diffSuffix": {
+    "message": "A different ending: \".$P1$\" instead of \".$P2$\".",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "diffHomograph": {
+    "message": "\"$P1$\" is a letter from another alphabet – it only looks like \"$P2$\".",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "diffOwner": {
+    "message": "What counts is the end of the address: this page belongs to \"$P1$\", not to $P2$.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
   },
   "btnLeave": {
     "message": "Take me away from here"
@@ -67,6 +141,9 @@
   },
   "pwConfirmYes": {
     "message": "Yes, I trust this site"
+  },
+  "linkAlertCalm": {
+    "message": "Don't worry – this link was not opened."
   },
   "linkAlertTitle": {
     "message": "Careful: this link goes somewhere else"
@@ -115,35 +192,18 @@
     }
   },
   "findLookalikeBody": {
-    "message": "This address ($P1$) resembles $P2$, but it is NOT the company's real website. The real address is $P3$. Don't enter passwords or card details here.",
-    "placeholders": {
-      "p1": {
-        "content": "$1"
-      },
-      "p2": {
-        "content": "$2"
-      },
-      "p3": {
-        "content": "$3"
-      }
-    }
+    "message": "The address only looks like the real one. Don't enter passwords or card details here."
   },
   "findHomographTitle": {
-    "message": "Careful: forged website address"
-  },
-  "findHomographBody": {
-    "message": "The address $P1$ contains letters from another alphabet that only look like normal ones. It imitates $P2$ (the real address is $P3$). Don't enter any data here.",
+    "message": "Careful: this page imitates $P1$ with forged letters",
     "placeholders": {
       "p1": {
         "content": "$1"
-      },
-      "p2": {
-        "content": "$2"
-      },
-      "p3": {
-        "content": "$3"
       }
     }
+  },
+  "findHomographBody": {
+    "message": "The address looks real but contains letters from another alphabet. Don't enter any data here."
   },
   "findMixedTitle": {
     "message": "Unusual website address"
@@ -196,11 +256,22 @@
   "leftPageTitle": {
     "message": "You left the page safely – CyberGuard"
   },
+  "warnKicker": {
+    "message": "Don't worry – we stopped this page before it opened."
+  },
   "warnTitle": {
     "message": "Stop! This page may try to trick you"
   },
+  "warnTitleBrand": {
+    "message": "Stop! This page pretends to be $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
   "warnLead": {
-    "message": "We stopped a page that is on a list of data-stealing websites."
+    "message": "It is on a list of scam websites. Like a phone scammer pretending to be a relative, it poses as someone you trust – a bank, a courier or a shop – to get your money."
   },
   "warnDomainLabel": {
     "message": "Address of the blocked page:"
@@ -234,16 +305,19 @@
   "btnHome": {
     "message": "Go to the start page"
   },
-  "warnWhyTitle": {
-    "message": "What does this mean?"
+  "warnHowTitle": {
+    "message": "How does this scam work?"
   },
-  "warnWhy1": {
-    "message": "Such pages pretend to be a bank, courier, shop or government office to steal passwords, card details or payment codes."
+  "warnHow1": {
+    "message": "A text message or e-mail arrives with a link – e.g. about a parcel fee or a blocked account."
   },
-  "warnWhy2": {
-    "message": "Links to them often arrive by text message or e-mail, e.g. about a parcel fee or a blocked account."
+  "warnHow2": {
+    "message": "The link opens a page that looks just like the real one."
   },
-  "warnWhy3": {
+  "warnHow3": {
+    "message": "The password, card details or payment code you type go straight to the scammer."
+  },
+  "warnTip": {
     "message": "A real bank never asks for your password or code through a link in a message."
   },
   "warnAlreadyTitle": {

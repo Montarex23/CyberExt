@@ -11,6 +11,7 @@
   if (new URLSearchParams(location.search).get('welcome') === '1') {
     $('welcome').hidden = false;
     $('settings-title').hidden = true;
+    $('welcome-mascot').innerHTML = self.CyberGuard.mascot.svg('happy', 88); // Static SVG.
   }
   $('version').textContent = t('optVersion', [chrome.runtime.getManifest().version]);
 
