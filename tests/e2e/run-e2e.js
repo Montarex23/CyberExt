@@ -24,6 +24,8 @@ const path = require('path');
 const http = require('http');
 const assert = require('assert/strict');
 const puppeteer = require('puppeteer-core');
+const { bitbPage } = require('../fixtures/bitb-page.js');
+const { linksPage, inboxPage, emailBody } = require('../fixtures/links-page.js');
 
 const ROOT = path.resolve(__dirname, '..', '..');
 const EXTENSION = path.join(ROOT, 'src');
@@ -66,6 +68,10 @@ function startServer() {
     visits.push({ host, path: url.pathname });
     res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
     if (url.pathname === '/login') return res.end(loginPage(`Logowanie – ${host}`));
+    if (url.pathname === '/bitb') return res.end(bitbPage(host));
+    if (url.pathname === '/links') return res.end(linksPage(server.address().port));
+    if (url.pathname === '/inbox') return res.end(inboxPage(server.address().port));
+    if (url.pathname === '/email') return res.end(emailBody(server.address().port));
     if (url.pathname === '/xform') {
       return res.end(loginPage(`Sklep – ${host}`, `http://collector.evil-site.ru:${server.address().port}/steal`));
     }
@@ -394,6 +400,93 @@ async function main() {
       await frame.type('#pass', BANK_PASSWORD);
       await waitForText(page, 'Stop! To może być oszustwo');
       await shot(page, '08-iframe-danger');
+    });
+
+    await step('Browser-in-the-Browser: fake bank window with fake address bar → dialog names the REAL site', async () => {
+      const before = posts.length;
+      await page.goto(at('wygraj-nagrode.pl', '/bitb'));
+      await page.click('#open-bitb');
+      await page.type('#bitb-pass', BANK_PASSWORD);
+      const text = await waitForText(page, 'Stop! To może być oszustwo');
+      // The fake address bar says online.mbank.pl — the warning must name the real page.
+      assert.ok(text.includes('wygraj-nagrode.pl'), 'dialog should name the real site');
+      assert.ok(text.includes('mBank'));
+      await shot(page, '08b-bitb-danger');
+      await page.evaluate(() => document.getElementById('bitb-submit').click());
+      await sleep(500);
+      assert.equal(posts.length, before, 'password must not be sent from the fake window');
+    });
+
+    // --- Deceptive links ------------------------------------------------
+    const LINK_ALERT = 'Uwaga: ten link prowadzi gdzie indziej';
+    const linksUrl = at('linki-testowe.pl', '/links');
+    const visitsTo = (host) => visits.filter((v) => v.host === host).length;
+
+    await step('Deceptive link (text www.mbank.pl, goes elsewhere) → warning; "Nie otwieraj" keeps you on the page', async () => {
+      await page.goto(linksUrl);
+      const before = visitsTo('mbank-weryfikacja.xyz');
+      await page.click('#l-deceptive');
+      const text = await waitForText(page, LINK_ALERT);
+      assert.ok(text.includes('mbank.pl') && text.includes('mbank-weryfikacja.xyz'), 'dialog shows both addresses');
+      await shot(page, '16-deceptive-link');
+      await page.keyboard.press('Enter'); // Focus is on "Nie otwieraj tego linku"
+      await sleep(800);
+      assert.equal(page.url(), linksUrl);
+      assert.equal(visitsTo('mbank-weryfikacja.xyz'), before, 'the deceptive target must not be opened');
+    });
+
+    await step('Deceptive link → "Otwórz mimo to" opens it (same tab and new tab)', async () => {
+      await page.goto(linksUrl);
+      await page.click('#l-deceptive');
+      await waitForText(page, LINK_ALERT);
+      await page.keyboard.press('Tab'); // → "Otwórz mimo to"
+      await Promise.all([page.waitForNavigation({ timeout: 5000 }), page.keyboard.press('Enter')]);
+      assert.ok(page.url().startsWith('http://mbank-weryfikacja.xyz'), page.url());
+
+      await page.goto(linksUrl);
+      await page.click('#l-blank');
+      await waitForText(page, LINK_ALERT);
+      const newTab = browser.waitForTarget((t) => t.url().startsWith('http://mbank-weryfikacja.xyz'), { timeout: 5000 });
+      await page.keyboard.press('Tab');
+      await page.keyboard.press('Enter');
+      const target = await newTab;
+      const tab = await target.page();
+      if (tab) await tab.close();
+    });
+
+    await step('Honest links, same-company links, plain text and Outlook Safe Links open without a warning', async () => {
+      for (const [id, expectedHost] of [
+        ['#l-honest', 'online.mbank.pl'],
+        ['#l-samebrand', 'www.ipko.pl'],
+        ['#l-safe-ok', 'eur01.safelinks.protection.outlook.com'],
+        ['#l-text', 'mbank-weryfikacja.xyz'],
+      ]) {
+        await page.goto(linksUrl);
+        await Promise.all([page.waitForNavigation({ timeout: 5000 }), page.click(id)]);
+        assert.ok(page.url().startsWith(`http://${expectedHost}`), `${id} → ${page.url()}`);
+        assert.ok(!(await pageText(page)).includes(LINK_ALERT), `${id} must not warn`);
+      }
+    });
+
+    await step('Outlook Safe Links hiding a deceptive target → warning names the REAL target', async () => {
+      await page.goto(linksUrl);
+      await page.click('#l-safe-bad');
+      const text = await waitForText(page, LINK_ALERT);
+      assert.ok(text.includes('mbank-weryfikacja.xyz'));
+      assert.ok(!text.includes('Link naprawdę prowadzi do: | eur01'), 'should not show the redirector');
+    });
+
+    await step('Deceptive link inside an e-mail shown in an iframe → warning on the whole page', async () => {
+      await page.goto(at('poczta-testowa.pl', '/inbox'));
+      const frame = await (await page.waitForSelector('#mail-body')).contentFrame();
+      await frame.waitForSelector('#mail-link');
+      const before = visitsTo('mbank-weryfikacja.xyz');
+      await frame.click('#mail-link');
+      await waitForText(page, LINK_ALERT);
+      await shot(page, '17-deceptive-link-in-email');
+      await page.keyboard.press('Escape'); // Escape = don't open
+      await sleep(800);
+      assert.equal(visitsTo('mbank-weryfikacja.xyz'), before);
     });
 
     // --- 3. Page checks -------------------------------------------------

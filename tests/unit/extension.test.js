@@ -77,6 +77,17 @@ test('every translation key used in the code exists in pl and en', () => {
   }
 });
 
+test('every script is UTF-8 that Chrome accepts (no BOM, no noncharacters U+FFFE/U+FFFF)', () => {
+  // Chrome refuses to load a content script containing e.g. a literal U+FFFF
+  // ("file is not UTF-8 encoded"), even though Node runs it fine.
+  for (const file of walk(SRC).filter((f) => /\.(js|json|html|css)$/.test(f) && !f.includes(`${path.sep}rules${path.sep}`))) {
+    const buf = fs.readFileSync(file);
+    assert.notEqual(buf.subarray(0, 3).toString('hex'), 'efbbbf', `${file} has a BOM`);
+    assert.equal(new TextDecoder('utf-8', { fatal: true }).decode(buf).length >= 0, true);
+    assert.equal(/[￾￿]/.test(buf.toString('utf-8')), false, `${file} contains a noncharacter`);
+  }
+});
+
 test('no innerHTML with dynamic data in content scripts', () => {
   for (const file of manifest.content_scripts.flatMap((c) => c.js)) {
     const text = fs.readFileSync(path.join(SRC, file), 'utf-8');

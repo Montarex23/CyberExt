@@ -87,6 +87,13 @@
     return labels[labels.length - 1]; // Default rule "*".
   }
 
+  /** True if the host ends with a real top-level domain (".pl", ".com"…, not ".pdf"/".html"). */
+  function hasKnownTld(host) {
+    loadRules();
+    const tld = normalizeHost(host).split('.').pop();
+    return rules.has(tld) || wildcards.has(tld);
+  }
+
   function isPublicSuffix(host) {
     const h = normalizeHost(host);
     return !!h && getPublicSuffix(h) === h;
@@ -139,6 +146,7 @@
     isIp,
     hostFromUrl,
     getPublicSuffix,
+    hasKnownTld,
     isPublicSuffix,
     getSiteKey,
     siteKeyForTrust,

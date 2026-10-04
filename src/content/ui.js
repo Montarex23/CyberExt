@@ -44,6 +44,16 @@
               max-height: calc(100vh - 32px); overflow: auto; border-top: 12px solid #B00020;
               box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45); padding: 24px 28px; }
     .dialog .icon { color: #B00020; }
+    .dialog.link { border-top-color: #B45309; }
+    .dialog.link .icon { color: #B45309; }
+    .dialog.link h2 { color: #7A2E00; }
+    .compare { border: 2px solid #D6D6D6; border-radius: 12px; padding: 4px 16px; margin: 4px 0 16px; }
+    .compare-row { padding: 10px 0; }
+    .compare-row + .compare-row { border-top: 1px solid #D6D6D6; }
+    .compare-label { display: block; font-size: 16px; color: #333; }
+    .compare-value { display: block; font-size: 20px; font-weight: 800; font-family: ui-monospace, Consolas, monospace;
+                     overflow-wrap: anywhere; color: #111; }
+    .compare-value.real { color: #8A0018; }
     .actions { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
 
     .toast { position: fixed; right: 16px; bottom: 16px; width: min(440px, calc(100vw - 32px));
@@ -231,6 +241,58 @@
   }
 
   // -------------------------------------------------------------------------
+  // 1b. Blocking dialog — link text shows one address, the link goes elsewhere
+  // -------------------------------------------------------------------------
+
+  let linkAlertPromise = null;
+
+  /** @returns {Promise<'stay'|'open'>} */
+  function showLinkAlert(alert) {
+    if (linkAlertPromise) return linkAlertPromise;
+    linkAlertPromise = new Promise((resolve) => {
+      const root = getRoot();
+      openCount++;
+      const dialog = el('div', { class: 'dialog link cg', role: 'alertdialog', 'aria-modal': 'true', 'aria-labelledby': 'cg-link-title' });
+      const backdrop = el('div', { class: 'backdrop' }, dialog);
+
+      const finish = (choice) => {
+        backdrop.remove();
+        openCount--;
+        linkAlertPromise = null;
+        resolve(choice);
+      };
+      backdrop.addEventListener('keydown', (e) => {
+        e.stopPropagation();
+        if (e.key === 'Escape') finish('stay'); // Escape = the safe choice.
+        trapFocus(dialog, e);
+      });
+
+      dialog.append(
+        el('div', { html: ICON_WARNING }),
+        el('h2', { id: 'cg-link-title', text: t('linkAlertTitle') }),
+        el('div', { class: 'compare' },
+          el('div', { class: 'compare-row' },
+            el('span', { class: 'compare-label', text: t('linkAlertShown') }),
+            el('span', { class: 'compare-value', text: alert.shown })
+          ),
+          el('div', { class: 'compare-row' },
+            el('span', { class: 'compare-label', text: t('linkAlertReal') }),
+            el('span', { class: 'compare-value real', text: alert.real })
+          )
+        ),
+        el('p', { text: t('linkAlertExplain') }),
+        el('div', { class: 'actions' },
+          el('button', { class: 'primary', type: 'button', text: t('linkAlertStay'), onclick: () => finish('stay') }),
+          el('button', { class: 'linkish', type: 'button', text: t('linkAlertOpen'), onclick: () => finish('open') })
+        )
+      );
+      root.append(backdrop);
+      dialog.querySelector('.primary').focus();
+    });
+    return linkAlertPromise;
+  }
+
+  // -------------------------------------------------------------------------
   // 2. Gentle tip — password reused on ordinary sites
   // -------------------------------------------------------------------------
 
@@ -322,5 +384,5 @@
     root.append(bannerEl);
   }
 
-  CG.ui = { showPasswordAlert, showToast, showBanner, hideBanner, destroy, isAlive };
+  CG.ui = { showPasswordAlert, showLinkAlert, showToast, showBanner, hideBanner, destroy, isAlive };
 })();

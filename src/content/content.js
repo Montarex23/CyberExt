@@ -351,6 +351,73 @@
   }
 
   // -------------------------------------------------------------------------
+  // Deceptive links: text says "www.mbank.pl", link goes to "mbank-weryfikacja.xyz"
+  // -------------------------------------------------------------------------
+
+  let linkBypass = false; // True while we re-play a click the user confirmed.
+
+  function presentLinkAlert(verdict) {
+    const alert = { kind: 'link-mismatch', shown: verdict.shown, real: verdict.real };
+    if (IS_TOP) return CG.ui.showLinkAlert(alert);
+    // E-mail bodies are often shown in an iframe — the top page draws the dialog.
+    return send({ type: 'RELAY_ALERT', alert }).then((r) => (r && r.choice) || 'stay');
+  }
+
+  /** Opens the link the way the user originally clicked it. */
+  function replayLinkClick(anchor, event, href) {
+    const newTab = event.type === 'auxclick' || event.ctrlKey || event.metaKey || event.shiftKey || anchor.target === '_blank';
+    if (newTab) {
+      window.open(href, '_blank', 'noopener');
+      return;
+    }
+    linkBypass = true;
+    try {
+      // A real click event, so the page's own link handling (single-page apps) still works.
+      anchor.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, composed: true, view: window }));
+    } finally {
+      linkBypass = false;
+    }
+  }
+
+  function onLinkActivate(event) {
+    if (linkBypass || isRetired()) return;
+    if (event.type === 'click' && event.button !== 0) return;
+    if (event.type === 'auxclick' && event.button !== 1) return;
+
+    const start = eventTarget(event);
+    const anchor = start instanceof Element ? start.closest('a[href]') : null;
+    if (!anchor || typeof anchor.href !== 'string') return; // (SVG links have a different href type)
+    let target;
+    try {
+      target = new URL(anchor.href);
+    } catch {
+      return;
+    }
+    if (target.protocol !== 'http:' && target.protocol !== 'https:') return;
+
+    // Cheap synchronous check first: most links don't show an address at all,
+    // and most that do go exactly where they say.
+    const text = anchor.innerText || anchor.textContent || '';
+    const shownHost = CG.linkText.hostFromLinkText(text);
+    if (!shownHost || CG.linkText.looseSameHost(shownHost, target.hostname.toLowerCase())) return;
+
+    // Possibly deceptive: hold the click, let the service worker decide (same company?
+    // mail redirector like Outlook Safe Links?), then either continue or warn.
+    block(event);
+    send({ type: 'CHECK_LINK', text, href: target.href }).then(async (verdict) => {
+      if (!verdict || verdict.ok) {
+        replayLinkClick(anchor, event, target.href);
+        return;
+      }
+      const choice = await presentLinkAlert(verdict);
+      if (choice === 'open') replayLinkClick(anchor, event, target.href);
+    });
+  }
+
+  window.addEventListener('click', onLinkActivate, true);
+  window.addEventListener('auxclick', onLinkActivate, true);
+
+  // -------------------------------------------------------------------------
   // Messages from the service worker (relayed from login iframes)
   // -------------------------------------------------------------------------
 
@@ -358,7 +425,8 @@
     chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       if (sender.id !== chrome.runtime.id || !msg) return false;
       if (msg.type === 'SHOW_ALERT') {
-        CG.ui.showPasswordAlert(msg.alert).then((choice) => sendResponse({ choice }));
+        const show = msg.alert && msg.alert.kind === 'link-mismatch' ? CG.ui.showLinkAlert : CG.ui.showPasswordAlert;
+        show(msg.alert).then((choice) => sendResponse({ choice }));
         return true;
       }
       if (msg.type === 'SHOW_TOAST') {

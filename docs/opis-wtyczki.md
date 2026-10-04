@@ -11,9 +11,10 @@
 4. [Jak to działa (technicznie)](#4-jak-to-działa-technicznie)
 5. [Prywatność i bezpieczeństwo danych](#5-prywatność-i-bezpieczeństwo-danych)
 6. [Uprawnienia i dlaczego są potrzebne](#6-uprawnienia-i-dlaczego-są-potrzebne)
-7. [Ograniczenia](#7-ograniczenia)
-8. [Utrzymanie i rozwój](#8-utrzymanie-i-rozwój)
-9. [Co zmieniło się względem wersji 1.x](#9-co-zmieniło-się-względem-wersji-1x)
+7. [Przed czym chroni, a przed czym nie](#7-przed-czym-chroni-a-przed-czym-nie)
+8. [Ograniczenia](#8-ograniczenia)
+9. [Utrzymanie i rozwój](#9-utrzymanie-i-rozwój)
+10. [Co zmieniło się względem wersji 1.x](#10-co-zmieniło-się-względem-wersji-1x)
 
 ---
 
@@ -21,10 +22,11 @@
 
 Większość oszustw w polskim internecie zaczyna się tak samo: SMS albo e-mail z linkiem, np. o „dopłacie do paczki InPost”, „blokadzie konta w banku” czy „zwrocie podatku”. Link prowadzi do strony, która wygląda jak prawdziwa. Ofiara wpisuje tam hasło do banku, dane karty lub kod BLIK.
 
-CyberGuard przerywa ten scenariusz w trzech miejscach:
+CyberGuard przerywa ten scenariusz w czterech miejscach:
 
 | Moment | Co robi CyberGuard |
 |---|---|
+| **Kliknięcie w link, którego napis udaje inny adres** | Gdy na linku widać `www.mbank.pl`, a naprawdę prowadzi do `mbank-weryfikacja.xyz`, kliknięcie jest wstrzymane i pojawia się porównanie obu adresów. |
 | **Wejście na znaną oszukańczą stronę** | Blokuje ją i pokazuje zrozumiałe ostrzeżenie zamiast strony. Korzysta z listy CERT Polska (polskie oszustwa) i OpenPhish (międzynarodowe). |
 | **Wejście na nową, jeszcze nieznaną podróbkę** | Rozpoznaje adresy udające znane firmy (`mbank-logowanie.com`, `allegro.pl-oferta24.xyz`, `pаypal.com` z cyrylicą) i ostrzega. |
 | **Wpisywanie hasła w złym miejscu** | Gdy hasło używane w banku, na poczcie albo w urzędzie zaczyna być wpisywane na obcej stronie, pojawia się blokujące okno, zanim formularz zostanie wysłany. |
@@ -70,6 +72,23 @@ Pojawia się w trakcie wpisywania hasła, gdy to hasło jest używane w ważnym 
 
 Gdy zwykłe hasło jest używane także na innej zwykłej stronie, np. na dwóch forach, w rogu pojawia się niebieska, niczego nieblokująca wskazówka: „To samo hasło jest używane także na: forum-wedkarskie.pl. Bezpieczniej mieć inne hasło na każdej stronie.”
 
+### 3.3a Okno „Uwaga: ten link prowadzi gdzie indziej”
+
+Pojawia się po kliknięciu linku, którego **napis wygląda jak adres** (`www.mbank.pl`, `https://allegro.pl/oferta`), a który **naprawdę prowadzi do innej firmy**:
+
+> **Uwaga: ten link prowadzi gdzie indziej**
+> Napis na linku: **mbank.pl**
+> Link naprawdę prowadzi do: **mbank-weryfikacja.xyz**
+> [ Nie otwieraj tego linku ]
+> Otwórz mimo to
+
+Domyślnym wyborem (także pod klawiszem Esc) jest „Nie otwieraj”. „Otwórz mimo to” otwiera link tak, jak został kliknięty, czyli w tej samej albo nowej karcie. Okno **nie** pojawia się, gdy:
+- napis nie jest adresem („Kliknij tutaj”, e-mail, nazwa pliku `raport.pdf`),
+- napis i cel należą do tej samej firmy (`pkobp.pl` → `ipko.pl`, `allegro.pl` → `allegrolokalnie.pl`, `mbank.pl` → `online.mbank.pl`),
+- link w poczcie jest opakowany przez przekierowanie usługi pocztowej (Outlook „Safe Links”, Google, Facebook, LinkedIn, YouTube). Sprawdzany jest prawdziwy cel, a okno pokazuje prawdziwy cel, a nie adres pośrednika.
+
+Linki skrócone (`bit.ly`) i śledzące z newsletterów, których napis udaje adres, **wywołują** ostrzeżenie. To zgodne z prawdą: link prowadzi gdzie indziej, niż pokazuje.
+
 ### 3.4 Baner na stronie
 
 Jeden baner u góry strony, który może zawierać kilka problemów naraz:
@@ -112,7 +131,7 @@ Okienko ma też duży przycisk **„Oszust może mieć moje dane – co robić?�
 
 ### 3.6 Strona pomocy „Oszust może mieć moje dane – co teraz?”
 
-Ponumerowane kroki: (1) bank: numer z odwrotu karty, blokada; (2) zmiana haseł i logowanie dwuetapowe; (3) zastrzeżenie PESEL w mObywatelu / na gov.pl i dowodu w banku; (4) programy zdalnego pulpitu (AnyDesk, TeamViewer); (5) zgłoszenie: incydent.cert.pl, SMS na 8080, policja 112; (6) rozmowa z bliską osobą.
+Ponumerowane kroki: (1) bank: numer z odwrotu karty, blokada; (2) zmiana haseł, wylogowanie ze wszystkich urządzeń i logowanie dwuetapowe; (3) zastrzeżenie PESEL w mObywatelu / na gov.pl i dowodu w banku; (4) programy zdalnego pulpitu (AnyDesk, TeamViewer); (5) zgłoszenie: incydent.cert.pl, SMS na 8080, policja 112; (6) rozmowa z bliską osobą.
 
 Na dole jest opcjonalne **„Wyczyść ostatnią godzinę”** (historia, ciasteczka, pamięć podręczna, dane formularzy). Przeglądarka pyta o zgodę dopiero w tym momencie, a strona uczciwie informuje, że to nie cofa danych, które już trafiły do oszusta.
 
@@ -151,8 +170,8 @@ graph TD
 | Katalog | Zawartość |
 |---|---|
 | `src/background/` | `service-worker.js` (obsługa wiadomości, cykl życia, ikona), `store.js` (pamięć z kolejką zapisów), `rules.js` (wyjątki sesyjne, aktualizacja listy CERT) |
-| `src/content/` | `content.js` (pola haseł, formularze, wstrzymywanie wysyłki), `ui.js` (okna i banery w zamkniętym Shadow DOM) |
-| `src/shared/` | `domain.js` (eTLD+1), `psl-data.js` (Public Suffix List), `punycode.js`, `known-sites.js`, `lookalike.js`, `page-risk.js`, `password-logic.js`, `crypto.js`, `blocklist-filter.js` |
+| `src/content/` | `content.js` (pola haseł, formularze, wstrzymywanie wysyłki, kliknięcia w linki), `ui.js` (okna i banery w zamkniętym Shadow DOM) |
+| `src/shared/` | `domain.js` (eTLD+1), `psl-data.js` (Public Suffix List), `punycode.js`, `known-sites.js`, `lookalike.js`, `page-risk.js`, `password-logic.js`, `crypto.js`, `blocklist-filter.js`, `link-text.js`, `link-check.js` |
 | `src/pages/` | `warning`, `popup`, `options`, `help`, wspólne `common.css` i `i18n.js` |
 | `src/rules/` | reguły generowane przez builder (poza repozytorium) |
 | `locales/` | teksty PL/EN do edycji; `scripts/build-locales.js` generuje z nich `src/_locales` |
@@ -239,6 +258,16 @@ Działa w pełni offline (`src/shared/lookalike.js`):
 
 Każdy zgłoszony fałszywy alarm należy dopisać do `legit-domains.js`. Test jednostkowy pilnuje, żeby nie wrócił.
 
+### 4.4a Linki z fałszywym napisem
+
+Content script nasłuchuje (w fazie przechwytywania, przed skryptami strony) kliknięć lewym przyciskiem i kliknięć środkowym przyciskiem (nowa karta) w linki `http(s)`.
+
+1. **Szybko i na miejscu** (`src/shared/link-text.js`): czy widoczny napis linku jest w całości adresem? Odrzucane są napisy ze spacjami, e-maile, numery wersji, adresy IP i nazwy plików (`README.md`, `faktura.zip`). Gdy napis nie jest adresem albo zgadza się z celem (z dokładnością do `www.` i subdomen), kliknięcie przechodzi bez opóźnienia. Tak jest w zdecydowanej większości przypadków.
+2. **W przeciwnym razie** kliknięcie jest wstrzymywane, a service worker (`src/shared/link-check.js`) rozpakowuje przekierowania pocztowe, sprawdza, czy napis ma prawdziwą końcówkę domeny (z Public Suffix List), i porównuje **firmy**, a nie same adresy (eTLD+1 i grupy z `known-sites.js`).
+3. Wynik „ta sama firma” → kliknięcie jest powtarzane i strona otwiera się normalnie. Wynik „inna firma” → okno ostrzeżenia. Jeśli link był w ramce (treść e-maila w skrzynce pocztowej), okno rysuje główna strona.
+
+Decyzja dotyczy jednego kliknięcia i nie jest zapamiętywana.
+
 ### 4.5 Ocena strony (baner)
 
 `src/shared/page-risk.js` zbiera sygnały w jedną, posortowaną listę: najpierw problemy poważne (czerwone), potem ostrzeżenia, a w ich obrębie ważniejsze na początku (formularz wysyłający hasło gdzie indziej przed brakiem HTTPS). Ostrzeżenia o samej stronie dotyczą tylko głównej strony, nie ramek. „Brak HTTPS” i „formularz na inną stronę” pojawiają się tylko, gdy na stronie jest pole hasła. „Inna strona” oznacza inną firmę, więc formularz `ing.pl` → `login.ingbank.pl` jest w porządku.
@@ -294,7 +323,21 @@ Przy aktualizacji z wersji 1.x usuwane są stare, niesolone hashe SHA-256 (`cred
 
 Usunięte względem 1.x: `declarativeNetRequestFeedback` (pokazywało ostrzeżenie „czyta historię przeglądania”) i `declarativeNetRequestWithHostAccess` (zbędne).
 
-## 7. Ograniczenia
+## 7. Przed czym chroni, a przed czym nie
+
+| Atak | Ochrona | Jak |
+|---|---|---|
+| Znana strona phishingowa (link z SMS-a / e-maila) | **Tak** | blokada z list CERT Polska i OpenPhish, aktualizowanych co 12 h |
+| Nowa podróbka podszywająca się pod firmę | **Tak, w większości** | wykrywanie podróbek adresu (99,4% na danych CERT) |
+| Hasło do banku/poczty wpisane na obcej stronie | **Tak** | okno „Stop!” i wstrzymanie formularza |
+| **Browser-in-the-Browser (BitB)**: fałszywe okienko „Zaloguj przez Google/bank” z podrobionym paskiem adresu | **Tak, przy wpisywaniu hasła** | Wtyczka nie patrzy na narysowany pasek adresu, tylko na prawdziwy adres strony z polem hasła. Hasło z mBanku w fałszywym okienku na `wygraj-nagrode.pl` daje „Stop!… ta strona to wygraj-nagrode.pl”. Działa też blokada z list i wykrywanie podróbek adresu strony. **Luka:** samo pojawienie się fałszywego okna nie jest wykrywane, a hasło musi być wcześniej zapamiętane. |
+| **Session hijacking przez phishing-pośrednik** (AiTM, np. Evilginx): strona przekazuje logowanie do prawdziwego serwisu i przechwytuje ciasteczko sesji, także przy SMS/2FA | **Tak, na etapie logowania** | Taka strona działa pod adresem oszusta, więc zadziałają te same zabezpieczenia: lista, podróbka adresu, okno „Stop!” przy haśle. |
+| **Kradzież ciasteczek sesji** przez złośliwe oprogramowanie na komputerze (infostealery), XSS na prawdziwej stronie, złośliwe inne rozszerzenia | **Nie** | To dzieje się poza zasięgiem rozszerzenia. Chronią przed tym antywirus, aktualny system i przeglądarka oraz same serwisy (np. sesje przypięte do urządzenia). Strona pomocy podpowiada, co zrobić po fakcie: **„Wyloguj się ze wszystkich urządzeń”** w ustawieniach konta, bo tylko to unieważnia przejętą sesję. Zmiana hasła i wyczyszczenie ciasteczek u siebie tego nie robią. |
+| **Link, którego napis udaje inny adres** (`www.mbank.pl` → `mbank-weryfikacja.xyz`), np. w e-mailu | **Tak** | kliknięcie wstrzymane, okno z porównaniem adresów; działa w treści maili w ramkach i przy linkach opakowanych przez Outlook Safe Links. **Luka:** link o neutralnym napisie („Kliknij tutaj”) nie jest sprawdzany, ale cel i tak przechodzi przez blokadę z list i wykrywanie podróbek. Nie obejmuje też linków otwieranych przez menu kontekstowe „Otwórz w nowej karcie” ani przeciąganych myszką. |
+| Podsłuch na niezaszyfrowanym połączeniu (publiczne Wi-Fi, HTTP) | **Częściowo** | ostrzeżenie przed wpisaniem hasła na stronie bez HTTPS; ciasteczka już zalogowanej sesji nie są chronione |
+| Oszustwo telefoniczne / zdalny pulpit (AnyDesk) | **Nie** (poza pomocą) | strona pomocy podpowiada, co zrobić |
+
+## 8. Ograniczenia
 
 - **Skrypt strony może podsłuchiwać klawiaturę.** Oszukańcza strona może wysyłać każdą wciśniętą literę własnym skryptem, zanim formularz zostanie wysłany. Dlatego okno „Stop!” pojawia się już w trakcie pisania, ale całkowicie tego nie wykluczy.
 - **Ochrona haseł uczy się od instalacji.** Hasło jest „znane” dopiero po pierwszym logowaniu na prawdziwej stronie.
@@ -304,7 +347,7 @@ Usunięte względem 1.x: `declarativeNetRequestFeedback` (pokazywało ostrzeżen
 - **Wykrywanie podróbek to heurystyka.** Mierzymy ją (99,4% / 0 fałszywych alarmów na próbce), ale nie złapie wszystkiego. Jest też przycisk „Ufam tej stronie” na pomyłki.
 - **Tylko Chrome i Edge.** Firefox jest planowany później.
 
-## 8. Utrzymanie i rozwój
+## 9. Utrzymanie i rozwój
 
 | Zadanie | Jak |
 |---|---|
@@ -319,7 +362,7 @@ Usunięte względem 1.x: `declarativeNetRequestFeedback` (pokazywało ostrzeżen
 
 CI (`.github/workflows/ci.yml`) przy każdym pushu i PR oraz co tydzień: sprawdza tłumaczenia, uruchamia testy jednostkowe, buduje listy, uruchamia test end-to-end w Chrome, buduje paczkę `.zip` i zapisuje zrzuty ekranu.
 
-## 9. Co zmieniło się względem wersji 1.x
+## 10. Co zmieniło się względem wersji 1.x
 
 | Wersja 1.x | Wersja 2.0 |
 |---|---|
@@ -332,4 +375,5 @@ CI (`.github/workflows/ci.yml`) przy każdym pushu i PR oraz co tydzień: sprawd
 | Alarm na każdej domenie z polskimi znakami (punycode) | Wykrywanie tylko podrobionych liter / podobieństwa do marek |
 | 15 testowych domen | ~109 tys. domen z CERT Polska i OpenPhish + aktualizacja co 12 h |
 | Brak popupu, ustawień, pomocy; interfejs po angielsku | Popup, ustawienia, strona pomocy, PL/EN, projekt dla seniorów |
-| Brak testów | 45 testów jednostkowych, 23 scenariusze w prawdziwym Chrome, pomiar skuteczności, CI |
+| Brak sprawdzania linków | Ostrzeżenie o linku, którego napis udaje inny adres (także w poczcie i za Outlook Safe Links) |
+| Brak testów | 53 testy jednostkowe, 29 scenariuszy w prawdziwym Chrome, pomiar skuteczności, CI |

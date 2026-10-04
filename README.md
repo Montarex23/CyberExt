@@ -12,6 +12,7 @@ Rozszerzenie do Chrome i Edge (Manifest V3), które chroni przed stronami wyłud
 | Świeże ostrzeżenia | Co 12 h pobierana jest aktualna lista CERT Polska (wyłącznik w ustawieniach). Nowe domeny trafiają do reguł dynamicznych, a domeny wycofane przez CERT są odblokowywane. |
 | Ochrona haseł | Hasło użyte na znanym serwisie (bank, poczta, gov.pl, Allegro, InPost…) jest chronione automatycznie. Wpisanie go na obcej stronie pokazuje **blokujące ostrzeżenie**, zanim formularz zostanie wysłany. Powtórzenie zwykłego hasła daje tylko delikatną wskazówkę. |
 | Podróbki adresów | `mbank-logowanie.com`, `allegro.pl-oferta.xyz`, literówki (`alegro.pl`), znaki z innych alfabetów (`pаypal.com` z cyrylicą). |
+| Linki z fałszywym napisem | Link z napisem `www.mbank.pl`, który naprawdę prowadzi gdzie indziej, jest zatrzymywany po kliknięciu, a okno pokazuje oba adresy. Działa też w treści maili i przy linkach opakowanych przez Outlook Safe Links. |
 | Formularz wysyłający hasło gdzie indziej | Ostrzeżenie, gdy formularz logowania wysyła hasło do innej firmy. |
 | Brak HTTPS | Ostrzeżenie przy polu hasła na stronie `http://` (z pominięciem routerów i sieci lokalnej). |
 | Popup | Status strony: „Prawdziwa strona: mBank” / „Znana strona” / „Nieznana strona” / „Uwaga”, oraz przycisk **„Oszust może mieć moje dane – co robić?”**. |
@@ -34,14 +35,14 @@ Następnie w Chrome otwórz `chrome://extensions` (w Edge: `edge://extensions`),
 
 ## Dokumentacja
 
-- **[docs/opis-wtyczki.md](docs/opis-wtyczki.md)**: po co jest wtyczka, co widzi użytkownik, jak działa technicznie, prywatność, uprawnienia, ograniczenia.
-- **[docs/testowanie.md](docs/testowanie.md)**: testy automatyczne, ręczne scenariusze (T01–T54), testy na prawdziwych stronach, test z użytkownikiem, lista kontrolna przed wydaniem.
+- **[docs/opis-wtyczki.md](docs/opis-wtyczki.md)**: po co jest wtyczka, co widzi użytkownik, jak działa technicznie, przed czym chroni (także Browser-in-the-Browser i przejęcie sesji), a przed czym nie, prywatność, uprawnienia, ograniczenia.
+- **[docs/testowanie.md](docs/testowanie.md)**: testy automatyczne, ręczne scenariusze (T01–T54, L1–L6), testy na prawdziwych stronach, test z użytkownikiem, lista kontrolna przed wydaniem.
 
 ## Testy
 
 ```bash
-npm test                    # 45 testów jednostkowych (domeny, podróbki, logika haseł, builder, tłumaczenia)
-npm run test:e2e            # 23 scenariusze w prawdziwym Chrome, zrzuty ekranu w tmp/e2e/
+npm test                    # 53 testy jednostkowe (domeny, podróbki, hasła, linki, builder, tłumaczenia)
+npm run test:e2e            # 29 scenariuszy w prawdziwym Chrome, zrzuty ekranu w tmp/e2e/
 npm run measure:lookalike   # skuteczność wykrywania podróbek na liście CERT Polska
 npm run test:manual         # fałszywe strony + osobne okno Chrome do testów ręcznych
 ```
@@ -56,8 +57,8 @@ Test E2E uruchamia Chrome z rozszerzeniem i lokalny serwer, który udaje dowolne
 src/                      ← to ładujesz w przeglądarce
 ├── manifest.json
 ├── background/           service worker: decyzje, storage, reguły DNR, aktualizacja listy CERT
-├── content/              ui.js (ostrzeżenia w zamkniętym Shadow DOM) + content.js (pola haseł, formularze)
-├── shared/               logika współdzielona z testami i builderem (PSL, podróbki, hasła, filtr list)
+├── content/              ui.js (ostrzeżenia w zamkniętym Shadow DOM) + content.js (pola haseł, formularze, linki)
+├── shared/               logika współdzielona z testami i builderem (PSL, podróbki, hasła, linki, filtr list)
 ├── pages/                warning / popup / options / help
 ├── _locales/{pl,en}/     generowane z locales/*.json
 └── rules/                generowane przez scripts/build-rules.js

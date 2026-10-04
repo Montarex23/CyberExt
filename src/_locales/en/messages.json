@@ -68,6 +68,24 @@
   "pwConfirmYes": {
     "message": "Yes, I trust this site"
   },
+  "linkAlertTitle": {
+    "message": "Careful: this link goes somewhere else"
+  },
+  "linkAlertShown": {
+    "message": "The link says:"
+  },
+  "linkAlertReal": {
+    "message": "It actually leads to:"
+  },
+  "linkAlertExplain": {
+    "message": "Scammers make links look genuine this way. If you don't know why the addresses differ, don't open this link."
+  },
+  "linkAlertStay": {
+    "message": "Don't open this link"
+  },
+  "linkAlertOpen": {
+    "message": "Open anyway"
+  },
   "reuseTitle": {
     "message": "Safety tip"
   },
@@ -401,6 +419,9 @@
   "helpPassword1": {
     "message": "Change the password on the service's real website – ideally from another, trusted device."
   },
+  "helpPasswordSessions": {
+    "message": "Sign out of all devices – in your account settings (usually \"Security\" → \"Sign out of all devices\"). If a scammer took over your logged-in session, a new password alone is not enough – this cuts them off."
+  },
   "helpPassword2": {
     "message": "If the same password works anywhere else, change it there too."
   },
@@ -447,7 +468,7 @@
     "message": "Removes history, cookies, cache and form data from the last hour."
   },
   "helpCleanNote": {
-    "message": "Note: you will be logged out of some sites. This does NOT undo data that already reached the scammer – the steps above matter most."
+    "message": "Note: you will be logged out of some sites. This does NOT undo data that already reached the scammer and does not sign them out of your accounts – the steps above matter most."
   },
   "helpCleanBtn": {
     "message": "Clear the last hour"

@@ -68,6 +68,24 @@
   "pwConfirmYes": {
     "message": "Tak, ufam tej stronie"
   },
+  "linkAlertTitle": {
+    "message": "Uwaga: ten link prowadzi gdzie indziej"
+  },
+  "linkAlertShown": {
+    "message": "Napis na linku:"
+  },
+  "linkAlertReal": {
+    "message": "Link naprawdę prowadzi do:"
+  },
+  "linkAlertExplain": {
+    "message": "Oszuści tak przygotowują linki, żeby wyglądały na prawdziwe. Jeśli nie wiesz, dlaczego adresy się różnią, nie otwieraj tego linku."
+  },
+  "linkAlertStay": {
+    "message": "Nie otwieraj tego linku"
+  },
+  "linkAlertOpen": {
+    "message": "Otwórz mimo to"
+  },
   "reuseTitle": {
     "message": "Wskazówka bezpieczeństwa"
   },
@@ -401,6 +419,9 @@
   "helpPassword1": {
     "message": "Zmień hasło na prawdziwej stronie serwisu – najlepiej z innego, pewnego urządzenia."
   },
+  "helpPasswordSessions": {
+    "message": "Wyloguj się ze wszystkich urządzeń – w ustawieniach konta (zwykle „Bezpieczeństwo” → „Wyloguj ze wszystkich urządzeń”). Jeśli oszust przejął Twoje zalogowanie, samo hasło nie wystarczy – to go odetnie."
+  },
   "helpPassword2": {
     "message": "Jeśli to samo hasło działa też gdzie indziej, zmień je również tam."
   },
@@ -447,7 +468,7 @@
     "message": "Usuwa historię, ciasteczka, pamięć podręczną i dane formularzy z ostatniej godziny."
   },
   "helpCleanNote": {
-    "message": "Uwaga: nastąpi wylogowanie z niektórych stron. To NIE cofa danych, które już trafiły do oszusta – najważniejsze są kroki powyżej."
+    "message": "Uwaga: nastąpi wylogowanie z niektórych stron. To NIE cofa danych, które już trafiły do oszusta, i nie wylogowuje go z Twoich kont – najważniejsze są kroki powyżej."
   },
   "helpCleanBtn": {
     "message": "Wyczyść ostatnią godzinę"

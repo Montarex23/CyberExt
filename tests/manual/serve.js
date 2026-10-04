@@ -17,6 +17,8 @@ const os = require('os');
 const path = require('path');
 const http = require('http');
 const { spawn } = require('child_process');
+const { bitbPage } = require('../fixtures/bitb-page.js');
+const { LINK_HOSTS, linksPage, inboxPage, emailBody } = require('../fixtures/links-page.js');
 
 const PORT = Number(process.env.PORT) || 8080;
 const ROOT = path.resolve(__dirname, '..', '..');
@@ -33,8 +35,9 @@ try {
 const FAKE_HOSTS = [
   'online.mbank.pl', 'mbank-logowanie.com', 'super-promocje24.com', 'moj-nowy-sklep.pl',
   'forum-wedkarskie.pl', 'przepisy-babci.pl', 'sklep-testowy.pl', 'collector.evil-site.ru',
-  'portal-x.com', 'login-widget.com', 'allegro-okazje.pl', 'xn--pypal-4ve.com', blockedHost,
-];
+  'portal-x.com', 'login-widget.com', 'allegro-okazje.pl', 'xn--pypal-4ve.com', 'wygraj-nagrode.pl', blockedHost,
+  ...LINK_HOSTS,
+].filter((h, i, all) => all.indexOf(h) === i);
 
 const u = (host, p = '/') => `http://${host}:${PORT}${p}`;
 
@@ -70,6 +73,10 @@ const server = http.createServer((req, res) => {
     return res.end(page('Portal z ramką', `<h1>Portal z ramką logowania (${host})</h1>
 <iframe src="${u('login-widget.com', '/login')}" width="700" height="420" style="border:2px solid #999"></iframe>`));
   }
+  if (url.pathname === '/bitb') return res.end(bitbPage(host));
+  if (url.pathname === '/links') return res.end(linksPage(PORT));
+  if (url.pathname === '/inbox') return res.end(inboxPage(PORT));
+  if (url.pathname === '/email') return res.end(emailBody(PORT));
   if (url.pathname === '/ping') return res.end('ok');
   if (host === 'localhost' || host === '127.0.0.1') {
     return res.end(page('Testy CyberGuard', `<h1>Ręczne testy CyberGuard</h1>
@@ -89,6 +96,8 @@ const server = http.createServer((req, res) => {
 <li>Zwykłe hasło na forum: <a href="${u('forum-wedkarskie.pl', '/login')}">forum-wedkarskie.pl</a>, potem to samo na <a href="${u('przepisy-babci.pl', '/login')}">przepisy-babci.pl</a></li>
 <li>Podróbka adresu: <a href="${u('mbank-logowanie.com')}">mbank-logowanie.com</a>, <a href="${u('allegro-okazje.pl')}">allegro-okazje.pl</a>, <a href="${u('xn--pypal-4ve.com')}">pаypal.com (cyrylica)</a></li>
 <li>Formularz wysyłający hasło gdzie indziej: <a href="${u('sklep-testowy.pl', '/xform')}">sklep-testowy.pl</a></li>
+<li>Atak „Browser-in-the-Browser” (fałszywe okno banku): <a href="${u('wygraj-nagrode.pl', '/bitb')}">wygraj-nagrode.pl</a> — najpierw zrób punkt 2</li>
+<li>Linki, których napis udaje inny adres (także w poczcie): <a href="${u('linki-testowe.pl', '/links')}">linki-testowe.pl</a></li>
 </ol>`));
   }
   return res.end(page(host, `<h1>Strona ${host}</h1><p>Fałszywa strona testowa.</p>`));

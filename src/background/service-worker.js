@@ -19,6 +19,8 @@ importScripts(
   '../shared/password-logic.js',
   '../shared/crypto.js',
   '../shared/blocklist-filter.js',
+  '../shared/link-text.js',
+  '../shared/link-check.js',
   'store.js',
   'rules.js'
 );
@@ -243,21 +245,26 @@ const contentHandlers = {
     return { ok: true };
   },
 
-  /** A login iframe asks the top frame to show the blocking warning. */
+  /** A link was clicked whose text looks like an address — does it really go there? */
+  async CHECK_LINK(msg) {
+    if (typeof msg.text !== 'string' || typeof msg.href !== 'string') return { ok: true };
+    return CG.linkCheck.checkLink(shortText(msg.text, 300), shortText(msg.href, 4096));
+  },
+
+  /** An iframe (login widget, e-mail body…) asks the top frame to show a blocking dialog. */
   async RELAY_ALERT(msg, sender) {
-    if (!sender.tab) return { choice: 'leave' };
     const a = msg.alert || {};
-    const alert = {
-      kind: 'password-danger',
-      brandName: shortText(a.brandName),
-      brandSite: shortText(a.brandSite),
-      site: shortText(a.site),
-    };
+    const isLink = a.kind === 'link-mismatch';
+    const safeChoice = isLink ? 'stay' : 'leave';
+    if (!sender.tab) return { choice: safeChoice };
+    const alert = isLink
+      ? { kind: 'link-mismatch', shown: shortText(a.shown), real: shortText(a.real) }
+      : { kind: 'password-danger', brandName: shortText(a.brandName), brandSite: shortText(a.brandSite), site: shortText(a.site) };
     try {
       const response = await chrome.tabs.sendMessage(sender.tab.id, { type: 'SHOW_ALERT', alert }, { frameId: 0 });
-      return response && response.choice ? { choice: response.choice } : { choice: 'leave' };
+      return response && response.choice ? { choice: response.choice } : { choice: safeChoice };
     } catch {
-      return { choice: 'leave' };
+      return { choice: safeChoice };
     }
   },
 

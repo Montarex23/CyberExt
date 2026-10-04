@@ -19,8 +19,8 @@
 
 | Poziom | Komenda | Czas | Co sprawdza |
 |---|---|---|---|
-| Testy jednostkowe | `npm test` | ~1 s | 45 testów logiki: domeny, podróbki adresów, hasła, builder list, tłumaczenia, manifest i ikony |
-| Test end-to-end | `npm run test:e2e` | ~1 min | 23 scenariusze w prawdziwym Chrome z wtyczką, ze zrzutami ekranu |
+| Testy jednostkowe | `npm test` | ~1 s | 53 testy logiki: domeny, podróbki adresów, hasła, linki, builder list, tłumaczenia, manifest, ikony, kodowanie plików |
+| Test end-to-end | `npm run test:e2e` | ~1,5 min | 29 scenariuszy w prawdziwym Chrome z wtyczką, ze zrzutami ekranu |
 | Pomiar wykrywania podróbek | `npm run measure:lookalike` | ~5 s | skuteczność na 126 tys. prawdziwych domen z CERT Polska i fałszywe alarmy na legalnych domenach |
 | Testy ręczne (fałszywe strony) | `npm run test:manual` | ~20 min | wszystkie funkcje oczami użytkownika, bez ryzyka |
 | Testy na prawdziwych stronach | — | ~10 min | zachowanie w prawdziwym internecie |
@@ -55,7 +55,7 @@ npm run build
 npm test
 ```
 
-Oczekiwany wynik: `ℹ pass 45`, `ℹ fail 0`. Testy są w `tests/unit/`:
+Oczekiwany wynik: `ℹ pass 53`, `ℹ fail 0`. Testy są w `tests/unit/`:
 
 | Plik | Zakres |
 |---|---|
@@ -64,7 +64,8 @@ Oczekiwany wynik: `ℹ pass 45`, `ℹ fail 0`. Testy są w `tests/unit/`:
 | `page-risk.test.js` | baner: brak HTTPS, formularz na inną stronę, kolejność ostrzeżeń, zaufane strony |
 | `password-logic.test.js` | werdykty haseł (`none`/`ok`/`reuse`/`danger`), limity pamięci, odciski PBKDF2 |
 | `build-rules.test.js` | parsowanie list, pomijanie platform (`docs.google.com`), budowa reguł |
-| `extension.test.js` | pliki z manifestu istnieją, ikony to prawdziwe PNG, minimalne uprawnienia, każdy tekst istnieje po polsku i angielsku, brak `innerHTML` z danymi |
+| `link-check.test.js` | rozpoznawanie adresu w napisie linku, porównanie z celem, ta sama firma, rozpakowanie Outlook Safe Links / Google / Facebook |
+| `extension.test.js` | pliki z manifestu istnieją, ikony to prawdziwe PNG, pliki w kodowaniu akceptowanym przez Chrome, minimalne uprawnienia, każdy tekst istnieje po polsku i angielsku, brak `innerHTML` z danymi |
 
 ### 3.2 Test end-to-end w prawdziwym Chrome
 
@@ -77,7 +78,7 @@ Skrypt `tests/e2e/run-e2e.js`:
 - stawia lokalny serwer udający dowolne strony (`online.mbank.pl`, `mbank-logowanie.com`…). Przeglądarka kieruje wszystkie adresy na Twój komputer, więc **żadna prawdziwa strona oszusta nie jest odwiedzana**,
 - sprawdza, czy formularze zostały, czy nie zostały wysłane, oraz co jest zapisane w pamięci rozszerzenia.
 
-Oczekiwany wynik: `23/23 passed`. Scenariusze:
+Oczekiwany wynik: `29/29 passed`. Scenariusze:
 
 | # | Scenariusz |
 |---|---|
@@ -94,6 +95,12 @@ Oczekiwany wynik: `23/23 passed`. Scenariusze:
 | 11 | Zwykłe hasło na drugim forum → wskazówka, nic nie blokuje |
 | 12 | Hasła 4-znakowe też są chronione |
 | 13 | Hasło bankowe w ramce logowania → okno na całej stronie |
+| 13a | Browser-in-the-Browser: fałszywe okno banku z podrobionym paskiem adresu → okno „Stop!” podaje prawdziwy adres, hasło nie zostaje wysłane |
+| 13b | Link z napisem `https://www.mbank.pl/…` prowadzący gdzie indziej → okno z porównaniem; „Nie otwieraj” zostawia na stronie, cel nie jest odwiedzany |
+| 13c | „Otwórz mimo to” otwiera link w tej samej karcie, a dla `target=_blank` w nowej |
+| 13d | Uczciwy link, link tej samej firmy (`pkobp.pl` → `ipko.pl`), zwykły napis i uczciwy link Outlook Safe Links → bez ostrzeżenia |
+| 13e | Outlook Safe Links ukrywający oszukańczy cel → okno pokazuje prawdziwy cel |
+| 13f | Oszukańczy link w treści e-maila wyświetlanej w ramce → okno na całej stronie, Esc = nie otwieraj |
 | 14 | Podróbka adresu → baner z nazwą prawdziwej strony |
 | 15 | „Ufam tej stronie” ukrywa baner trwale |
 | 16 | Formularz wysyłający hasło do innej firmy → ostrzeżenie |
@@ -190,6 +197,31 @@ Każdy scenariusz ma oczekiwany wynik. Zaznaczaj ✅/❌.
 | T19 | Wpisz w pasek adresu `http://portal-x.com:8080/login`, hasło `xdxd` → „Zaloguj”; potem `http://login-widget.com:8080/login` → `xdxd` | Wskazówka też się pojawia (hasła od 4 znaków są chronione, krótsze są ignorowane). |
 | T20 | `online.mbank.pl` → hasło bankowe → **od razu Enter** (bez pauzy) | Formularz zostaje wysłany. Krótkie wstrzymanie jest niewidoczne dla użytkownika. |
 
+#### Linki z fałszywym napisem
+
+Na liście testów: „Linki, których napis udaje inny adres” (`linki-testowe.pl`). **Zanim klikniesz, najedź myszką na link i spójrz w lewy dolny róg przeglądarki:** tam widać, dokąd link naprawdę prowadzi. Tak samo można to sprawdzać w prawdziwej poczcie.
+
+| ID | Kroki | Oczekiwany wynik |
+|---|---|---|
+| L1 | Link 1 „Oszukańczy” (`https://www.mbank.pl/logowanie`) | Pomarańczowe okno „Uwaga: ten link prowadzi gdzie indziej”: napis **mbank.pl**, naprawdę **mbank-weryfikacja.xyz**. Fokus jest na „Nie otwieraj tego linku”. Ten przycisk albo Esc zostawia Cię na stronie. |
+| L2 | Link 1 → „Otwórz mimo to” | Otwiera się `mbank-weryfikacja.xyz` (z pomarańczowym banerem podróbki adresu). Link 6 (nowa karta) po „Otwórz mimo to” otwiera nową kartę. To samo kliknięciem środkowym przyciskiem myszy na link 1: najpierw okno. |
+| L3 | Linki 2, 3, 4, 7 | Otwierają się **bez** okna: uczciwy, ta sama firma (PKO: `pkobp.pl` → `ipko.pl`), uczciwy w Outlook Safe Links, zwykły napis „Kliknij tutaj…”. |
+| L4 | Link 5 (Outlook Safe Links z oszukańczym celem) | Okno pokazuje **mbank-weryfikacja.xyz**, a nie adres `outlook.com`. |
+| L5 | Link 8 → skrzynka testowa → link w treści maila (w ramce) | Okno na całej stronie, a nie w małej ramce. |
+| L6 | Na dowolnej prawdziwej stronie kliknij kilka zwykłych linków (menu, artykuły) | Brak okien i brak zauważalnego opóźnienia. |
+
+#### Ataki zaawansowane: Browser-in-the-Browser i przejęcie sesji
+
+| ID | Kroki | Oczekiwany wynik |
+|---|---|---|
+| T21 | **BitB.** Na liście testów: „Atak Browser-in-the-Browser” (`wygraj-nagrode.pl`) → „Zaloguj przez mBank”. Przyjrzyj się okienku. | Wygląda jak osobne okno Chrome: pasek tytułu „Logowanie – mBank – Google Chrome”, kłódka i adres `https://online.mbank.pl/logowanie`. **To tylko obrazek na stronie.** Spróbuj przeciągnąć okienko poza okno przeglądarki: nie da się, co jest typowym sposobem rozpoznania BitB. |
+| T22 | W fałszywym okienku wpisz hasło bankowe z T10 | Okno „Stop!… używasz w serwisie **mBank**… Ale ta strona to **wygraj-nagrode.pl**”. Wtyczka podaje **prawdziwy** adres, a nie ten z fałszywego paska. „Zaloguj” nic nie wysyła (brak linii w terminalu). |
+| T23 | Kliknij ikonę CyberGuard na tej stronie | Stan dotyczy `wygraj-nagrode.pl`, a nie `mbank.pl`. Pasek adresu przeglądarki i okienko CyberGuard zawsze pokazują prawdę. |
+| T24 | **Przejęcie sesji przez phishing-pośrednik (AiTM).** Nie da się go bezpiecznie odtworzyć lokalnie. Z punktu widzenia wtyczki wygląda jak T12: prawdziwa strona banku jest przekazywana, ale pod adresem oszusta. | Wystarczy zaliczony T12 (i T30 dla adresów podobnych do marki). Ochrona działa na etapie wpisywania hasła, zanim oszust dostanie sesję. |
+| T25 | **Po przejęciu sesji.** Okienko CyberGuard → „Oszust może mieć moje dane – co robić?” | W kroku 2 jest „**Wyloguj się ze wszystkich urządzeń**…”, a przy czyszczeniu ostatniej godziny dopisek, że to **nie** wylogowuje oszusta. |
+
+> Kradzieży ciasteczek przez złośliwe oprogramowanie, XSS czy inne rozszerzenia **nie testujemy**, bo wtyczka przed tym nie chroni i nie ma takiej możliwości (zob. [opis-wtyczki.md, rozdz. 7](opis-wtyczki.md#7-przed-czym-chroni-a-przed-czym-nie)).
+
 #### Podróbki adresów i baner na stronie
 
 | ID | Kroki | Oczekiwany wynik |
@@ -274,11 +306,11 @@ Najważniejszy test dla tej wtyczki: czy osoba nietechniczna zrozumie komunikaty
 
 ## 7. Lista kontrolna przed wydaniem
 
-- [ ] `npm test`: 45/45
+- [ ] `npm test`: 53/53
 - [ ] `npm run build`: liczba domen podobna do poprzedniej wersji (nagły spadek = problem ze źródłem)
 - [ ] `npm run measure:lookalike`: wykrywanie ≥ 99%, 0 fałszywych alarmów
-- [ ] `npm run test:e2e`: 23/23, przejrzane zrzuty w `tmp/e2e/`
-- [ ] Testy ręczne T01–T54 w Chrome
+- [ ] `npm run test:e2e`: 29/29, przejrzane zrzuty w `tmp/e2e/`
+- [ ] Testy ręczne T01–T54 i L1–L6 w Chrome
 - [ ] Wybrane testy (T01, T12–T14, T30, T45) w Edge
 - [ ] Aktualizacja z poprzedniej wersji: zainstaluj starą wersję, potem nową na jej miejsce → zapamiętane hasła i ustawienia zostają, otwarte karty działają (T38)
 - [ ] `version` w `src/manifest.json` i `package.json` podbite
