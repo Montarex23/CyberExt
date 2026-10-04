@@ -1,12 +1,3 @@
-# CyberGuard — generates the extension icons (real PNGs, exact sizes) from
-# design/icon-source.jpg. Windows PowerShell 5.1+ (uses System.Drawing).
-#
-#   powershell -ExecutionPolicy Bypass -File scripts/build-icons.ps1
-#
-# The source has a white margin around a dark rounded square; only the square
-# is kept, corners become transparent. Chrome's guideline for the 128 px icon
-# is ~96 px of artwork with transparent padding, the small ones are full-bleed.
-
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing
 
@@ -15,14 +6,12 @@ $source = Join-Path $root 'design\icon-source.jpg'
 $outDir = Join-Path $root 'src\icons'
 $img = [System.Drawing.Bitmap]::FromFile($source)
 
-# Find the dark square: first/last dark pixel along the middle row and column.
 function Test-Dark($c) { return ($c.R + $c.G + $c.B) -lt 200 }
 $midY = [int]($img.Height / 2); $midX = [int]($img.Width / 2)
 $left = 0;  while (-not (Test-Dark $img.GetPixel($left, $midY))) { $left++ }
 $right = $img.Width - 1;  while (-not (Test-Dark $img.GetPixel($right, $midY))) { $right-- }
 $top = 0;   while (-not (Test-Dark $img.GetPixel($midX, $top))) { $top++ }
 $bottom = $img.Height - 1; while (-not (Test-Dark $img.GetPixel($midX, $bottom))) { $bottom-- }
-# Trim a few pixels so no anti-aliased white edge remains.
 $inset = 4
 $crop = New-Object System.Drawing.Rectangle ($left + $inset), ($top + $inset), ($right - $left - 2 * $inset), ($bottom - $top - 2 * $inset)
 Write-Host "Artwork: $($crop.Width)x$($crop.Height) at $($crop.X),$($crop.Y)"

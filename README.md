@@ -15,7 +15,7 @@ Rozszerzenie do Chrome i Edge (Manifest V3), które chroni przed stronami wyłud
 | Linki z fałszywym napisem | Link z napisem `www.mbank.pl`, który naprawdę prowadzi gdzie indziej, jest zatrzymywany po kliknięciu, a okno pokazuje oba adresy. Działa też w treści maili i przy linkach opakowanych przez Outlook Safe Links. |
 | Formularz wysyłający hasło gdzie indziej | Ostrzeżenie, gdy formularz logowania wysyła hasło do innej firmy. |
 | Brak HTTPS | Ostrzeżenie przy polu hasła na stronie `http://` (z pominięciem routerów i sieci lokalnej). |
-| Popup | Status strony: „Prawdziwa strona: mBank” / „Znana strona” / „Nieznana strona” / „Uwaga”, oraz przycisk **„Oszust może mieć moje dane – co robić?”**. |
+| Popup | Status strony: „To prawdziwa strona: mBank” / „Znasz tę stronę” / „Nie znamy tej strony” / „Uważaj na tę stronę”, oraz przycisk **„Oszust może mieć moje dane – co robić?”**. |
 | Pomoc po oszustwie | Lista kroków: bank, hasła, zastrzeżenie PESEL, zgłoszenie do CERT (incydent.cert.pl, SMS 8080), policja. Opcjonalnie czyszczenie ostatniej godziny. |
 
 Wyjątek „Wejdź mimo to” na stronie ostrzeżenia działa tylko do zamknięcia przeglądarki. Wymaga zaznaczenia pola i odczekania 5 s. Ostrzeżenia na stronach można trwale wyłączyć przyciskiem „Ufam tej stronie” lub „Rozumiem, nie pokazuj więcej” i przywrócić w ustawieniach.
@@ -70,7 +70,7 @@ tests/unit, tests/e2e
 ## Częste zadania
 
 - **Dodanie znanego serwisu** (np. nowego banku): wpis w `src/shared/known-sites.js` (nazwa, oficjalne domeny, słowa-klucze), potem test w `tests/unit/lookalike.test.js`.
-- **Zmiana tekstu:** edytuj `locales/pl.json` i `locales/en.json`, a potem uruchom `npm run build:locales`.
+- **Zmiana tekstu:** edytuj `locales/pl.json` i `locales/en.json` (zasady pisania w [docs/opis-wtyczki.md](docs/opis-wtyczki.md#jak-piszemy-teksty)), a potem uruchom `npm run build:locales`.
 - **Paczka do sklepu:** `npm run build && npm run package` tworzy `dist/cyberguard-<wersja>.zip`.
 - **Aktualizacja Public Suffix List** (rzadko): `npm run build:psl`.
 

@@ -40,10 +40,10 @@ test('deceptive link: text shows the bank, link goes elsewhere', () => {
 
 test('honest links and links within the same company are fine', () => {
   assert.equal(checkLink('mbank.pl', 'https://online.mbank.pl/').ok, true);
-  assert.equal(checkLink('www.pkobp.pl', 'https://www.ipko.pl/').ok, true); // PKO: two domains, one company
+  assert.equal(checkLink('www.pkobp.pl', 'https://www.ipko.pl/').ok, true);
   assert.equal(checkLink('allegro.pl', 'https://allegrolokalnie.pl/').ok, true);
-  assert.equal(checkLink('Kliknij tutaj', 'https://evil.example/').ok, true); // text isn't an address
-  assert.equal(checkLink('raport.pdf', 'https://drive.example.com/raport').ok, true); // not a real TLD
+  assert.equal(checkLink('Kliknij tutaj', 'https://evil.example/').ok, true);
+  assert.equal(checkLink('raport.pdf', 'https://drive.example.com/raport').ok, true);
 });
 
 test('mail redirectors are unwrapped before comparing', () => {
@@ -54,7 +54,7 @@ test('mail redirectors are unwrapped before comparing', () => {
   const evil = 'https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fmbank-weryfikacja.xyz%2F';
   const v = checkLink('www.mbank.pl', evil);
   assert.equal(v.ok, false);
-  assert.equal(v.real, 'mbank-weryfikacja.xyz'); // Shows the REAL target, not outlook.com
+  assert.equal(v.real, 'mbank-weryfikacja.xyz');
 
   assert.equal(checkLink('allegro.pl', 'https://www.google.com/url?q=https://allegro.pl/oferta&sa=D').ok, true);
   assert.equal(checkLink('allegro.pl', 'https://l.facebook.com/l.php?u=https%3A%2F%2Fallegro.pl%2F').ok, true);

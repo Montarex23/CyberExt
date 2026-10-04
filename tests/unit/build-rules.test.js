@@ -21,7 +21,6 @@ test('blockDecision never blocks big platforms or known companies', () => {
   assert.deepEqual(filter.blockDecision('mbank.pl'), { ok: false, reason: 'first-party' });
   assert.deepEqual(filter.blockDecision('github.io'), { ok: false, reason: 'public-suffix' });
   assert.deepEqual(filter.blockDecision('weebly.com'), { ok: false, reason: 'platform' });
-  // ...but a user's page on such a platform can be blocked.
   assert.deepEqual(filter.blockDecision('fake-bank.github.io'), { ok: true });
   assert.deepEqual(filter.blockDecision('fake-bank.weebly.com'), { ok: true });
   assert.deepEqual(filter.blockDecision('mbank-logowanie.com'), { ok: true });

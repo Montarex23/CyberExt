@@ -1,16 +1,3 @@
-/**
- * CyberGuard — Page risk assessment.
- *
- * Combines several weak signals into a short list of findings that the
- * content script shows in ONE banner (instead of a pile of separate ones):
- *
- *   lookalike / homograph — address pretends to be a known site
- *   mixedScripts          — address mixes alphabets (possible homograph)
- *   insecure              — password field on plain HTTP (not local network)
- *   crossForm             — login form sends the password to another company's site
- *
- * Plain IDN domains (e.g. Polish "żabka.pl") are NOT reported on their own.
- */
 (function (root, factory) {
   'use strict';
   const CG = (root.CyberGuard = root.CyberGuard || {});
@@ -28,14 +15,6 @@
   const LEVEL_ORDER = { danger: 0, warn: 1, info: 2 };
   const MAX_FORM_ACTIONS = 10;
 
-  /**
-   * @param {object} page
-   * @param {string} page.url            Page URL (from the browser, not from the page).
-   * @param {boolean} [page.hasPassword] Page contains a password field.
-   * @param {string[]} [page.formActions] Absolute URLs of forms that contain a password field.
-   * @param {object} [trustedSites]      { siteKey: timestamp } — sites the user said are fine.
-   * @returns {{ site: string, findings: object[] }}
-   */
   function analyzePage(page, trustedSites = {}) {
     let url;
     try {
@@ -62,8 +41,6 @@
       });
     }
 
-    // Order within the same level = importance: where the password goes matters
-    // more than how it travels.
     const actions = Array.isArray(page.formActions) ? page.formActions.slice(0, MAX_FORM_ACTIONS) : [];
     for (const action of actions) {
       let target;
@@ -77,7 +54,7 @@
       if (CG.knownSites.sameOwnerHost(host, targetHost)) continue;
       if (trustedSites[CG.domain.siteKeyForTrust(targetHost)]) continue;
       findings.push({ id: 'crossForm', level: 'warn', host, target: CG.domain.siteKeyForTrust(targetHost) });
-      break; // One is enough to warn.
+      break;
     }
 
     if (page.hasPassword && url.protocol === 'http:' && !CG.domain.isLocalHost(host)) {

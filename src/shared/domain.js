@@ -1,11 +1,3 @@
-/**
- * CyberGuard — Domain utilities (shared by the service worker, builder and tests).
- *
- *   getSiteKey("login.mbank.pl")        → "mbank.pl"      (eTLD+1 via Public Suffix List)
- *   getSiteKey("konto.pekao.com.pl")    → "pekao.com.pl"
- *   getSiteKey("evil.github.io")        → "evil.github.io" (github.io is a public suffix)
- *   siteKeyForTrust("docs.google.com")  → "docs.google.com" (user-content host, never "google.com")
- */
 (function (root, factory) {
   'use strict';
   const CG = (root.CyberGuard = root.CyberGuard || {});
@@ -15,11 +7,6 @@
 })(typeof self !== 'undefined' ? self : globalThis, function (CG) {
   'use strict';
 
-  /**
-   * Hosts that belong to a big company but serve content anyone can publish
-   * (Google Forms, Sites, shared files...). Phishing pages live there often,
-   * so they must never inherit the trust of the parent brand.
-   */
   const USER_CONTENT_HOSTS = new Set([
     'sites.google.com',
     'docs.google.com',
@@ -52,7 +39,6 @@
     }
   }
 
-  /** Lowercases, strips a trailing dot and IPv6 brackets. */
   function normalizeHost(host) {
     return String(host || '')
       .trim()
@@ -65,7 +51,6 @@
     return /^\d{1,3}(\.\d{1,3}){3}$/.test(host) || host.includes(':');
   }
 
-  /** Hostname of a URL, or "" if the URL can't be parsed. */
   function hostFromUrl(urlString) {
     try {
       return normalizeHost(new URL(urlString).hostname);
@@ -74,7 +59,6 @@
     }
   }
 
-  /** Returns the public suffix of an ASCII host ("pekao.com.pl" → "com.pl"). */
   function getPublicSuffix(host) {
     loadRules();
     const labels = normalizeHost(host).split('.');
@@ -84,10 +68,9 @@
       if (rules.has(candidate)) return candidate;
       if (i + 1 < labels.length && wildcards.has(labels.slice(i + 1).join('.'))) return candidate;
     }
-    return labels[labels.length - 1]; // Default rule "*".
+    return labels[labels.length - 1];
   }
 
-  /** True if the host ends with a real top-level domain (".pl", ".com"…, not ".pdf"/".html"). */
   function hasKnownTld(host) {
     loadRules();
     const tld = normalizeHost(host).split('.').pop();
@@ -99,7 +82,6 @@
     return !!h && getPublicSuffix(h) === h;
   }
 
-  /** Registrable domain (eTLD+1). IPs and single-label hosts are returned unchanged. */
   function getSiteKey(host) {
     const h = normalizeHost(host);
     if (!h || isIp(h) || !h.includes('.')) return h;
@@ -114,13 +96,11 @@
     return USER_CONTENT_HOSTS.has(h) || USER_CONTENT_SUFFIXES.some((s) => h.endsWith(s));
   }
 
-  /** Like getSiteKey, but user-content hosts keep their full name. */
   function siteKeyForTrust(host) {
     const h = normalizeHost(host);
     return isUserContentHost(h) ? h : getSiteKey(h);
   }
 
-  /** "mbank.pl" → "mbank", "pekao.com.pl" → "pekao". */
   function registrableLabel(host) {
     const site = getSiteKey(host);
     if (!site.includes('.')) return site;
@@ -128,10 +108,9 @@
     return site === suffix ? site.split('.')[0] : site.slice(0, site.length - suffix.length - 1);
   }
 
-  /** Local / private network addresses (routers, NAS, dev servers). */
   function isLocalHost(host) {
     const h = normalizeHost(host);
-    if (!h.includes('.') && !h.includes(':')) return true; // "localhost", intranet names
+    if (!h.includes('.') && !h.includes(':')) return true;
     if (/\.(localhost|local|lan|home|internal|home\.arpa|test)$/.test(h)) return true;
     if (h === '::1' || h.startsWith('fe80:') || h.startsWith('fc') || h.startsWith('fd')) return h.includes(':');
     const m = h.match(/^(\d{1,3})\.(\d{1,3})\.\d{1,3}\.\d{1,3}$/);

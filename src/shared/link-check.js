@@ -1,14 +1,3 @@
-/**
- * CyberGuard — Deceptive link check (service worker side).
- *
- * A link whose visible text is a web address ("www.mbank.pl") but whose real
- * target belongs to someone else ("mbank-weryfikacja.xyz") is a classic
- * phishing trick in e-mails and messages.
- *
- * Mail services wrap links in their own redirectors (Outlook Safe Links,
- * Google, Facebook…). Those are unwrapped first, so a genuine link in an
- * Outlook e-mail is not reported.
- */
 (function (root, factory) {
   'use strict';
   const CG = (root.CyberGuard = root.CyberGuard || {});
@@ -23,7 +12,6 @@
 })(typeof self !== 'undefined' ? self : globalThis, function (CG) {
   'use strict';
 
-  /** Redirectors that carry the real destination in a query parameter. */
   const REDIRECTORS = [
     { host: /(^|\.)safelinks\.protection\.outlook\.com$/, params: ['url'] },
     { host: /^(www\.)?google\.[a-z.]+$/, path: /^\/url$/, params: ['q', 'url'] },
@@ -34,7 +22,6 @@
     { host: /^steamcommunity\.com$/, path: /^\/linkfilter/, params: ['url', 'u'] },
   ];
 
-  /** Follows known redirectors (max 3 levels). Returns the final URL string. */
   function unwrapRedirect(href, depth = 0) {
     let url;
     try {
@@ -54,11 +41,6 @@
     return url.href;
   }
 
-  /**
-   * @param {string} text  Visible text of the link.
-   * @param {string} href  Absolute URL the link points to.
-   * @returns {{ ok: true } | { ok: false, shown: string, real: string, realUrl: string }}
-   */
   function checkLink(text, href) {
     const shownHost = CG.linkText.hostFromLinkText(text);
     if (!shownHost || !CG.domain.hasKnownTld(shownHost)) return { ok: true };
@@ -79,7 +61,6 @@
       shown: shownHost.replace(/^www\./, ''),
       real: realHost.replace(/^www\./, ''),
       realUrl: target,
-      // If the real target imitates a known company, show exactly how.
       diff: CG.addressDiff.describe(realHost),
     };
   }

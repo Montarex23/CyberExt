@@ -1,11 +1,3 @@
-/**
- * CyberGuard — Blocklist filtering (shared by scripts/build-rules.js and the
- * live CERT Polska updater in the service worker).
- *
- * Public phishing feeds sometimes list URLs on huge shared platforms, e.g.
- * "https://docs.google.com/forms/...". Blocking the whole host would break
- * Google Docs for everybody, so such entries are skipped here.
- */
 (function (root, factory) {
   'use strict';
   const CG = (root.CyberGuard = root.CyberGuard || {});
@@ -18,11 +10,6 @@
 })(typeof self !== 'undefined' ? self : globalThis, function (CG) {
   'use strict';
 
-  /**
-   * Sites where NOTHING may be blocked (neither the site nor any subdomain):
-   * big first-party services whose subdomains are all run by the company.
-   * Known brands from known-sites.js are added automatically.
-   */
   const FIRST_PARTY = [
     'github.com', 'gitlab.com', 'bitbucket.org', 'cloudflare.com', 'dropbox.com', 'box.com', 'wetransfer.com',
     'canva.com', 'notion.so', 'zoom.us', 'slack.com', 'discord.com', 'telegram.org', 'twitter.com', 'x.com',
@@ -37,10 +24,6 @@
     'dotpay.pl', 'stripe.com', 'klarna.com', 'apple.com', 'icloud.com', 'whatsapp.net', 'signal.org',
   ];
 
-  /**
-   * Platforms where anyone can create "name.platform.com". Blocking a specific
-   * subdomain is fine, blocking the platform itself is not.
-   */
   const PLATFORMS = [
     'wixsite.com', 'wix.com', 'weebly.com', 'webflow.io', 'wordpress.com', 'square.site', 'godaddysites.com',
     'mystrikingly.com', 'jimdosite.com', 'webnode.page', 'site123.me', 'carrd.co', 'framer.website',
@@ -54,7 +37,6 @@
   const firstParty = new Set([...FIRST_PARTY, ...CG.knownSites.allOfficialSites()].map((s) => CG.domain.getSiteKey(s)));
   const platforms = new Set(PLATFORMS);
 
-  /** Normalizes a feed entry (URL or bare domain) to an ASCII host, or null. */
   function normalizeFeedHost(raw) {
     let s = String(raw || '').trim();
     if (!s || s.startsWith('#')) return null;
@@ -72,9 +54,6 @@
     return host;
   }
 
-  /**
-   * @returns {{ ok: true } | { ok: false, reason: 'public-suffix' | 'first-party' | 'platform' }}
-   */
   function blockDecision(host) {
     if (CG.domain.isPublicSuffix(host)) return { ok: false, reason: 'public-suffix' };
     if (platforms.has(host)) return { ok: false, reason: 'platform' };
@@ -84,11 +63,6 @@
     return { ok: true };
   }
 
-  /**
-   * Removes hosts already covered by a blocked parent ("a.evil.com" when
-   * "evil.com" is listed) — declarativeNetRequest's requestDomains also
-   * matches subdomains.
-   */
   function collapseSubdomains(hosts) {
     const set = new Set(hosts);
     return hosts.filter((host) => {

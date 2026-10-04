@@ -1,16 +1,3 @@
-/**
- * CyberGuard — declarativeNetRequest management.
- *
- *   1. Session exceptions: "Wejdź mimo to" on the warning page adds an "allow"
- *      rule that disappears when the browser is closed (updateSessionRules).
- *   2. Live CERT Polska list (optional, on by default, switch in settings):
- *      downloads https://hole.cert.pl/domains/v2/domains.txt every 12 h and
- *      adds domains that appeared after the extension was built as dynamic
- *      rules. Nothing about the user is ever sent — it is a plain download.
- *
- * Rule priorities: static/dynamic redirect = 1, "removed from CERT list" allow = 50,
- * user's session allow = 100 (highest wins).
- */
 (function (CG) {
   'use strict';
 
@@ -23,15 +10,10 @@
 
   const F = CG.blocklistFilter;
 
-  // -------------------------------------------------------------------------
-  // Session exceptions
-  // -------------------------------------------------------------------------
-
   function isAllowRule(rule) {
     return rule.action.type === 'allow' && Array.isArray(rule.condition.requestDomains);
   }
 
-  /** Validates a domain coming from the warning page URL (?domain=...). */
   function validateDomain(raw) {
     const host = CG.domain.normalizeHost(raw);
     const valid =
@@ -39,7 +21,7 @@
       host.includes('.') &&
       host.length <= 253 &&
       !CG.domain.isIp(host) &&
-      !CG.domain.isPublicSuffix(host); // "?domain=com" must not unblock all of .com
+      !CG.domain.isPublicSuffix(host);
     if (!valid) throw new Error('invalid-domain');
     return host;
   }
@@ -81,13 +63,8 @@
     return allowed.some((d) => host === d || host.endsWith(`.${d}`));
   }
 
-  // -------------------------------------------------------------------------
-  // Live CERT Polska list
-  // -------------------------------------------------------------------------
-
   let staticDomainsCache = null;
 
-  /** Domains already shipped in the static rulesets (built by scripts/build-rules.js). */
   async function loadStaticDomains() {
     if (staticDomainsCache) return staticDomainsCache;
     const all = new Set();
@@ -111,7 +88,6 @@
     return staticDomainsCache;
   }
 
-  /** True if the host or one of its parent domains is already in the set. */
   function isCovered(host, set) {
     for (let h = host; h.includes('.'); h = h.slice(h.indexOf('.') + 1)) {
       if (set.has(h)) return true;
@@ -145,7 +121,6 @@
       }
 
       const shipped = await loadStaticDomains();
-      // Sanity check: a broken download must not "un-block" half of the list.
       if (feed.size < Math.max(1000, shipped.cert.size * 0.5)) throw new Error('feed-too-small');
 
       const added = F.collapseSubdomains([...feed].filter((h) => !isCovered(h, shipped.all))).slice(0, MAX_LIVE_DOMAINS);

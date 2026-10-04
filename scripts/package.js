@@ -1,10 +1,4 @@
 #!/usr/bin/env node
-/**
- * CyberGuard — Packs src/ into dist/cyberguard-<version>.zip for the
- * Chrome Web Store / Edge Add-ons upload. No external tools needed.
- *
- * Usage: node scripts/package.js   (run `npm run build` first)
- */
 
 'use strict';
 
@@ -25,7 +19,6 @@ function listFiles(dir, base = dir) {
   });
 }
 
-/** Minimal ZIP writer (deflate), enough for extension packages. */
 function createZip(files) {
   const locals = [];
   const centrals = [];
@@ -37,9 +30,9 @@ function createZip(files) {
 
     const local = Buffer.alloc(30);
     local.writeUInt32LE(0x04034b50, 0);
-    local.writeUInt16LE(20, 4); // version needed
-    local.writeUInt16LE(0x0800, 6); // UTF-8 names
-    local.writeUInt16LE(8, 8); // deflate
+    local.writeUInt16LE(20, 4);
+    local.writeUInt16LE(0x0800, 6);
+    local.writeUInt16LE(8, 8);
     local.writeUInt32LE(crc >>> 0, 14);
     local.writeUInt32LE(compressed.length, 18);
     local.writeUInt32LE(data.length, 22);

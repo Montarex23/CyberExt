@@ -91,7 +91,7 @@ Oczekiwany wynik: `30/30 passed`. Scenariusze:
 | 6 | Domena z archiwum → ostrzeżenie bez adresu i bez „wejdź mimo to” |
 | 7 | Logowanie w „banku” zapamiętuje odcisk przy wysłaniu; hasło nie trafia do pamięci |
 | 8 | To samo hasło na obcej stronie → okno „Stop!”, formularz **nie** wysłany, „Zabierz mnie stąd” działa |
-| 9 | „To jest moja zaufana strona” (2 kroki) przepuszcza logowanie i zapamiętuje stronę |
+| 9 | „Znam tę stronę, to nie oszustwo” (2 kroki) przepuszcza logowanie i zapamiętuje stronę |
 | 10 | Szybkie pisanie + Enter: wysyłka wstrzymana do sprawdzenia, potem wysłana |
 | 11 | Zwykłe hasło na drugim forum → wskazówka, nic nie blokuje |
 | 12 | Hasła 4-znakowe też są chronione |
@@ -175,13 +175,13 @@ Każdy scenariusz ma oczekiwany wynik. Zaznaczaj ✅/❌.
 
 | ID | Kroki | Oczekiwany wynik |
 |---|---|---|
-| T01 | Kliknij link „Strona z listy oszustw” | Karta z czerwonym paskiem i zaniepokojoną maskotką: „Spokojnie – zatrzymaliśmy tę stronę, zanim się otworzyła”, „Stop! Ta strona może Cię oszukać”, zdanie o oszuście „na wnuczka”, podświetlony adres zablokowanej strony, źródło (OpenPhish / CERT Polska). Duży turkusowy przycisk „Zabierz mnie w bezpieczne miejsce”, niżej trzy piktogramy „Jak działa takie oszustwo?”. |
-| T01a | W pasku adresu wpisz `chrome-extension://<ID wtyczki>/pages/warning/warning.html?domain=allegro.pl-oferta24.xyz&src=cert_pl` (ID jest na `chrome://extensions`) | Tytuł „Stop! Ta strona udaje Allegro”, porównanie: „Prawdziwa strona Allegro: allegro.pl” / „Adres zablokowanej strony: allegro.**pl-oferta24.xyz**” (podświetlone) i zdanie „Liczy się końcówka adresu: …”. |
+| T01 | Kliknij link „Strona z listy oszustw” | Karta z czerwonym paskiem i zaniepokojoną maskotką: „Spokojnie, zatrzymaliśmy tę stronę, zanim zdążyła się otworzyć”, „Stop! Ta strona może Cię oszukać”, zdanie o oszuście „na wnuczka”, podświetlony adres zablokowanej strony, źródło (OpenPhish / CERT Polska). Duży turkusowy przycisk „Zabierz mnie w bezpieczne miejsce”, niżej trzy piktogramy „Jak działa takie oszustwo?”. |
+| T01a | W pasku adresu wpisz `chrome-extension://<ID wtyczki>/pages/warning/warning.html?domain=allegro.pl-oferta24.xyz&src=cert_pl` (ID jest na `chrome://extensions`) | Tytuł „Stop! Ta strona udaje Allegro”, porównanie: „Prawdziwa strona Allegro: allegro.pl” / „Adres zablokowanej strony: allegro.**pl-oferta24.xyz**” (podświetlone) i zdanie „Patrz na końcówkę adresu: …”. |
 | T02 | Kliknij „Zabierz mnie w bezpieczne miejsce” | Otwiera się strona startowa przeglądarki. Klawisz Esc działa tak samo. |
 | T03 | Wróć do T01. Kliknij mały link „Wiem, co robię…” | Rozwija się ramka z ostrzeżeniem. Przycisk „Wejdź na stronę” jest nieaktywny. |
 | T04 | Zaznacz „Rozumiem, że ta strona może ukraść…” | Przycisk odlicza „Poczekaj 5 s… 4 s…”, potem staje się aktywny. Odznaczenie wyłącza go z powrotem. |
-| T05 | Kliknij „Wejdź na stronę” | Pojawia się błąd połączenia. To normalne w środowisku testowym (strona testowa działa na porcie 8080). Kliknij link z T01 jeszcze raz: strona się otwiera, z **czerwonym** banerem „Ta strona jest na liście niebezpiecznych”. Ikona ma „!”. |
-| T06 | Ustawienia → „Strony odblokowane do zamknięcia przeglądarki” | Domena z T01 jest na liście. „Zablokuj ponownie” → link z T01 znowu pokazuje czerwoną stronę. |
+| T05 | Kliknij „Wejdź na stronę” | Pojawia się błąd połączenia. To normalne w środowisku testowym (strona testowa działa na porcie 8080). Kliknij link z T01 jeszcze raz: strona się otwiera, z **czerwonym** banerem „Uważaj, ta strona jest na liście oszustw”. Ikona ma „!”. |
+| T06 | Ustawienia → „Odblokowane do zamknięcia przeglądarki” | Domena z T01 jest na liście. „Zablokuj znowu” → link z T01 znowu pokazuje czerwoną stronę. |
 | T07 | Odblokuj jak w T05. Zamknij **całe** testowe okno, w terminalu wciśnij Ctrl+C, uruchom `npm run test:manual` ponownie i kliknij link z T01 | Strona jest znowu zablokowana (wyjątek działał tylko do zamknięcia przeglądarki). |
 
 #### Ochrona haseł
@@ -190,13 +190,13 @@ Każdy scenariusz ma oczekiwany wynik. Zaznaczaj ✅/❌.
 |---|---|---|
 | T10 | `online.mbank.pl` → wpisz hasło testowe → „Zaloguj” | Formularz wysłany (linia w terminalu). Baner „Ta strona nie jest zabezpieczona” jest poprawny, bo strona testowa działa na HTTP. |
 | T11 | Ustawienia → „Zapamiętane hasła” | „Hasło 1 — używane na: mbank.pl” z plakietką **chronione**. Samego hasła nigdzie nie widać. |
-| T12 | `super-promocje24.com` → **zacznij wpisywać** to samo hasło | Zaraz po wpisaniu: tło strony rozmywa się i pojawia się okno z zaniepokojoną maskotką: „Spokojnie – zatrzymaliśmy wysyłanie tego hasła”, „Stop! To może być oszustwo”, porównanie „To hasło jest Twoim hasłem do: **mBank – mbank.pl**” / „A ta strona to: **super-promocje24.com**” (podświetlone). Fokus jest na „Zabierz mnie stąd”. |
+| T12 | `super-promocje24.com` → **zacznij wpisywać** to samo hasło | Zaraz po wpisaniu: tło strony rozmywa się i pojawia się okno z zaniepokojoną maskotką: „Spokojnie, wstrzymaliśmy wysłanie hasła”, „Stop! To może być oszustwo”, porównanie „Tego hasła używasz w: **mBank – mbank.pl**” / „A jesteś teraz na: **super-promocje24.com**” (podświetlone). Fokus jest na „Zabierz mnie stąd”. |
 | T13 | Spróbuj wysłać: Enter / kliknięcie „Zaloguj” | **Nic nie zostaje wysłane** (brak nowej linii w terminalu). |
-| T14 | Kliknij „Zabierz mnie stąd” | Zielona strona „Dobrze! Podejrzana strona jest zamknięta”, z adresem i linkiem do pomocy. |
-| T15 | `moj-nowy-sklep.pl` → to samo hasło → „To jest moja zaufana strona” | Drugi krok „Na pewno?” z podpowiedzią o nowym koncie. Domyślnie zaznaczony jest bezpieczny przycisk „Nie, zabierz mnie stąd”. |
+| T14 | Kliknij „Zabierz mnie stąd” | Strona z turkusowym paskiem i zadowoloną maskotką: „Dobrze! Podejrzana strona jest zamknięta”, „Zamknęliśmy stronę super-promocje24.com.”, przycisk „Wróć na stronę startową” i link „Co mam teraz zrobić?”. |
+| T15 | `moj-nowy-sklep.pl` → to samo hasło → „Znam tę stronę, to nie oszustwo” | Drugi krok „Na pewno?” z podpowiedzią o nowym koncie. Domyślnie zaznaczony jest bezpieczny przycisk „Nie, zabierz mnie stąd”. |
 | T16 | Kliknij „Tak, ufam tej stronie” → „Zaloguj” | Formularz wysłany. W ustawieniach: „używane na: mbank.pl, moj-nowy-sklep.pl”. Ponowne wejście = brak okna. |
 | T17 | `portal-x.com` (ramka) → wpisz hasło bankowe **w ramce** | Okno „Stop!” przykrywa całą stronę, nie tylko ramkę. |
-| T18 | `forum-wedkarskie.pl` → **inne** hasło (np. `ForumHaslo99`) → „Zaloguj”; potem `przepisy-babci.pl` → to samo hasło | Niebieska „Wskazówka bezpieczeństwa” w prawym dolnym rogu: „To samo hasło jest używane także na: forum-wedkarskie.pl”. Formularz da się wysłać. |
+| T18 | `forum-wedkarskie.pl` → **inne** hasło (np. `ForumHaslo99`) → „Zaloguj”; potem `przepisy-babci.pl` → to samo hasło | W prawym dolnym rogu „Mała rada” ze spokojną maskotką: „Tego samego hasła używasz też na: forum-wedkarskie.pl”. Formularz da się wysłać. |
 | T19 | Wpisz w pasek adresu `http://portal-x.com:8080/login`, hasło `xdxd` → „Zaloguj”; potem `http://login-widget.com:8080/login` → `xdxd` | Wskazówka też się pojawia (hasła od 4 znaków są chronione, krótsze są ignorowane). |
 | T20 | `online.mbank.pl` → hasło bankowe → **od razu Enter** (bez pauzy) | Formularz zostaje wysłany. Krótkie wstrzymanie jest niewidoczne dla użytkownika. |
 
@@ -206,7 +206,7 @@ Na liście testów: „Linki, których napis udaje inny adres” (`linki-testowe
 
 | ID | Kroki | Oczekiwany wynik |
 |---|---|---|
-| L1 | Link 1 „Oszukańczy” (`https://www.mbank.pl/logowanie`) | Okno z bursztynowym paskiem i zmartwioną maskotką: „Spokojnie – ten link nie został otwarty”, „Uwaga: ten link prowadzi gdzie indziej”, napis **mbank.pl**, naprawdę mbank**-weryfikacja.xyz** (podświetlona różnica) i zdanie „Liczy się końcówka adresu…”. Fokus jest na „Nie otwieraj tego linku”. Ten przycisk albo Esc zostawia Cię na stronie. |
+| L1 | Link 1 „Oszukańczy” (`https://www.mbank.pl/logowanie`) | Okno z bursztynowym paskiem i zmartwioną maskotką: „Spokojnie, nic się jeszcze nie otworzyło”, „Ten link prowadzi gdzie indziej, niż pokazuje”, napis **mbank.pl**, naprawdę mbank**-weryfikacja.xyz** (podświetlona różnica) i zdanie „Patrz na końcówkę adresu…”. Fokus jest na „Nie otwieraj tego linku”. Ten przycisk albo Esc zostawia Cię na stronie. |
 | L2 | Link 1 → „Otwórz mimo to” | Otwiera się `mbank-weryfikacja.xyz` (z pomarańczowym banerem podróbki adresu). Link 6 (nowa karta) po „Otwórz mimo to” otwiera nową kartę. To samo kliknięciem środkowym przyciskiem myszy na link 1: najpierw okno. |
 | L3 | Linki 2, 3, 4, 7 | Otwierają się **bez** okna: uczciwy, ta sama firma (PKO: `pkobp.pl` → `ipko.pl`), uczciwy w Outlook Safe Links, zwykły napis „Kliknij tutaj…”. |
 | L4 | Link 5 (Outlook Safe Links z oszukańczym celem) | Okno pokazuje **mbank-weryfikacja.xyz**, a nie adres `outlook.com`. |
@@ -218,7 +218,7 @@ Na liście testów: „Linki, których napis udaje inny adres” (`linki-testowe
 | ID | Kroki | Oczekiwany wynik |
 |---|---|---|
 | T21 | **BitB.** Na liście testów: „Atak Browser-in-the-Browser” (`wygraj-nagrode.pl`) → „Zaloguj przez mBank”. Przyjrzyj się okienku. | Wygląda jak osobne okno Chrome: pasek tytułu „Logowanie – mBank – Google Chrome”, kłódka i adres `https://online.mbank.pl/logowanie`. **To tylko obrazek na stronie.** Spróbuj przeciągnąć okienko poza okno przeglądarki: nie da się, co jest typowym sposobem rozpoznania BitB. |
-| T22 | W fałszywym okienku wpisz hasło bankowe z T10 | Okno „Stop!…” z porównaniem: „Twoim hasłem do: **mBank**” / „A ta strona to: **wygraj-nagrode.pl**”. Wtyczka podaje **prawdziwy** adres, a nie ten z fałszywego paska. „Zaloguj” nic nie wysyła (brak linii w terminalu). |
+| T22 | W fałszywym okienku wpisz hasło bankowe z T10 | Okno „Stop!…” z porównaniem: „Tego hasła używasz w: **mBank**” / „A jesteś teraz na: **wygraj-nagrode.pl**”. Wtyczka podaje **prawdziwy** adres, a nie ten z fałszywego paska. „Zaloguj” nic nie wysyła (brak linii w terminalu). |
 | T23 | Kliknij ikonę CyberGuard na tej stronie | Stan dotyczy `wygraj-nagrode.pl`, a nie `mbank.pl`. Pasek adresu przeglądarki i okienko CyberGuard zawsze pokazują prawdę. |
 | T24 | **Przejęcie sesji przez phishing-pośrednik (AiTM).** Nie da się go bezpiecznie odtworzyć lokalnie. Z punktu widzenia wtyczki wygląda jak T12: prawdziwa strona banku jest przekazywana, ale pod adresem oszusta. | Wystarczy zaliczony T12 (i T30 dla adresów podobnych do marki). Ochrona działa na etapie wpisywania hasła, zanim oszust dostanie sesję. |
 | T25 | **Po przejęciu sesji.** Okienko CyberGuard → „Oszust może mieć moje dane – co robić?” | W kroku 2 jest „**Wyloguj się ze wszystkich urządzeń**…”, a przy czyszczeniu ostatniej godziny dopisek, że to **nie** wylogowuje oszusta. |
@@ -229,12 +229,12 @@ Na liście testów: „Linki, których napis udaje inny adres” (`linki-testowe
 
 | ID | Kroki | Oczekiwany wynik |
 |---|---|---|
-| T30 | `mbank-logowanie.com` | Pomarańczowy baner „Uwaga: ta strona może podszywać się pod mBank… Prawdziwy adres to mbank.pl”. Przyciski „Zabierz mnie stąd” i „Ufam tej stronie”. Ikona ma „!”. |
-| T31 | Link „pаypal.com (cyrylica)” | **Czerwony** baner „Uwaga: podrobiony adres strony”. |
-| T32 | `allegro-okazje.pl` → „Ufam tej stronie” → odśwież | Baner znika i nie wraca. Ustawienia → „Strony z wyłączonymi ostrzeżeniami”: „allegro-okazje.pl — zaufana strona”. |
+| T30 | `mbank-logowanie.com` | Baner ze zmartwioną maskotką „Ta strona może udawać mBank” i porównaniem: „Prawdziwa strona mBank: mbank.pl” / „Ta strona: mbank**-logowanie.com**” oraz zdaniem „Patrz na końcówkę adresu…”. Przyciski „Zabierz mnie stąd” i „Ufam tej stronie”. Ikona ma „!”. |
+| T31 | Link „pаypal.com (cyrylica)” | **Czerwony** baner „Ta strona udaje PayPal podrobionymi literami”. |
+| T32 | `allegro-okazje.pl` → „Ufam tej stronie” → odśwież | Baner znika i nie wraca. Ustawienia → „Strony bez ostrzeżeń”: „allegro-okazje.pl — zaufana strona (żadnych ostrzeżeń)”. |
 | T33 | `sklep-testowy.pl` (formularz) | Baner „Hasło trafi na inną stronę: **evil-site.ru**” oraz drugi punkt „**Ta strona nie jest zabezpieczona.** …”. |
 | T34 | `forum-wedkarskie.pl` → baner „Ta strona nie jest zabezpieczona” → **„Rozumiem, nie pokazuj więcej na tej stronie”** → odśwież | Baner nie wraca. Na `przepisy-babci.pl` (inna strona) nadal jest. |
-| T35 | Ustawienia → „Strony z wyłączonymi ostrzeżeniami” | „forum-wedkarskie.pl — ukryte ostrzeżenie: brak zabezpieczenia (kłódki)”. „Pokazuj znowu” → baner wraca. |
+| T35 | Ustawienia → „Strony bez ostrzeżeń” | „forum-wedkarskie.pl — ukryte ostrzeżenie: brak zabezpieczenia (kłódki)”. „Pokazuj znowu” → baner wraca. |
 | T36 | Na dowolnym banerze kliknij **×** → odśwież | Baner znika, a po odświeżeniu wraca. |
 | T37 | `http://localhost:8080/login` | **Brak** banera o braku zabezpieczenia (adresy lokalne, np. router, są pomijane). |
 | T38 | Otwórz `przepisy-babci.pl` (baner o braku zabezpieczenia). Na `chrome://extensions` odśwież CyberGuard. Wróć do tej karty **bez odświeżania** → „Rozumiem, nie pokazuj więcej” → teraz odśwież kartę | Po przeładowaniu wtyczki na stronie jest **dokładnie jeden** baner. Przycisk działa: po odświeżeniu baner nie wraca (symulacja automatycznej aktualizacji wtyczki). |
@@ -243,14 +243,14 @@ Na liście testów: „Linki, których napis udaje inny adres” (`linki-testowe
 
 | ID | Kroki | Oczekiwany wynik |
 |---|---|---|
-| T40 | Kliknij ikonę na `online.mbank.pl` | Turkusowa karta z **zadowoloną** maskotką: „Prawdziwa strona: mBank”. U góry granatowy pasek z logo i „Ochrona włączona”. |
-| T41 | … na `moj-nowy-sklep.pl` | Zadowolona maskotka: „Znana strona”. |
-| T42 | … na `mbank-logowanie.com` | Bursztynowa karta ze **zmartwioną** maskotką: „Uwaga: ta strona może podszywać się pod mBank”. |
-| T43 | … na `sklep-testowy.pl` (nigdzie tam się nie logowano) | Zmartwiona maskotka: „Strona bez zabezpieczenia”. Na `forum-wedkarskie.pl` po T18 będzie zadowolona maskotka i „Znana strona”, bo tam się logowano. Na dowolnej prawdziwej stronie HTTPS: **spokojna** maskotka i „Nieznana strona”. |
-| T44 | … na stronie ostrzeżenia z T01 | Zadowolona maskotka: „Niebezpieczna strona zatrzymana”. Licznik „Zatrzymane niebezpieczne strony” rośnie z każdą blokadą (odświeżenie tej samej strony się nie liczy). |
+| T40 | Kliknij ikonę na `online.mbank.pl` | Turkusowa karta z **zadowoloną** maskotką: „To prawdziwa strona: mBank”. U góry granatowy pasek z logo i „Ochrona włączona”. |
+| T41 | … na `moj-nowy-sklep.pl` | Zadowolona maskotka: „Znasz tę stronę”. |
+| T42 | … na `mbank-logowanie.com` | Bursztynowa karta ze **zmartwioną** maskotką: „Ta strona może udawać mBank”. |
+| T43 | … na `sklep-testowy.pl` (nigdzie tam się nie logowano) | Zmartwiona maskotka: „Strona bez kłódki”. Na `forum-wedkarskie.pl` po T18 będzie zadowolona maskotka i „Znasz tę stronę”, bo tam się logowano. Na dowolnej prawdziwej stronie HTTPS: **spokojna** maskotka i „Nie znamy tej strony”. |
+| T44 | … na stronie ostrzeżenia z T01 | Zadowolona maskotka: „Zatrzymaliśmy niebezpieczną stronę”. Licznik „Zatrzymane niebezpieczne strony” rośnie z każdą blokadą (odświeżenie tej samej strony się nie liczy). |
 | T45 | „Oszust może mieć moje dane – co robić?” | Otwiera się strona pomocy z 6 ponumerowanymi krokami. Link do incydent.cert.pl działa. |
-| T46 | Pomoc → „Wyczyść ostatnią godzinę” → „Tak, wyczyść” | Przeglądarka pyta o zgodę na „usuwanie danych przeglądania”. Po zgodzie: „Gotowe…”. Po odmowie: „Bez zgody przeglądarki…”. „Anuluj” wraca bez pytania. |
-| T47 | Ustawienia → „Sprawdź teraz” (wymaga internetu) | Po kilku sekundach: „Ostatnia aktualizacja: … Razem chronimy przed X niebezpiecznymi stronami: Y z listy wbudowanej (z dnia …) i N nowych…”. X = Y + N − wycofane. Kolejne „Sprawdź teraz” może zmienić N, bo CERT dodaje domeny na bieżąco. N to zawsze różnica względem listy wbudowanej, a nie suma z poprzednich aktualizacji. Ta sama łączna liczba jest w okienku pod ikoną. |
+| T46 | Pomoc → „Wyczyść ostatnią godzinę” → „Tak, wyczyść” | Przeglądarka pyta o zgodę na „usuwanie danych przeglądania”. Po zgodzie: „Gotowe…”. Po odmowie: „Przeglądarka nie dała zgody…”. „Anuluj” wraca bez pytania. |
+| T47 | Ustawienia → „Sprawdź teraz” (wymaga internetu) | Po kilku sekundach: „Ostatnio sprawdzone: … Razem chronimy przed X niebezpiecznymi stronami: Y z listy w rozszerzeniu (z dnia …) i N dopisanych od tamtej pory przez CERT Polska.”. X = Y + N − wycofane. Kolejne „Sprawdź teraz” może zmienić N, bo CERT dodaje domeny na bieżąco. N to zawsze różnica względem listy wbudowanej, a nie suma z poprzednich aktualizacji. Ta sama łączna liczba jest w okienku pod ikoną. |
 | T48 | Ustawienia → wyłącz „Pobieraj nowe ostrzeżenia…” → odśwież stronę ustawień | Włącznik zostaje wyłączony. |
 | T49 | Ustawienia → „Zapomnij” przy haśle bankowym → wróć do T12 | Okno „Stop!” się nie pojawia, bo hasło zostało zapomniane. „Zapomnij wszystkie hasła” wymaga potwierdzenia. |
 
@@ -274,14 +274,14 @@ Wszystko w **testowym oknie** z włączonym CyberGuard.
 
 | ID | Strona | Kroki | Oczekiwany wynik |
 |---|---|---|---|
-| R01 | `allegro.pl`, `mbank.pl`, `pkobp.pl`, `inpost.pl`, `www.gov.pl` | Kliknij ikonę | Zadowolona maskotka i „Prawdziwa strona: …” z nazwą firmy. Brak banerów. |
+| R01 | `allegro.pl`, `mbank.pl`, `pkobp.pl`, `inpost.pl`, `www.gov.pl` | Kliknij ikonę | Zadowolona maskotka i „To prawdziwa strona: …” z nazwą firmy. Brak banerów. |
 | R02 | `mbank.cz`, `santander.de`, `allegro.tech` | Otwórz | **Brak** ostrzeżeń (legalne domeny tych firm). |
-| R03 | `wikipedia.org` | Kliknij ikonę | Spokojna maskotka i „Nieznana strona”. Brak banerów. |
+| R03 | `wikipedia.org` | Kliknij ikonę | Spokojna maskotka i „Nie znamy tej strony”. Brak banerów. |
 | R04 | `http://http-password.badssl.com/` (projekt testowy programistów Chrome) | Otwórz | Baner „Ta strona nie jest zabezpieczona”. |
 | R05 | Ta sama strona | „Rozumiem, nie pokazuj więcej” → odśwież; otwórz `http://http-login.badssl.com/` | Baner nie wraca na żadnej z nich, bo to ta sama witryna `badssl.com`. W ustawieniach: „badssl.com — ukryte ostrzeżenie…”. |
 | R06 | `https://hole.cert.pl/domains/v2/domains.txt` | Skopiuj dowolny adres z listy, wklej w pasek adresu, Enter | Czerwona strona „Stop!” z tym adresem lub bez adresu (starsze domeny z archiwum). Licznik w popupie rośnie. **Nie klikaj „Wejdź mimo to”.** |
 | R07 | Twoja prawdziwa poczta (np. Gmail) | Zaloguj się normalnie w testowym oknie | Ustawienia: nowe hasło „używane na: google.com” z plakietką **chronione**. |
-| R08 | `http://localhost:8080/` → dowolna strona logowania (lokalna) | Zacznij wpisywać hasło z R07, **nie wysyłaj** | Okno „Stop!…” z porównaniem „Twoim hasłem do: Google…”. Kliknij „Zabierz mnie stąd”. |
+| R08 | `http://localhost:8080/` → dowolna strona logowania (lokalna) | Zacznij wpisywać hasło z R07, **nie wysyłaj** | Okno „Stop!…” z porównaniem „Tego hasła używasz w: Google…”. Kliknij „Zabierz mnie stąd”. |
 
 **Zasady przy R06–R08:**
 - Adresy z listy CERT otwieraj **tylko** w oknie z włączonym CyberGuard. Wtyczka zatrzymuje stronę, zanim przeglądarka cokolwiek z niej pobierze, ale bez wtyczki byłaby to prawdziwa strona oszusta.
@@ -297,8 +297,8 @@ Najważniejszy test dla tej wtyczki: czy osoba nietechniczna zrozumie komunikaty
 
 **Przebieg** (nie podpowiadaj, tylko obserwuj i notuj):
 
-1. „Wyobraź sobie, że dostał(a) Pan/Pani SMS o dopłacie do paczki. Proszę kliknąć ten link.” → link z T01. Obserwuj: czy rozumie, że to oszustwo? Czy klika duży zielony przycisk?
-2. „Bank prosi o zalogowanie się na tej stronie.” → `super-promocje24.com`, hasło z kartki. Obserwuj: czy czyta okno „Stop!”? Co wybiera? Czy „To jest moja zaufana strona” kusi?
+1. „Wyobraź sobie, że dostał(a) Pan/Pani SMS o dopłacie do paczki. Proszę kliknąć ten link.” → link z T01. Obserwuj: czy rozumie, że to oszustwo? Czy klika duży turkusowy przycisk?
+2. „Bank prosi o zalogowanie się na tej stronie.” → `super-promocje24.com`, hasło z kartki. Obserwuj: czy czyta okno „Stop!”? Co wybiera? Czy „Znam tę stronę, to nie oszustwo” kusi?
 3. „Proszę wejść na tę stronę banku.” → `mbank-logowanie.com`. Czy zauważa baner? Czy rozumie „podszywać się”?
 4. „Proszę sprawdzić, czy ta strona jest bezpieczna.” → `online.mbank.pl`. Czy znajduje ikonę? Jak rozumie „Prawdziwa strona”?
 5. „Załóżmy, że podał(a) Pan/Pani dane karty oszustowi. Co teraz?” Czy znajduje przycisk w okienku pod ikoną? Czy kroki pomocy są jasne?
@@ -327,7 +327,7 @@ Najważniejszy test dla tej wtyczki: czy osoba nietechniczna zrozumie komunikaty
 | Fałszywe strony: „Witryna jest nieosiągalna”, `DNS_PROBE_FINISHED_NXDOMAIN` | Test w **zwykłym** oknie Chrome zamiast testowego (np. po kliknięciu linku w terminalu) | Używaj okna otwartego przez `npm run test:manual`. Lista testów musi pokazywać zielone „✔ To jest okno testowe”. |
 | Po „Wejdź mimo to” błąd połączenia | Wtyczka otwiera stronę bez portu 8080 | Normalne w środowisku testowym. Kliknij link z listy jeszcze raz. |
 | Brak okna „Stop!” przy haśle | Hasło nie zostało zapamiętane: nie kliknięto „Zaloguj” w T10 albo hasło ma mniej niż 4 znaki | Powtórz T10 i sprawdź „Zapamiętane hasła” w ustawieniach. |
-| Brak banera „brak zabezpieczenia” na stronie HTTP | Na stronie nie ma pola hasła, adres jest lokalny, ostrzeżenie było wcześniej ukryte „Rozumiem” albo pole jest tylko w ramce | Celowe. Sprawdź „Strony z wyłączonymi ostrzeżeniami” w ustawieniach. |
+| Brak banera „brak zabezpieczenia” na stronie HTTP | Na stronie nie ma pola hasła, adres jest lokalny, ostrzeżenie było wcześniej ukryte „Rozumiem” albo pole jest tylko w ramce | Celowe. Sprawdź „Strony bez ostrzeżeń” w ustawieniach. |
 | Wtyczka nie ładuje się: „Could not load … rules/main.json” | Brak zbudowanych list | `npm run build` |
 | Ostrzeżenie wraca mimo „Rozumiem” | Karta otwarta z bardzo starą kopią wtyczki | Odśwież wtyczkę na `chrome://extensions` i kartę. Od wersji 2.0 dzieje się to samo. |
 | Błędy w działaniu | — | `chrome://extensions` → „service worker” przy CyberGuard (konsola rozszerzenia); F12 na stronie (konsola content scriptu) |

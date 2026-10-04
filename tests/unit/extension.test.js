@@ -1,11 +1,5 @@
 'use strict';
 
-/**
- * Static checks of the extension package: manifest paths exist, every
- * translation key used in HTML/JS exists in both languages, and nothing
- * uses permissions we don't need.
- */
-
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');
@@ -39,7 +33,6 @@ test('icons are real PNG files with the declared size', () => {
   for (const [size, file] of Object.entries(declared)) {
     const buf = fs.readFileSync(path.join(SRC, file));
     assert.equal(buf.subarray(0, 8).toString('hex'), '89504e470d0a1a0a', `${file} is not a PNG`);
-    // IHDR chunk: width and height are big-endian uint32 at bytes 16 and 20.
     assert.equal(buf.readUInt32BE(16), Number(size), `${file} width`);
     assert.equal(buf.readUInt32BE(20), Number(size), `${file} height`);
   }
@@ -56,8 +49,6 @@ test('service worker importScripts paths exist', () => {
 });
 
 test('permissions are minimal', () => {
-  // "scripting" adds no install warning (we already have host access) and is used only to
-  // re-attach protection to tabs that were open during an install/update.
   assert.deepEqual(manifest.permissions.sort(), ['alarms', 'declarativeNetRequest', 'scripting', 'storage']);
   assert.deepEqual(manifest.optional_permissions, ['browsingData']);
 });
@@ -78,8 +69,6 @@ test('every translation key used in the code exists in pl and en', () => {
 });
 
 test('every script is UTF-8 that Chrome accepts (no BOM, no noncharacters U+FFFE/U+FFFF)', () => {
-  // Chrome refuses to load a content script containing e.g. a literal U+FFFF
-  // ("file is not UTF-8 encoded"), even though Node runs it fine.
   for (const file of walk(SRC).filter((f) => /\.(js|json|html|css)$/.test(f) && !f.includes(`${path.sep}rules${path.sep}`))) {
     const buf = fs.readFileSync(file);
     assert.notEqual(buf.subarray(0, 3).toString('hex'), 'efbbbf', `${file} has a BOM`);
@@ -92,6 +81,6 @@ test('no innerHTML with dynamic data in content scripts', () => {
   for (const file of manifest.content_scripts.flatMap((c) => c.js)) {
     const text = fs.readFileSync(path.join(SRC, file), 'utf-8');
     const uses = [...text.matchAll(/innerHTML\s*=\s*([^;]+);/g)].map((m) => m[1].trim());
-    for (const rhs of uses) assert.equal(rhs, 'v', `${file}: innerHTML = ${rhs}`); // Only el()'s static icon path.
+    for (const rhs of uses) assert.equal(rhs, 'v', `${file}: innerHTML = ${rhs}`);
   }
 });

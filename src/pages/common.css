@@ -1,13 +1,3 @@
-/*
- * CyberGuard — shared styles for extension pages (warning, popup, options, help).
- * Built for every age: 18px base text, AAA contrast for text, 56px buttons,
- * clear focus rings, no glass/blur effects. Follows the system light/dark mode.
- *
- * Brand colours come from the icon (teal shield on navy): teal is the colour of
- * CyberGuard and of every "safe" action. Amber and red are used ONLY for warnings,
- * and only as accents (bars, borders, highlights) — never as full red screens.
- */
-
 :root {
   --bg: #f3f5f6;
   --surface: #ffffff;
@@ -224,8 +214,6 @@ strong {
   white-space: nowrap;
 }
 
-/* --- Mascot (shared/mascot.js) ----------------------------------------- */
-
 .cg-mascot {
   display: block;
   flex-shrink: 0;
@@ -236,8 +224,6 @@ strong {
   font-size: 1rem;
   color: var(--muted);
 }
-
-/* --- Address comparison (shared/compare-view.js) ----------------------- */
 
 .cg-compare {
   margin: 4px 0 12px;

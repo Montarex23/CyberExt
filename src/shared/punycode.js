@@ -1,9 +1,3 @@
-/**
- * CyberGuard — Punycode decoder (RFC 3492), shared by the service worker and tests.
- *
- * Browsers hand us hostnames in ASCII form ("xn--pple-43d.com"). To spot
- * homograph attacks we need the Unicode form ("аpple.com", Cyrillic "а").
- */
 (function (root, factory) {
   'use strict';
   const CG = (root.CyberGuard = root.CyberGuard || {});
@@ -32,13 +26,12 @@
   }
 
   function basicToDigit(cp) {
-    if (cp >= 48 && cp < 58) return cp - 22; // '0'..'9' → 26..35
-    if (cp >= 65 && cp < 91) return cp - 65; // 'A'..'Z' → 0..25
-    if (cp >= 97 && cp < 123) return cp - 97; // 'a'..'z' → 0..25
+    if (cp >= 48 && cp < 58) return cp - 22;
+    if (cp >= 65 && cp < 91) return cp - 65;
+    if (cp >= 97 && cp < 123) return cp - 97;
     return BASE;
   }
 
-  /** Decodes the part after "xn--". Throws on malformed input. */
   function decodeLabel(input) {
     const output = [];
     let n = INITIAL_N;
@@ -72,7 +65,6 @@
     return String.fromCodePoint(...output);
   }
 
-  /** "xn--pple-43d.com" → "аpple.com". Labels that fail to decode stay as-is. */
   function toUnicode(host) {
     return String(host)
       .split('.')

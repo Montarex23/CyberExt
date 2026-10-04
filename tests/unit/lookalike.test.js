@@ -27,7 +27,7 @@ test('detects one-letter typos and digit swaps', () => {
 });
 
 test('homographs (other alphabets) are reported as danger', () => {
-  const r = lookalike.analyzeHost('xn--pypal-4ve.com'); // "pаypal" with Cyrillic "а"
+  const r = lookalike.analyzeHost('xn--pypal-4ve.com');
   assert.equal(r.kind, 'homograph');
   assert.equal(r.level, 'danger');
   assert.equal(r.brand.id, 'paypal');
@@ -53,8 +53,8 @@ test('legitimate company domains (other countries, subsidiaries) are not flagged
 test('brand on free hosting, scam endings or with investment lures is flagged', () => {
   const { SUSPICIOUS_SAMPLES } = require('./legit-domains.js');
   for (const h of SUSPICIOUS_SAMPLES) assert.ok(lookalike.analyzeHost(h), h);
-  assert.equal(brandOf('mbank.top'), 'mbank'); // Exact brand, scam ending
-  assert.equal(brandOf('allegro.oferty-xyz.com'), 'allegro'); // Brand only in a subdomain
+  assert.equal(brandOf('mbank.top'), 'mbank');
+  assert.equal(brandOf('allegro.oferty-xyz.com'), 'allegro');
 });
 
 test('short or common brand words need a suspicious context', () => {
@@ -65,7 +65,6 @@ test('short or common brand words need a suspicious context', () => {
 });
 
 test('mixed alphabets without a brand still produce a warning', () => {
-  // "tеst" with a Cyrillic "е", encoded as punycode by the browser.
   const host = new URL('http://tеst-shop.com').hostname;
   const r = lookalike.analyzeHost(host);
   assert.equal(r.kind, 'mixedScripts');

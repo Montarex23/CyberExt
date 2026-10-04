@@ -17,7 +17,7 @@ test('same site or same company → ok', () => {
   const pw = {};
   logic.remember(pw, H1, 'online.mbank.pl');
   assert.equal(logic.evaluate(pw, H1, 'login.mbank.pl').level, 'ok');
-  assert.equal(logic.evaluate(pw, H1, 'mbank.com').level, 'ok'); // Same brand, other domain.
+  assert.equal(logic.evaluate(pw, H1, 'mbank.com').level, 'ok');
 });
 
 test('bank password on a foreign site → danger with the bank name', () => {
@@ -66,7 +66,7 @@ test('summarize and forget never need the full hash', () => {
   logic.remember(pw, H1, 'mbank.pl', 1);
   logic.remember(pw, H2, 'forum.pl', 2);
   const summary = logic.summarize(pw);
-  assert.equal(summary[0].sites[0], 'forum.pl'); // Most recent first.
+  assert.equal(summary[0].sites[0], 'forum.pl');
   assert.equal(summary[1].important, true);
   assert.equal(summary[0].id.length, 16);
   assert.equal(logic.forget(pw, summary[1].id), true);

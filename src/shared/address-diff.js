@@ -1,18 +1,3 @@
-/**
- * CyberGuard — "What exactly is different about this address?"
- *
- * Turns a lookalike match into something a person can SEE:
- *
- *   alegro.pl          → a[_]legro.pl         "Brakuje jednej litery: „l”."
- *   paypa1.com         → paypa[1].com         "„1” zamiast „l”."
- *   xn--pypal-4ve.com  → p[а]ypal.com         "„а” to litera z innego alfabetu…"
- *   allegro.pl-oferta24.xyz → allegro.[pl-oferta24.xyz]  "…należy do „pl-oferta24.xyz”…"
- *   mbank-logowanie.com     → mbank[-logowanie.com]      "…należy do „mbank-logowanie.com”…"
- *
- * Output (JSON-safe, rendered by compare-view.js):
- *   { brandName, realSite, parts: [{ t, m, gap }], note: { key, params } }
- *   m = marked (highlighted), gap = a missing letter placeholder.
- */
 (function (root, factory) {
   'use strict';
   const CG = (root.CyberGuard = root.CyberGuard || {});
@@ -29,7 +14,6 @@
   const CYRILLIC = /[Ѐ-ӿ]/;
   const GREEK = /[Ͱ-Ͽ]/;
 
-  /** Joins neighbouring characters with the same marking into parts. */
   function toParts(chars) {
     const parts = [];
     for (const c of chars) {
@@ -43,10 +27,6 @@
   const plain = (text) => [...text].map((t) => ({ t, m: false }));
   const marked = (text) => [...text].map((t) => ({ t, m: true }));
 
-  /**
-   * Edit operations turning `fake` into `real` (Levenshtein + adjacent swaps),
-   * listed in the order of `fake`'s characters.
-   */
   function editOps(fake, real) {
     const a = [...fake];
     const b = [...real];
@@ -82,7 +62,6 @@
     return ops.reverse();
   }
 
-  /** Real site to compare with: the brand's domain whose name equals the keyword, else its main domain. */
   function realSiteFor(look) {
     const domains = look.brand.domains || [look.brand.site];
     return domains.find((d) => CG.domain.registrableLabel(d) === look.keyword) || look.brand.site;
@@ -92,13 +71,10 @@
     const suffix = CG.domain.getPublicSuffix(host);
     const site = CG.domain.getSiteKey(host);
     const label = site.slice(0, site.length - suffix.length - 1);
-    const sub = host.slice(0, host.length - site.length); // "secure." or ""
+    const sub = host.slice(0, host.length - site.length);
     return { suffix, site, label, sub };
   }
 
-  // --- The four kinds of disguise -----------------------------------------
-
-  /** Letters from another alphabet (Cyrillic/Greek) that look Latin. */
   function homographDiff(host, look) {
     const unicode = CG.punycode.toUnicode(host);
     const chars = [...unicode].map((t) => ({ t, m: CYRILLIC.test(t) || GREEK.test(t) }));
@@ -110,7 +86,6 @@
     };
   }
 
-  /** One or a few letters changed ("alegro", "paypa1", "santnader"). */
   function typoDiff(host, look) {
     const { sub, label, suffix } = hostPieces(host);
     const ops = editOps(label, look.keyword);
@@ -134,7 +109,6 @@
     return { parts: toParts(chars), note, realSite: realSiteFor(look) };
   }
 
-  /** The brand name itself, but a different (scam) ending: "mbank.top". */
   function suffixDiff(host, look) {
     const { sub, label, suffix } = hostPieces(host);
     const realSite = realSiteFor(look);
@@ -146,16 +120,13 @@
     };
   }
 
-  /** Brand name used as decoration; the address really belongs to someone else. */
   function ownerDiff(host, look) {
     const { sub, site } = hostPieces(host);
     let chars;
     const at = site.indexOf(look.keyword);
     if (!look.inMain || at === -1) {
-      // "allegro.pl-oferta24.xyz": the brand sits in front, the owner is the rest.
       chars = [...plain(sub), ...marked(site)];
     } else {
-      // "mbank-logowanie.com": everything except the brand word is the giveaway.
       chars = [
         ...plain(sub),
         ...marked(site.slice(0, at)),
@@ -170,11 +141,6 @@
     };
   }
 
-  /**
-   * @param {string} host  ASCII hostname (as the browser reports it).
-   * @param {object} [look] Result of CG.lookalike.analyzeHost(host), if already computed.
-   * @returns {null | { brandName, realSite, parts, note }}
-   */
   function describe(host, look) {
     const h = CG.domain.normalizeHost(host);
     const l = look === undefined ? CG.lookalike.analyzeHost(h) : look;
@@ -189,7 +155,6 @@
     return { brandName: l.brand.name, realSite: diff.realSite, parts: diff.parts, note: diff.note };
   }
 
-  /** Plain, unmarked parts for a host (used when there is no lookalike to explain). */
   function plainHost(host) {
     return [{ t: String(host), m: false, gap: false }];
   }

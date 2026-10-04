@@ -1,28 +1,4 @@
 #!/usr/bin/env node
-/**
- * CyberGuard — Blocklist builder (scripts/build-rules.js)
- *
- * Downloads the phishing feeds, cleans them and writes the static
- * declarativeNetRequest rulesets that ship inside the extension:
- *
- *   src/rules/main.json     one rule per domain (newest first, OpenPhish + CERT PL),
- *                           so the warning page can show the blocked address
- *                           and offer a session exception
- *   src/rules/archive.json  older CERT PL domains packed 1000 per rule
- *                           (requestDomains) — keeps us far below the 30 000
- *                           rules Chrome guarantees to every extension
- *   src/rules/meta.json     build date and counts (shown in the popup/settings)
- *
- * Sources:
- *   CERT Polska  https://hole.cert.pl/domains/v2/domains.json  (Polish scams: InPost, PGE, banks…)
- *   OpenPhish    https://openphish.com/feed.txt                (international phishing URLs)
- *
- * Usage:
- *   node scripts/build-rules.js
- *   node scripts/build-rules.js --cache-dir .cache     save raw feeds (or reuse them if present)
- *   node scripts/build-rules.js --offline --cache-dir tests/fixtures/feeds --out tmp/rules
- *   node scripts/build-rules.js --max-per-domain 20000
- */
 
 'use strict';
 
@@ -39,14 +15,9 @@ const ARCHIVE_CHUNK_SIZE = 1000;
 const DEFAULT_MAX_PER_DOMAIN = 25000;
 
 const SOURCES = [
-  // Order matters: earlier sources win duplicates and go first into main.json.
   { id: 'openphish', url: 'https://openphish.com/feed.txt', file: 'openphish.txt', parse: parseUrlList },
   { id: 'cert_pl', url: 'https://hole.cert.pl/domains/v2/domains.json', file: 'cert_pl.json', parse: parseCertJson },
 ];
-
-// ---------------------------------------------------------------------------
-// CLI
-// ---------------------------------------------------------------------------
 
 function parseArgs(argv) {
   const value = (name) => {
@@ -61,16 +32,10 @@ function parseArgs(argv) {
   };
 }
 
-// ---------------------------------------------------------------------------
-// Parsers — each returns raw entries, newest first when the feed has dates
-// ---------------------------------------------------------------------------
-
-/** OpenPhish: one URL per line. */
 function parseUrlList(text) {
   return text.split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('#'));
 }
 
-/** CERT Polska JSON: [{ DomainAddress, InsertDate, DeleteDate }], active = no DeleteDate. */
 function parseCertJson(text) {
   const entries = JSON.parse(text);
   if (!Array.isArray(entries)) throw new Error('CERT PL feed: expected an array');
@@ -79,10 +44,6 @@ function parseCertJson(text) {
     .sort((a, b) => String(b.InsertDate).localeCompare(String(a.InsertDate)))
     .map((e) => e.DomainAddress);
 }
-
-// ---------------------------------------------------------------------------
-// Fetching
-// ---------------------------------------------------------------------------
 
 async function loadSource(source, opts) {
   const cached = opts.cacheDir ? path.join(opts.cacheDir, source.file) : null;
@@ -103,19 +64,10 @@ async function loadSource(source, opts) {
   return text;
 }
 
-/** Cache younger than 6 hours is reused (keeps repeated local builds fast). */
 function isFresh(file) {
   return Date.now() - fs.statSync(file).mtimeMs < 6 * 60 * 60 * 1000;
 }
 
-// ---------------------------------------------------------------------------
-// Building
-// ---------------------------------------------------------------------------
-
-/**
- * Normalizes, filters and de-duplicates all sources.
- * @returns {{ entries: {host: string, src: string}[], skipped: object, perSource: object }}
- */
 function collect(rawBySource) {
   const seen = new Set();
   const entries = [];
@@ -143,7 +95,6 @@ function collect(rawBySource) {
     perSource[id] = count;
   }
 
-  // Drop subdomains of already-blocked domains (requestDomains covers them).
   const kept = new Set(filter.collapseSubdomains(entries.map((e) => e.host)));
   return { entries: entries.filter((e) => kept.has(e.host)), skipped, perSource };
 }
@@ -162,7 +113,6 @@ function buildRulesets(entries, maxPerDomain) {
     condition: { requestDomains: [e.host], resourceTypes: ['main_frame'] },
   }));
 
-  // Archive chunks are grouped per source so the warning page can still name it.
   const archive = [];
   const bySource = new Map();
   for (const e of archived) {

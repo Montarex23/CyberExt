@@ -1,20 +1,3 @@
-/**
- * CyberGuard — Content script (part 2 of 2). Runs in every page and frame.
- *
- * 1. PASSWORD PROTECTION
- *    While the user types a password we compute its fingerprint (PBKDF2, see
- *    shared/crypto.js) and ask the service worker what it means here:
- *      danger → blocking dialog right away + login is held back
- *      reuse  → gentle tip, nothing is blocked
- *    A password is remembered for a site only when the form is really sent
- *    (submit, Enter, or a click on a button), never while typing.
- *
- * 2. PAGE CHECKS (top frame only)
- *    Facts about the page (has a password field? where do forms send it?) go
- *    to the service worker, which answers with findings shown in ONE banner.
- *
- * The plain password never leaves this script; nothing is ever sent online.
- */
 (function () {
   'use strict';
 
@@ -22,21 +5,11 @@
   if (!CG || !CG.ui || CG.contentLoaded) return;
   CG.contentLoaded = true;
 
-  // Short passwords ("1234", "ola1") are common among less technical users — protect them too.
   const MIN_LENGTH = 4;
   const CHECK_DELAY_MS = 300;
   const IS_TOP = window === window.top;
   const PASSWORD_SELECTOR = 'input[type="password"]';
 
-  // -------------------------------------------------------------------------
-  // Messaging
-  // -------------------------------------------------------------------------
-
-  /**
-   * After the extension is reloaded or updated, this copy of the script keeps running
-   * in already-open tabs but can no longer reach the extension. It then removes its
-   * warnings and stops reacting; the service worker injects a fresh copy.
-   */
   let retired = false;
   function isRetired() {
     if (!retired && !CG.ui.isAlive()) {
@@ -57,17 +30,13 @@
           resolve(chrome.runtime.lastError || !response || response.error ? null : response);
         });
       } catch {
-        resolve(null); // Extension was reloaded — this old script is orphaned.
+        resolve(null);
       }
     });
   }
 
-  // -------------------------------------------------------------------------
-  // Fingerprints
-  // -------------------------------------------------------------------------
-
   let saltPromise = null;
-  const hashCache = new Map(); // password → Promise<hash>, in memory only, for this page.
+  const hashCache = new Map();
 
   function fingerprint(value) {
     if (hashCache.has(value)) return hashCache.get(value);
@@ -78,7 +47,6 @@
         if (!salt) return null;
         return CG.crypto.fingerprint(value, salt);
       }
-      // Plain-HTTP pages have no WebCrypto: let the service worker compute it.
       const r = await send({ type: 'HASH_PASSWORD', password: value });
       return r ? r.hash : null;
     })().catch(() => null);
@@ -87,13 +55,7 @@
     return promise;
   }
 
-  // -------------------------------------------------------------------------
-  // Password field state
-  // -------------------------------------------------------------------------
-
-  /** field → { value, promise, hash, verdict } for the value last checked. */
   const fieldState = new WeakMap();
-  /** Password fields we've seen (also inside shadow DOM, which querySelector can't reach). */
   const seenFields = new Set();
   const remembered = new Set();
   let reuseTipShown = false;
@@ -113,7 +75,6 @@
     return [...found].filter(isFilled);
   }
 
-  /** Password fields that a submit/Enter/click on `target` may send. */
   function relevantFields(target) {
     const form = target && target.closest ? target.closest('form') : null;
     const inForm = form ? filledFieldsIn(form) : [];
@@ -137,7 +98,6 @@
     return state.promise;
   }
 
-  /** State for the field's CURRENT value, if it has already been checked. */
   function freshState(field) {
     const state = fieldState.get(field);
     return state && state.verdict && state.value === field.value ? state : null;
@@ -152,10 +112,6 @@
     }
   }
 
-  // -------------------------------------------------------------------------
-  // Reacting to verdicts
-  // -------------------------------------------------------------------------
-
   let dangerPromise = null;
 
   function presentDanger(state) {
@@ -167,7 +123,6 @@
       diff: state.verdict.diff || null,
     };
     if (IS_TOP) return CG.ui.showPasswordAlert(alert);
-    // In a login iframe: the top page shows the dialog (a tiny frame can't).
     return send({ type: 'RELAY_ALERT', alert }).then((r) => (r && r.choice) || 'leave');
   }
 
@@ -212,10 +167,6 @@
     }
   }
 
-  // -------------------------------------------------------------------------
-  // Typing: check (but never store) after a short pause
-  // -------------------------------------------------------------------------
-
   const timers = new WeakMap();
 
   function eventTarget(event) {
@@ -243,21 +194,13 @@
   window.addEventListener('input', (e) => onPasswordActivity(e, false), true);
   window.addEventListener('change', (e) => onPasswordActivity(e, true), true);
 
-  // -------------------------------------------------------------------------
-  // Sending: hold the login back until the password has been checked
-  // -------------------------------------------------------------------------
-
-  let bypass = false; // True while we replay an event we held back.
+  let bypass = false;
 
   function block(event) {
     event.preventDefault();
     event.stopImmediatePropagation();
   }
 
-  /**
-   * Lets the event through if all passwords are checked and safe; otherwise
-   * blocks it, checks, and replays the action when it turns out to be safe.
-   */
   function gate(event, fields, replay) {
     if (bypass || !fields.length || isRetired()) return;
 
@@ -345,26 +288,18 @@
     if (notCancelled && target.form) {
       try {
         target.form.requestSubmit();
-      } catch {
-        /* Form without a submit button — the page handles Enter itself. */
-      }
+      } catch {}
     }
   }
 
-  // -------------------------------------------------------------------------
-  // Deceptive links: text says "www.mbank.pl", link goes to "mbank-weryfikacja.xyz"
-  // -------------------------------------------------------------------------
-
-  let linkBypass = false; // True while we re-play a click the user confirmed.
+  let linkBypass = false;
 
   function presentLinkAlert(verdict) {
     const alert = { kind: 'link-mismatch', shown: verdict.shown, real: verdict.real, diff: verdict.diff || null };
     if (IS_TOP) return CG.ui.showLinkAlert(alert);
-    // E-mail bodies are often shown in an iframe — the top page draws the dialog.
     return send({ type: 'RELAY_ALERT', alert }).then((r) => (r && r.choice) || 'stay');
   }
 
-  /** Opens the link the way the user originally clicked it. */
   function replayLinkClick(anchor, event, href) {
     const newTab = event.type === 'auxclick' || event.ctrlKey || event.metaKey || event.shiftKey || anchor.target === '_blank';
     if (newTab) {
@@ -373,7 +308,6 @@
     }
     linkBypass = true;
     try {
-      // A real click event, so the page's own link handling (single-page apps) still works.
       anchor.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, composed: true, view: window }));
     } finally {
       linkBypass = false;
@@ -387,7 +321,7 @@
 
     const start = eventTarget(event);
     const anchor = start instanceof Element ? start.closest('a[href]') : null;
-    if (!anchor || typeof anchor.href !== 'string') return; // (SVG links have a different href type)
+    if (!anchor || typeof anchor.href !== 'string') return;
     let target;
     try {
       target = new URL(anchor.href);
@@ -396,14 +330,10 @@
     }
     if (target.protocol !== 'http:' && target.protocol !== 'https:') return;
 
-    // Cheap synchronous check first: most links don't show an address at all,
-    // and most that do go exactly where they say.
     const text = anchor.innerText || anchor.textContent || '';
     const shownHost = CG.linkText.hostFromLinkText(text);
     if (!shownHost || CG.linkText.looseSameHost(shownHost, target.hostname.toLowerCase())) return;
 
-    // Possibly deceptive: hold the click, let the service worker decide (same company?
-    // mail redirector like Outlook Safe Links?), then either continue or warn.
     block(event);
     send({ type: 'CHECK_LINK', text, href: target.href }).then(async (verdict) => {
       if (!verdict || verdict.ok) {
@@ -417,10 +347,6 @@
 
   window.addEventListener('click', onLinkActivate, true);
   window.addEventListener('auxclick', onLinkActivate, true);
-
-  // -------------------------------------------------------------------------
-  // Messages from the service worker (relayed from login iframes)
-  // -------------------------------------------------------------------------
 
   if (IS_TOP) {
     chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
@@ -437,10 +363,6 @@
     });
   }
 
-  // -------------------------------------------------------------------------
-  // Page checks (top frame only)
-  // -------------------------------------------------------------------------
-
   let lastFactsKey = '';
   let analysisTimer = null;
   let dismissedKey = '';
@@ -451,14 +373,11 @@
     for (const field of fields) {
       const form = field.form;
       if (!form) continue;
-      // getAttribute: form.action can be "clobbered" by an <input name="action">.
       const action = form.getAttribute('action');
       if (!action) continue;
       try {
         formActions.add(new URL(action, document.baseURI).href);
-      } catch {
-        /* Ignore malformed actions. */
-      }
+      } catch {}
     }
     return { hasPassword: fields.size > 0, formActions: [...formActions] };
   }
@@ -507,7 +426,6 @@
       schedulePageAnalysis();
     }
 
-    // Login forms added later by single-page apps.
     const observer = new MutationObserver((mutations) => {
       for (const m of mutations) {
         for (const node of m.addedNodes) {
@@ -521,7 +439,6 @@
     });
     observer.observe(document.documentElement || document, { childList: true, subtree: true });
 
-    // Fields whose type is switched to "password" later.
     window.addEventListener(
       'focusin',
       (e) => {

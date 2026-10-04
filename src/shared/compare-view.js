@@ -1,18 +1,3 @@
-/**
- * CyberGuard — "address comparison" box, the visual signature of every warning:
- *
- *   ┌──────────────────────────────────┐
- *   │ Prawdziwa strona Allegro:        │
- *   │ allegro.pl                       │
- *   ├──────────────────────────────────┤
- *   │ Ta strona:                       │
- *   │ a[_]legro.pl                     │  ← highlighted difference
- *   └──────────────────────────────────┘
- *   Brakuje jednej litery: „l”.
- *
- * Builds DOM with textContent only (never innerHTML). Styles: .cg-compare*
- * in content/ui.js (shadow DOM) and pages/common.css.
- */
 (function (root, factory) {
   'use strict';
   const CG = (root.CyberGuard = root.CyberGuard || {});
@@ -21,7 +6,6 @@
 })(typeof self !== 'undefined' ? self : globalThis, function () {
   'use strict';
 
-  /** Only these translation keys may be used for the explanation line. */
   const NOTE_KEYS = new Set([
     'diffSub', 'diffExtra', 'diffMissing', 'diffSwap', 'diffSeveral', 'diffSuffix', 'diffHomograph', 'diffOwner',
   ]);
@@ -34,12 +18,6 @@
     return el;
   }
 
-  /**
-   * @param {Document} doc
-   * @param {{ rows: {label: string, value?: string, parts?: {t:string,m:boolean,gap?:boolean}[], bad?: boolean}[],
-   *           note?: {key: string, params: string[]} }} spec
-   * @param {(key: string, subs?: string[]) => string} t  Translation function.
-   */
   function render(doc, spec, t) {
     const box = node(doc, 'div', 'cg-compare');
     const list = node(doc, 'div', 'cg-compare-rows');

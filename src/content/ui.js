@@ -1,21 +1,3 @@
-/**
- * CyberGuard — On-page warnings (content script, part 1 of 2).
- *
- * Everything is drawn inside a CLOSED Shadow DOM, so the page's CSS can't
- * break it and the page's scripts can't read or restyle it.
- *
- *   showPasswordAlert(alert) — blocking dialog: important password on a foreign site
- *   showLinkAlert(alert)     — blocking dialog: link text shows another address
- *   showToast(sites)         — gentle tip: same password used elsewhere
- *   showBanner(findings, …)  — one banner listing page risks (fake address, no HTTPS…)
- *
- * Visual language (same as the extension pages):
- *   - the shield mascot shows the mood (worried / alarmed / calm),
- *   - every warning starts calm ("Spokojnie – …"), then says what is wrong,
- *   - addresses are compared side by side with the difference highlighted,
- *   - one big safe button in the brand teal, risky choices are small links.
- * Text ≥ 16–18 px, AAA contrast, 52 px buttons.
- */
 (function () {
   'use strict';
 
@@ -95,20 +77,11 @@
     @keyframes cg-pop { from { scale: 0.6; rotate: -8deg; } to { scale: 1; rotate: 0deg; } }
   `;
 
-  // -------------------------------------------------------------------------
-  // Shadow root management
-  // -------------------------------------------------------------------------
-
   let hostEl = null;
   let shadow = null;
   let openCount = 0;
   const HOST_ATTR = 'data-cyberguard-ui';
 
-  /**
-   * False once the extension was reloaded or updated: this copy of the script is
-   * then "orphaned" (it can't talk to the extension any more) and must step aside
-   * for the fresh copy the service worker injects.
-   */
   function isAlive() {
     try {
       return !!chrome.runtime.id;
@@ -119,7 +92,6 @@
 
   function getRoot() {
     if (!hostEl) {
-      // Remove warnings left behind by an older copy of this script (after an update).
       document.querySelectorAll(`[${HOST_ATTR}]`).forEach((old) => old.remove());
       hostEl = document.createElement('div');
       hostEl.setAttribute(HOST_ATTR, '');
@@ -127,7 +99,6 @@
       const style = document.createElement('style');
       style.textContent = CSS;
       shadow.append(style);
-      // If the page removes our element while a warning is open, put it back.
       const observer = new MutationObserver(() => {
         if (!isAlive()) {
           observer.disconnect();
@@ -141,7 +112,6 @@
     return shadow;
   }
 
-  /** Called by content.js when it notices the extension was reloaded. */
   function destroy() {
     if (hostEl) hostEl.remove();
     openCount = 0;
@@ -156,7 +126,7 @@
     for (const [k, v] of Object.entries(attrs)) {
       if (k === 'class') node.className = v;
       else if (k === 'text') node.textContent = v;
-      else if (k === 'html') node.innerHTML = v; // Only for the static mascot SVG (no page data).
+      else if (k === 'html') node.innerHTML = v;
       else if (k.startsWith('on')) node.addEventListener(k.slice(2), v);
       else node.setAttribute(k, v);
     }
@@ -164,7 +134,6 @@
     return node;
   }
 
-  /** Message with bold parameters: values never pass through innerHTML. */
   function rich(key, values) {
     const markers = values.map((_, i) => `\u0001${i}\u0002`);
     const text = t(key, markers);
@@ -181,7 +150,6 @@
     return el('span', { html: CG.mascot.svg(mood, size) }).firstChild;
   }
 
-  /** Mascot + optional calm line + title. */
   function head(mood, size, kicker, title, titleId) {
     return el('div', { class: 'head' },
       mascot(mood, size),
@@ -212,7 +180,6 @@
     }
   }
 
-  /** Common modal frame: blurred backdrop, focus trap, optional Escape = safe choice. */
   function modal(cls, labelledBy, onEscape) {
     const dialog = el('div', { class: `dialog cg ${cls}`, role: 'alertdialog', 'aria-modal': 'true', 'aria-labelledby': labelledBy });
     const backdrop = el('div', { class: 'backdrop' }, dialog);
@@ -223,10 +190,6 @@
     });
     return { dialog, backdrop };
   }
-
-  // -------------------------------------------------------------------------
-  // 1. Blocking dialog — important password typed on a foreign site
-  // -------------------------------------------------------------------------
 
   let alertPromise = null;
 
@@ -283,13 +246,8 @@
     return alertPromise;
   }
 
-  // -------------------------------------------------------------------------
-  // 1b. Blocking dialog — link text shows one address, the link goes elsewhere
-  // -------------------------------------------------------------------------
-
   let linkAlertPromise = null;
 
-  /** @returns {Promise<'stay'|'open'>} */
   function showLinkAlert(alert) {
     if (linkAlertPromise) return linkAlertPromise;
     linkAlertPromise = new Promise((resolve) => {
@@ -301,7 +259,7 @@
         linkAlertPromise = null;
         resolve(choice);
       };
-      const { dialog, backdrop } = modal('warn', 'cg-link-title', () => finish('stay')); // Escape = don't open.
+      const { dialog, backdrop } = modal('warn', 'cg-link-title', () => finish('stay'));
 
       const diff = alert.diff || null;
       dialog.append(
@@ -325,10 +283,6 @@
     return linkAlertPromise;
   }
 
-  // -------------------------------------------------------------------------
-  // 2. Gentle tip — password reused on ordinary sites
-  // -------------------------------------------------------------------------
-
   let toastEl = null;
 
   function showToast(sites) {
@@ -351,11 +305,6 @@
     setTimeout(close, 30000);
   }
 
-  // -------------------------------------------------------------------------
-  // 3. Page banner — fake address, no HTTPS, form sending password elsewhere
-  // -------------------------------------------------------------------------
-
-  /** Address comparison for findings about a fake address. */
   function findingCompare(f) {
     if (!f.diff) return null;
     return compare(
@@ -387,11 +336,6 @@
     openCount--;
   }
 
-  /**
-   * @param {object[]} findings  From the service worker, most serious first.
-   * @param {{onLeave: Function, onTrust: Function, onUnderstood: Function, onClose: Function}} actions
-   *   onTrust / onUnderstood are remembered for the site; onClose (×) only hides the banner now.
-   */
   function showBanner(findings, actions) {
     const known = findings.filter((f) => FINDING_TEXT[f.id]);
     hideBanner();
@@ -411,12 +355,9 @@
       buttons.push(el('button', { class: 'secondary', type: 'button', text: t('btnTrustSite'), onclick: actions.onTrust }));
     }
     if (!buttons.length) {
-      // Remembered for this site — the same warning won't come back here.
       buttons.push(el('button', { class: 'secondary', type: 'button', text: t('btnUnderstoodRemember'), onclick: actions.onUnderstood }));
     }
 
-    // First problem: title in the header, then its comparison and text.
-    // Further problems: bold title in front of their text.
     const content = [];
     known.forEach((f, i) => {
       const [title, body] = texts[i];
@@ -431,7 +372,6 @@
       head(level === 'danger' ? 'alarmed' : 'worried', 44, null, texts[0][0]),
       ...content,
       el('div', { class: 'row' }, ...buttons),
-      // Serious warnings can't be swept away with ×; ordinary ones can (for now only).
       level === 'danger'
         ? null
         : el('button', { class: 'close', type: 'button', 'aria-label': t('btnClose'), title: t('btnClose'), text: '×', onclick: actions.onClose })

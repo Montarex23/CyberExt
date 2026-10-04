@@ -1,18 +1,8 @@
-/**
- * CyberGuard — translations for extension pages.
- *
- *   data-i18n="…"        → textContent
- *   data-i18n-aria="…"   → aria-label
- *   data-i18n-title="…"  → document.title (on <html>)
- *
- * Texts live in _locales/pl (default) and _locales/en.
- */
 (function () {
   'use strict';
 
   const t = (key, subs) => chrome.i18n.getMessage(key, subs) || key;
 
-  /** Message with bold parameters; values are inserted as text, never as HTML. */
   function rich(key, values) {
     const markers = values.map((_, i) => `\u0001${i}\u0002`);
     const frag = document.createDocumentFragment();

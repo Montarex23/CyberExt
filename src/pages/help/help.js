@@ -1,10 +1,3 @@
-/**
- * CyberGuard — "I gave my data to a scammer" help page.
- *
- * The optional clean-up removes the last hour of history, cookies and form
- * data. It needs the "browsingData" permission, which is requested only when
- * the user presses the button (so installing the extension doesn't ask for it).
- */
 (() => {
   'use strict';
 
@@ -12,7 +5,7 @@
   const $ = (id) => document.getElementById(id);
   const ONE_HOUR_MS = 60 * 60 * 1000;
 
-  $('help-mascot').innerHTML = self.CyberGuard.mascot.svg('calm', 80); // Static SVG.
+  $('help-mascot').innerHTML = self.CyberGuard.mascot.svg('calm', 80);
 
   function showResult(key, ok) {
     const el = $('clean-result');

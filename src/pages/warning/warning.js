@@ -1,13 +1,3 @@
-/**
- * CyberGuard — Warning page.
- *
- *   ?domain=evil.pl&src=cert_pl   page blocked by the phishing list
- *   ?src=cert_pl                  blocked by the archive part of the list (domain unknown)
- *   ?mode=left&domain=evil.pl     user pressed "Zabierz mnie stąd" in an on-page warning
- *
- * "Wejdź mimo to" is deliberately small and slow: checkbox + 5 s countdown,
- * and the exception lasts only until the browser is closed.
- */
 (() => {
   'use strict';
 
@@ -24,14 +14,9 @@
   document.title = t(mode === 'left' ? 'leftPageTitle' : 'warnPageTitle');
   $('btn-leave-text').textContent = t(mode === 'left' ? 'btnHome' : 'btnLeaveSafe');
 
-  // -------------------------------------------------------------------------
-  // Content
-  // -------------------------------------------------------------------------
-
   const CG = self.CyberGuard;
-  $('mascot').innerHTML = CG.mascot.svg(mode === 'left' ? 'happy' : 'alarmed', 96); // Static SVG, no page data.
+  $('mascot').innerHTML = CG.mascot.svg(mode === 'left' ? 'happy' : 'alarmed', 96);
 
-  /** Address box: plain address, or real-vs-fake comparison when the domain imitates a company. */
   function renderDomain(diff) {
     const rows = diff
       ? [
@@ -54,7 +39,6 @@
 
     if (domain) {
       renderDomain(null);
-      // Does the blocked address imitate a known company? Then show exactly how.
       chrome.runtime
         .sendMessage({ type: 'GET_DOMAIN_INFO', domain })
         .then((info) => {
@@ -71,7 +55,6 @@
     if (sourceKey) $('source').textContent = t(sourceKey);
     else $('source').hidden = true;
 
-    // Without a domain there is nothing to unblock.
     if (!domain) $('proceed').hidden = true;
 
     countBlockedOnce();
@@ -82,15 +65,9 @@
     try {
       if (sessionStorage.getItem(key)) return;
       sessionStorage.setItem(key, '1');
-    } catch {
-      /* Storage blocked — count anyway. */
-    }
+    } catch {}
     chrome.runtime.sendMessage({ type: 'BLOCKED_PAGE_SHOWN' }).catch(() => {});
   }
-
-  // -------------------------------------------------------------------------
-  // "Take me somewhere safe" — opens the browser's start page in this tab
-  // -------------------------------------------------------------------------
 
   async function goToSafety() {
     const brands = (navigator.userAgentData && navigator.userAgentData.brands) || [];
@@ -109,10 +86,6 @@
     if (e.key === 'Escape') goToSafety();
   });
   $('btn-leave').focus();
-
-  // -------------------------------------------------------------------------
-  // "I know what I'm doing" — session-only exception
-  // -------------------------------------------------------------------------
 
   const COUNTDOWN_SECONDS = 5;
   const ack = $('risk-ack');

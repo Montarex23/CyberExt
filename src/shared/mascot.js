@@ -1,14 +1,3 @@
-/**
- * CyberGuard — the shield mascot (the extension icon with a face).
- *
- *   calm    — teal, gentle smile    (popup on ordinary pages, help, tips)
- *   happy   — teal, big smile       ("you left safely", known/official site, welcome)
- *   worried — amber, frowning       (suspicious: lookalike address, no HTTPS, link)
- *   alarmed — red, wide eyes        (confirmed danger: phishing list, bank password)
- *
- * Returns a static SVG string (no user data inside), decorative: aria-hidden.
- * Shared by the content script (in-page warnings) and the extension pages.
- */
 (function (root, factory) {
   'use strict';
   const CG = (root.CyberGuard = root.CyberGuard || {});
@@ -38,7 +27,6 @@
         );
       case 'worried':
         return (
-          // Brows raised in the middle = worried (lowered in the middle would look angry).
           `<path d="M27 43 Q35 41 42 35" ${s}/><path d="M73 43 Q65 41 58 35" ${s}/>` +
           `<circle cx="37" cy="54" r="6" fill="${c.face}"/><circle cx="63" cy="54" r="6" fill="${c.face}"/>` +
           `<path d="M39 79 Q50 72 61 79" ${s}/>`
@@ -50,7 +38,7 @@
           `<circle cx="36" cy="53" r="5" fill="${c.face}"/><circle cx="64" cy="53" r="5" fill="${c.face}"/>` +
           `<ellipse cx="50" cy="79" rx="7" ry="8" fill="${c.face}"/>`
         );
-      default: // calm
+      default:
         return (
           `<circle cx="37" cy="50" r="6" fill="${c.face}"/><circle cx="63" cy="50" r="6" fill="${c.face}"/>` +
           `<path d="M37 69 Q50 79 63 69" ${s}/>`
@@ -58,10 +46,6 @@
     }
   }
 
-  /**
-   * @param {'calm'|'happy'|'worried'|'alarmed'} mood
-   * @param {number} [size=64] Width in px (height follows the 100×110 shape).
-   */
   function svg(mood = 'calm', size = 64) {
     const m = COLORS[mood] ? mood : 'calm';
     const c = COLORS[m];

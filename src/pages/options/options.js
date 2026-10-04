@@ -1,6 +1,3 @@
-/**
- * CyberGuard — Settings page. Also shown once after installation (?welcome=1).
- */
 (async () => {
   'use strict';
 
@@ -11,7 +8,7 @@
   if (new URLSearchParams(location.search).get('welcome') === '1') {
     $('welcome').hidden = false;
     $('settings-title').hidden = true;
-    $('welcome-mascot').innerHTML = self.CyberGuard.mascot.svg('happy', 88); // Static SVG.
+    $('welcome-mascot').innerHTML = self.CyberGuard.mascot.svg('happy', 88);
   }
   $('version').textContent = t('optVersion', [chrome.runtime.getManifest().version]);
 
@@ -48,7 +45,6 @@
     mixedScripts: 'findShortMixed',
   };
 
-  /** "<strong>site</strong> — description" */
   function siteLabel(site, description) {
     const frag = document.createDocumentFragment();
     const strong = document.createElement('strong');
@@ -65,8 +61,6 @@
   async function refresh() {
     const response = await send({ type: 'GET_OVERVIEW' });
     if (!response || response.error) return;
-    // Defaults keep the page working even if the service worker is an older
-    // version (during development: files changed, extension not reloaded yet).
     const data = {
       settings: {},
       feed: {},
@@ -78,7 +72,6 @@
     };
     data.protection = data.protection || { total: 0, builtIn: 0, live: 0, removed: 0, builtAt: null };
 
-    // --- Live list ---
     $('auto-update').checked = data.settings.autoUpdate !== false;
     const feed = data.feed || {};
     const p = data.protection;
@@ -99,7 +92,6 @@
     }
     $('feed-status').textContent = lines.join(' ');
 
-    // --- Remembered passwords (fingerprints) ---
     renderList(
       'pw-list',
       'pw-empty',
@@ -119,7 +111,6 @@
     );
     $('btn-forget-all').disabled = data.passwords.length === 0;
 
-    // --- Trusted sites ("Ufam tej stronie") and acknowledged warnings ("Rozumiem") ---
     const trusted = data.trustedSites.map((site) =>
       item(siteLabel(site, t('optTrustedWhole')), t('optShowAgain'), () => send({ type: 'UNTRUST_SITE', site }))
     );
@@ -132,7 +123,6 @@
     );
     renderList('trusted-list', 'trusted-empty', [...trusted, ...dismissed]);
 
-    // --- Session exceptions ---
     renderList(
       'allowed-list',
       'allowed-empty',

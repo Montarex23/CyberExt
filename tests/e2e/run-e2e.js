@@ -1,20 +1,4 @@
 #!/usr/bin/env node
-/**
- * CyberGuard — End-to-end test in a real Chrome / Edge.
- *
- * Starts a local web server that pretends to be many websites (Chrome is told
- * to resolve every hostname to 127.0.0.1), loads the extension from src/ and
- * walks through the real user flows. Screenshots go to tmp/e2e/.
- *
- * Usage:
- *   npm run build            (rules + translations must exist)
- *   npm run test:e2e
- *   CHROME_PATH="C:\...\msedge.exe" npm run test:e2e     (other browser)
- *   E2E_HEADFUL=1 npm run test:e2e                         (watch it run)
- *
- * Safety: blocked domains are redirected by the extension BEFORE any request,
- * and every hostname resolves to this computer, so no real phishing site is contacted.
- */
 
 'use strict';
 
@@ -34,17 +18,12 @@ const SHOTS = path.join(ROOT, 'tmp', 'e2e');
 const BANK_PASSWORD = 'MojeBankoweHaslo#2026';
 const FORUM_PASSWORD = 'ZwykleForumHaslo77';
 
-// ---------------------------------------------------------------------------
-// Fake websites
-// ---------------------------------------------------------------------------
-
-const posts = []; // { host, path }
-const visits = []; // { host, path }
+const posts = [];
+const visits = [];
 
 function loginPage(title, action = '/submit') {
   return `<!doctype html><html lang="pl"><head><meta charset="utf-8"><title>${title}</title></head>
 <body style="font-family:sans-serif;padding:300px 40px 40px">
-  <!-- Form placed below the area where CyberGuard's top banner may appear. -->
   <h1>${title}</h1>
   <form method="post" action="${action}">
     <p><label>Login <input name="user" value="jan"></label></p>
@@ -86,10 +65,6 @@ function startServer() {
   return new Promise((resolve) => server.listen(0, '127.0.0.1', () => resolve(server)));
 }
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
 function findBrowser() {
   const candidates = [
     process.env.CHROME_PATH,
@@ -106,7 +81,6 @@ function findBrowser() {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-/** Polls an async condition (e.g. a storage write that happens in the background). */
 async function waitFor(condition, what, timeout = 3000) {
   const end = Date.now() + timeout;
   while (Date.now() < end) {
@@ -116,7 +90,6 @@ async function waitFor(condition, what, timeout = 3000) {
   throw new Error(`Timed out waiting for: ${what}`);
 }
 
-/** All text on the page INCLUDING closed shadow roots (our warnings live there). */
 async function pageText(page) {
   const client = await page.createCDPSession();
   const { root } = await client.send('DOM.getDocument', { depth: -1, pierce: true });
@@ -133,7 +106,6 @@ async function pageText(page) {
   return parts.join(' | ');
 }
 
-/** Clicks a <button> with the given text, even inside a closed shadow root. */
 async function clickShadowButton(page, label) {
   const client = await page.createCDPSession();
   try {
@@ -168,7 +140,7 @@ async function waitForText(page, text, timeout = 6000) {
 
 async function shot(page, name) {
   fs.mkdirSync(SHOTS, { recursive: true });
-  await sleep(400); // Let fade-in animations finish.
+  await sleep(400);
   await page.screenshot({ path: path.join(SHOTS, `${name}.png`) });
 }
 
@@ -176,10 +148,6 @@ function firstRule(file) {
   const rules = JSON.parse(fs.readFileSync(path.join(EXTENSION, 'rules', file), 'utf-8'));
   return rules[0];
 }
-
-// ---------------------------------------------------------------------------
-// Test runner
-// ---------------------------------------------------------------------------
 
 const results = [];
 async function step(name, fn) {
@@ -216,7 +184,7 @@ async function main() {
       `--host-resolver-rules=MAP * 127.0.0.1, EXCLUDE localhost, EXCLUDE hole.cert.pl`,
       '--no-first-run',
       '--no-default-browser-check',
-      ...(process.env.CI ? ['--no-sandbox'] : []), // GitHub's Linux runners restrict the Chrome sandbox.
+      ...(process.env.CI ? ['--no-sandbox'] : []),
     ],
     env: { ...process.env, LANG: 'pl_PL.UTF-8', LANGUAGE: 'pl' },
   });
@@ -234,7 +202,6 @@ async function main() {
     const extUrl = (p) => `chrome-extension://${extId}/${p}`;
     console.log(`\nCyberGuard E2E — extension ${extId}, server port ${port}\n`);
 
-    // Close the welcome tab opened on install, keep one working page.
     await sleep(1000);
     for (const p of await browser.pages()) {
       if (p.url().includes('options.html?welcome=1')) {
@@ -253,7 +220,6 @@ async function main() {
       assert.equal(all.settings.autoUpdate, true);
     });
 
-    // --- 1. Blocklist ---------------------------------------------------
     const mainRule = firstRule('main.json');
     const blockedHost = mainRule.condition.requestDomains[0];
 
@@ -276,8 +242,6 @@ async function main() {
       assert.equal(await btn.evaluate((b) => b.disabled), true, 'should still be counting down');
       await shot(page, '02-warning-proceed-countdown');
       await page.waitForFunction(() => !document.getElementById('btn-proceed').disabled, { timeout: 8000 });
-      // The extension opens http://<domain>/ (port 80). Our fake server runs on another
-      // port, so that load fails — what matters is that it is no longer redirected.
       await Promise.all([page.waitForNavigation({ waitUntil: 'domcontentloaded' }).catch(() => {}), btn.click()]);
       assert.ok(!page.url().includes('warning.html'), page.url());
       await page.goto(at(blockedHost), { waitUntil: 'domcontentloaded' });
@@ -290,7 +254,7 @@ async function main() {
     });
 
     await step('Unblocked dangerous page still shows a red banner', async () => {
-      await waitForText(page, 'Ta strona jest na liście niebezpiecznych');
+      await waitForText(page, 'ta strona jest na liście oszustw');
       await shot(page, '03-banner-blocklisted');
     });
 
@@ -308,14 +272,12 @@ async function main() {
       assert.equal(await page.$eval('#proceed', (e) => e.hidden), true);
     });
 
-    // --- 2. Passwords ---------------------------------------------------
     await step('Bank login is learned on submit (plain-HTTP fallback hashing)', async () => {
       await page.goto(at('online.mbank.pl', '/login'));
       await page.type('#pass', BANK_PASSWORD);
       await sleep(600);
       await Promise.all([page.waitForNavigation(), page.click('#submit')]);
       assert.ok(posts.some((p) => p.host === 'online.mbank.pl'), 'login POST should go through');
-      // The fingerprint is saved asynchronously by the service worker — wait for it.
       await waitFor(async () => Object.keys(await storage('passwords')).length === 1, 'password remembered');
       const passwords = await storage('passwords');
       const entries = Object.values(passwords);
@@ -331,9 +293,8 @@ async function main() {
       await waitForText(page, 'Stop! To może być oszustwo');
       await waitForText(page, 'mBank');
       await shot(page, '04-password-danger-dialog');
-      // Try to send anyway with Enter and a click on the page's button.
       await page.evaluate(() => document.getElementById('submit').click());
-      await page.keyboard.press('Enter'); // Focus is on our "Zabierz mnie stąd" button → leaves the page.
+      await page.keyboard.press('Enter');
       await page.waitForFunction(() => location.href.includes('mode=left'), { timeout: 5000 }).catch(() => {});
       assert.equal(posts.length, before, 'password must not be submitted');
       assert.ok(page.url().includes('pages/warning/warning.html?mode=left&domain=super-promocje24.com'), page.url());
@@ -345,11 +306,11 @@ async function main() {
       await page.goto(at('moj-nowy-sklep.pl', '/login'));
       await page.type('#pass', BANK_PASSWORD);
       await waitForText(page, 'Stop! To może być oszustwo');
-      await page.keyboard.press('Tab'); // → "To jest moja zaufana strona"
+      await page.keyboard.press('Tab');
       await page.keyboard.press('Enter');
       await waitForText(page, 'Na pewno?');
       await shot(page, '06-password-confirm-step');
-      await page.keyboard.press('Tab'); // → "Tak, ufam tej stronie"
+      await page.keyboard.press('Tab');
       await page.keyboard.press('Enter');
       await sleep(500);
       await Promise.all([page.waitForNavigation(), page.click('#submit')]);
@@ -375,7 +336,7 @@ async function main() {
       await Promise.all([page.waitForNavigation(), page.click('#submit')]);
       await page.goto(at('przepisy-babci.pl', '/login'));
       await page.type('#pass', FORUM_PASSWORD);
-      await waitForText(page, 'Wskazówka bezpieczeństwa');
+      await waitForText(page, 'Mała rada');
       await waitForText(page, 'forum-wedkarskie.pl');
       await shot(page, '07-reuse-tip');
       await Promise.all([page.waitForNavigation(), page.click('#submit')]);
@@ -389,7 +350,7 @@ async function main() {
       await Promise.all([page.waitForNavigation(), page.click('#submit')]);
       await page.goto(at('inne-forum.pl', '/login'));
       await page.type('#pass', 'xdxd');
-      await waitForText(page, 'Wskazówka bezpieczeństwa');
+      await waitForText(page, 'Mała rada');
       await waitForText(page, 'forum-krotkie.pl');
     });
 
@@ -408,7 +369,6 @@ async function main() {
       await page.click('#open-bitb');
       await page.type('#bitb-pass', BANK_PASSWORD);
       const text = await waitForText(page, 'Stop! To może być oszustwo');
-      // The fake address bar says online.mbank.pl — the warning must name the real page.
       assert.ok(text.includes('wygraj-nagrode.pl'), 'dialog should name the real site');
       assert.ok(text.includes('mBank'));
       await shot(page, '08b-bitb-danger');
@@ -417,8 +377,7 @@ async function main() {
       assert.equal(posts.length, before, 'password must not be sent from the fake window');
     });
 
-    // --- Deceptive links ------------------------------------------------
-    const LINK_ALERT = 'Uwaga: ten link prowadzi gdzie indziej';
+    const LINK_ALERT = 'Ten link prowadzi gdzie indziej, niż pokazuje';
     const linksUrl = at('linki-testowe.pl', '/links');
     const visitsTo = (host) => visits.filter((v) => v.host === host).length;
 
@@ -429,7 +388,7 @@ async function main() {
       const text = await waitForText(page, LINK_ALERT);
       assert.ok(text.includes('mbank.pl') && text.includes('mbank-weryfikacja.xyz'), 'dialog shows both addresses');
       await shot(page, '16-deceptive-link');
-      await page.keyboard.press('Enter'); // Focus is on "Nie otwieraj tego linku"
+      await page.keyboard.press('Enter');
       await sleep(800);
       assert.equal(page.url(), linksUrl);
       assert.equal(visitsTo('mbank-weryfikacja.xyz'), before, 'the deceptive target must not be opened');
@@ -439,7 +398,7 @@ async function main() {
       await page.goto(linksUrl);
       await page.click('#l-deceptive');
       await waitForText(page, LINK_ALERT);
-      await page.keyboard.press('Tab'); // → "Otwórz mimo to"
+      await page.keyboard.press('Tab');
       await Promise.all([page.waitForNavigation({ timeout: 5000 }), page.keyboard.press('Enter')]);
       assert.ok(page.url().startsWith('http://mbank-weryfikacja.xyz'), page.url());
 
@@ -473,7 +432,7 @@ async function main() {
       await page.click('#l-safe-bad');
       const text = await waitForText(page, LINK_ALERT);
       assert.ok(text.includes('mbank-weryfikacja.xyz'));
-      assert.ok(!text.includes('Link naprawdę prowadzi do: | eur01'), 'should not show the redirector');
+      assert.ok(!text.includes('A naprawdę prowadzi do: | eur01'), 'should not show the redirector');
     });
 
     await step('Deceptive link inside an e-mail shown in an iframe → warning on the whole page', async () => {
@@ -484,38 +443,37 @@ async function main() {
       await frame.click('#mail-link');
       await waitForText(page, LINK_ALERT);
       await shot(page, '17-deceptive-link-in-email');
-      await page.keyboard.press('Escape'); // Escape = don't open
+      await page.keyboard.press('Escape');
       await sleep(800);
       assert.equal(visitsTo('mbank-weryfikacja.xyz'), before);
     });
 
-    // --- 3. Page checks -------------------------------------------------
     await step('Lookalike address → orange banner naming the real site', async () => {
       await page.goto(at('mbank-logowanie.com', '/'));
-      await waitForText(page, 'może podszywać się pod mBank');
+      await waitForText(page, 'może udawać mBank');
       await waitForText(page, 'mbank.pl');
       await shot(page, '09-lookalike-banner');
     });
 
     await step('"Ufam tej stronie" hides the banner and is remembered', async () => {
       await page.goto(at('allegro-okazje.pl', '/'));
-      await waitForText(page, 'może podszywać się pod Allegro');
+      await waitForText(page, 'może udawać Allegro');
       await clickShadowButton(page, 'Ufam tej stronie');
       await sleep(500);
-      assert.ok(!(await pageText(page)).includes('podszywać się pod Allegro'), 'banner should close');
+      assert.ok(!(await pageText(page)).includes('udawać Allegro'), 'banner should close');
       const trusted = await storage('trustedSites');
       assert.ok(trusted['allegro-okazje.pl'], JSON.stringify(trusted));
       await page.reload();
       await sleep(1200);
       const text = await pageText(page);
-      assert.ok(!text.includes('podszywać się pod Allegro'), 'banner should be gone on a trusted site');
+      assert.ok(!text.includes('udawać Allegro'), 'banner should be gone on a trusted site');
     });
 
     await step('Login form sending password to another site → warning', async () => {
       await page.goto(at('sklep-testowy.pl', '/xform'));
-      await waitForText(page, 'Hasło trafi na inną stronę'); // Most important finding = title
+      await waitForText(page, 'Hasło trafi na inną stronę');
       await waitForText(page, 'evil-site.ru');
-      await waitForText(page, 'Ta strona nie jest zabezpieczona'); // Second finding, bold prefix
+      await waitForText(page, 'Ta strona nie jest zabezpieczona');
       await shot(page, '10-cross-form-banner');
     });
 
@@ -535,10 +493,8 @@ async function main() {
       await page.reload();
       await sleep(1200);
       assert.ok(!(await pageText(page)).includes('nie jest zabezpieczona'), 'should stay hidden after reload');
-      // Other sites still warn.
       await page.goto(at('inne-forum.pl', '/login'));
       await waitForText(page, 'Ta strona nie jest zabezpieczona');
-      // Settings list it; "Pokazuj znowu" restores the warning.
       await page.goto(extUrl('pages/options/options.html'));
       await waitForText(page, 'stare-forum.pl');
       await waitForText(page, 'ukryte ostrzeżenie: brak zabezpieczenia (kłódki)');
@@ -561,8 +517,6 @@ async function main() {
     await step('After an extension reload/update, already-open tabs keep working (no page refresh)', async () => {
       await page.goto(at('otwarta-karta.pl', '/login'));
       await waitForText(page, 'Ta strona nie jest zabezpieczona');
-      // Simulates an automatic update: the extension is installed again over itself
-      // while the tab stays open (same ID, onInstalled reason "update").
       const oldTarget = swTarget;
       assert.equal(await browser.installExtension(EXTENSION), extId);
       swTarget = await browser.waitForTarget(
@@ -571,7 +525,6 @@ async function main() {
       );
       worker = await swTarget.worker();
       await sleep(1500);
-      // Exactly one banner (the old copy removed its own), and its button works.
       const text = await pageText(page);
       assert.equal(text.split('Ta strona nie jest zabezpieczona').length - 1, 1, 'expected exactly one banner');
       await clickShadowButton(page, 'Rozumiem, nie pokazuj więcej na tej stronie');
@@ -583,7 +536,6 @@ async function main() {
       assert.ok(!(await pageText(page)).includes('nie jest zabezpieczona'));
     });
 
-    // --- 4. Extension pages ---------------------------------------------
     await step('Popup, settings and help pages render in Polish', async () => {
       await page.goto(extUrl('pages/popup/popup.html'));
       await waitForText(page, 'Ochrona włączona');
@@ -640,7 +592,6 @@ async function main() {
       const dynamic = await worker.evaluate(() => chrome.declarativeNetRequest.getDynamicRules());
       console.log(`      live list: +${r.added} new domains, ${r.removed} withdrawn, ${dynamic.length} dynamic rules`);
 
-      // The total shown to the user = built-in list + live additions − withdrawn.
       await page.goto(extUrl('pages/options/options.html'));
       const overview = await page.evaluate(() => chrome.runtime.sendMessage({ type: 'GET_OVERVIEW' }));
       const p = overview.protection;

@@ -38,7 +38,6 @@ test('form posting within the same site or company is fine', () => {
   for (const action of ['https://sklep.example.com/auth', 'https://auth.example.com/login']) {
     assert.deepEqual(ids(analyzePage({ url: 'https://example.com/', hasPassword: true, formActions: [action] })), [], action);
   }
-  // ING: ing.pl page → login.ingbank.pl (same brand, different domain)
   assert.deepEqual(ids(analyzePage({ url: 'https://www.ing.pl/', hasPassword: true, formActions: ['https://login.ingbank.pl/'] })), []);
 });
 

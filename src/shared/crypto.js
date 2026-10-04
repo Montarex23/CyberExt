@@ -1,11 +1,3 @@
-/**
- * CyberGuard — Password fingerprinting (shared by the content script, the
- * service worker and tests).
- *
- * The password itself is never stored. We keep PBKDF2-SHA256(password, salt)
- * with a random per-installation salt and 100 000 iterations, so even someone
- * who copies the browser profile cannot cheaply guess passwords from it.
- */
 (function (root, factory) {
   'use strict';
   const CG = (root.CyberGuard = root.CyberGuard || {});
@@ -38,12 +30,10 @@
     return bytesToBase64(root.crypto.getRandomValues(new Uint8Array(SALT_BYTES)));
   }
 
-  /** True when WebCrypto is usable here (not on plain-HTTP pages). */
   function isAvailable() {
     return !!(root.crypto && root.crypto.subtle);
   }
 
-  /** @returns {Promise<string>} 64-char hex fingerprint. */
   async function fingerprint(password, saltBase64) {
     const subtle = root.crypto.subtle;
     const key = await subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']);

@@ -1,10 +1,3 @@
-/**
- * CyberGuard — Toolbar popup: "is this page OK?" in one glance.
- *
- * Wording is careful: green means "the real site of a company we know" or
- * "you logged in here before" — never a blanket "this page is safe",
- * because offline we can't know that.
- */
 (async () => {
   'use strict';
 
@@ -20,12 +13,11 @@
     window.close();
   });
 
-  /** The mascot's mood mirrors the page: happy (known), calm (unknown), worried, alarmed. */
   const MOOD = { ok: 'happy', neutral: 'calm', warn: 'worried', danger: 'alarmed' };
 
   function render(tone, title, text) {
     $('status').dataset.tone = tone;
-    $('status-icon').innerHTML = self.CyberGuard.mascot.svg(MOOD[tone], 56); // Static SVG.
+    $('status-icon').innerHTML = self.CyberGuard.mascot.svg(MOOD[tone], 56);
     $('status-title').textContent = title;
     $('status-text').textContent = text;
   }
@@ -36,7 +28,6 @@
     mixedScripts: () => t('findMixedTitle'),
   };
 
-  // --- Current tab ---
   let tab = null;
   try {
     [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -75,7 +66,6 @@
       render('neutral', t('statusInternalTitle'), t('statusInternalText'));
   }
 
-  // --- Stats ---
   const overview = await chrome.runtime.sendMessage({ type: 'GET_OVERVIEW' });
   if (overview && !overview.error) {
     $('stat-blocked').textContent = t('popupBlockedCount', [String(overview.stats.blocked || 0)]);

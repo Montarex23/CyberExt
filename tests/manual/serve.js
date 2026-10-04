@@ -1,14 +1,4 @@
 #!/usr/bin/env node
-/**
- * CyberGuard — fake websites for MANUAL testing.
- *
- * Serves login pages for made-up addresses (online.mbank.pl, mbank-logowanie.com…)
- * on this computer and prints a command that starts a SEPARATE test Chrome
- * profile in which those addresses point to this server. Your normal browser,
- * real bank and real passwords are never involved.
- *
- * Usage: npm run test:manual   (then follow the printed instructions)
- */
 
 'use strict';
 
@@ -23,8 +13,6 @@ const { LINK_HOSTS, linksPage, inboxPage, emailBody } = require('../fixtures/lin
 const PORT = Number(process.env.PORT) || 8080;
 const ROOT = path.resolve(__dirname, '..', '..');
 
-// A real domain from the phishing list: the extension redirects it BEFORE any
-// request, and in the test profile it points to this computer anyway.
 let blockedHost = 'brak-listy.invalid';
 try {
   blockedHost = JSON.parse(fs.readFileSync(path.join(ROOT, 'src', 'rules', 'main.json'), 'utf-8'))[0].condition.requestDomains[0];
@@ -131,7 +119,6 @@ server.listen(PORT, '127.0.0.1', () => {
   const noOpen = process.argv.includes('--no-open');
   const browser = noOpen ? null : findBrowser();
   if (browser) {
-    // Started directly (no shell), so the address mapping can't get lost in quoting.
     spawn(browser, args, { detached: true, stdio: 'ignore' }).unref();
   }
 

@@ -1,14 +1,5 @@
 'use strict';
 
-/**
- * Test pages for deceptive links ("the text says www.mbank.pl, the link goes
- * somewhere else"). Used by tests/manual/serve.js and tests/e2e/run-e2e.js.
- *
- * Hosts used (all must resolve to the local test server):
- *   linki-testowe.pl, mbank-weryfikacja.xyz, online.mbank.pl, www.ipko.pl,
- *   eur01.safelinks.protection.outlook.com, poczta-testowa.pl, tresc-maila.pl
- */
-
 const LINK_HOSTS = [
   'linki-testowe.pl', 'mbank-weryfikacja.xyz', 'online.mbank.pl', 'www.ipko.pl',
   'eur01.safelinks.protection.outlook.com', 'poczta-testowa.pl', 'tresc-maila.pl',
@@ -45,7 +36,6 @@ function linksPage(port) {
 </ol>`);
 }
 
-/** Webmail-like page: the e-mail body lives in an iframe from another host. */
 function inboxPage(port) {
   return shell('Poczta – test', `<h1>📧 Poczta testowa</h1>
 <p><b>Od:</b> mBank &lt;powiadomienia@mbank-info.com&gt;<br><b>Temat:</b> Twoje konto zostało zablokowane</p>

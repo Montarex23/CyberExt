@@ -6,7 +6,6 @@ const assert = require('node:assert/strict');
 const { describe, editOps } = require('../../src/shared/address-diff.js');
 const mascot = require('../../src/shared/mascot.js');
 
-/** "a[_]legro.pl" style rendering of the parts, for readable assertions. */
 function show(host) {
   const d = describe(host);
   return d && { text: d.parts.map((p) => (p.gap ? '[_]' : p.m ? `[${p.t}]` : p.t)).join(''), real: d.realSite, note: d.note };
@@ -21,7 +20,7 @@ test('one missing / extra / swapped / replaced letter is pinpointed', () => {
 
 test('letters from another alphabet are highlighted in the readable (Unicode) form', () => {
   const d = show('xn--pypal-4ve.com');
-  assert.equal(d.text, 'p[а]ypal.com'); // Cyrillic "а"
+  assert.equal(d.text, 'p[а]ypal.com');
   assert.deepEqual(d.note, { key: 'diffHomograph', params: ['а', 'a'] });
 });
 
@@ -52,5 +51,5 @@ test('mascot renders every mood as a decorative SVG', () => {
     assert.match(svg, /^<svg [^>]*aria-hidden="true"/);
     assert.match(svg, new RegExp(`cg-mascot-${mood}`));
   }
-  assert.match(mascot.svg('nonsense'), /cg-mascot-calm/); // Unknown mood falls back to calm.
+  assert.match(mascot.svg('nonsense'), /cg-mascot-calm/);
 });

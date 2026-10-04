@@ -54,7 +54,7 @@ test('isLocalHost covers routers, intranet and dev hosts, but not public sites',
 test('punycode decodes IDN labels', () => {
   assert.equal(punycode.toUnicode('xn--mnchen-3ya.de'), 'münchen.de');
   assert.equal(punycode.toUnicode('xn--bcher-kva.example'), 'bücher.example');
-  assert.equal(punycode.toUnicode('xn--pple-43d.com'), 'аpple.com'); // Cyrillic "а"
+  assert.equal(punycode.toUnicode('xn--pple-43d.com'), 'аpple.com');
   assert.equal(punycode.toUnicode('plain.example.com'), 'plain.example.com');
-  assert.equal(punycode.toUnicode('xn--!!!.com'), 'xn--!!!.com'); // Malformed stays as-is
+  assert.equal(punycode.toUnicode('xn--!!!.com'), 'xn--!!!.com');
 });

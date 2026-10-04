@@ -1,14 +1,4 @@
 #!/usr/bin/env node
-/**
- * CyberGuard — Translation builder (scripts/build-locales.js)
- *
- * Translators edit the simple files locales/pl.json and locales/en.json:
- *   { "proceedWait": "Poczekaj $1 s…" }
- * This script writes Chrome's format to src/_locales/<lang>/messages.json,
- * turning $1..$9 into named placeholders, and fails if the languages differ.
- *
- * Usage: node scripts/build-locales.js
- */
 
 'use strict';
 
@@ -41,7 +31,6 @@ const sources = Object.fromEntries(
   LANGUAGES.map((lang) => [lang, JSON.parse(fs.readFileSync(path.join(SOURCE_DIR, `${lang}.json`), 'utf-8'))])
 );
 
-// Every language must have the same keys and the same $N parameters.
 const reference = sources[LANGUAGES[0]];
 const problems = [];
 for (const lang of LANGUAGES.slice(1)) {
