@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pl" data-i18n-title="extName">
+<head>
+  <meta charset="UTF-8" />
+  <title>CyberGuard</title>
+  <link rel="stylesheet" href="../common.css" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header class="header">
+    <img src="../../icons/icon48.png" alt="" width="32" height="32" />
+    <div>
+      <div class="brand" data-i18n="extShortName"></div>
+      <div class="active"><span class="dot" aria-hidden="true"></span><span data-i18n="popupActive"></span></div>
+    </div>
+  </header>
+
+  <section class="status" id="status" aria-live="polite">
+    <div class="status-icon" id="status-icon" aria-hidden="true"></div>
+    <div>
+      <div class="status-title" id="status-title"></div>
+      <div class="status-text" id="status-text"></div>
+    </div>
+  </section>
+
+  <button class="btn btn-danger btn-block" id="btn-help" type="button" data-i18n="popupHelpBtn"></button>
+
+  <section class="stats">
+    <div id="stat-blocked"></div>
+    <div id="stat-db" class="muted"></div>
+  </section>
+
+  <footer class="footer">
+    <button class="link" id="btn-options" type="button" data-i18n="popupSettings"></button>
+  </footer>
+
+  <script src="../../shared/mascot.js"></script>
+  <script src="../i18n.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

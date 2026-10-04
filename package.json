@@ -1,0 +1,24 @@
+{
+  "name": "cyberguard",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Privacy-first phishing and password-reuse protection for Chrome & Edge, built for non-technical users.",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "npm run build:locales && npm run build:rules",
+    "build:locales": "node scripts/build-locales.js",
+    "build:rules": "node scripts/build-rules.js --cache-dir .cache",
+    "build:psl": "node scripts/build-psl.js",
+    "test": "node --test \"tests/unit/*.test.js\"",
+    "test:e2e": "node tests/e2e/run-e2e.js",
+    "test:manual": "node tests/manual/serve.js",
+    "measure:lookalike": "node scripts/measure-lookalike.js",
+    "package": "node scripts/package.js"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^25.12.0"
+  }
+}

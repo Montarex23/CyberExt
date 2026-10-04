@@ -1,0 +1,761 @@
+{
+  "extName": {
+    "message": "CyberGuard – ochrona przed oszustami w sieci"
+  },
+  "extShortName": {
+    "message": "CyberGuard"
+  },
+  "extDescription": {
+    "message": "Ostrzega przed fałszywymi stronami i pilnuje, żeby nikt nie wyłudził Twojego hasła. Wszystko dzieje się na Twoim komputerze."
+  },
+  "langCode": {
+    "message": "pl"
+  },
+  "actionTitle": {
+    "message": "CyberGuard – sprawdź, czy ta strona jest w porządku"
+  },
+  "pwAlertCalm": {
+    "message": "Spokojnie, wstrzymaliśmy wysłanie hasła."
+  },
+  "pwAlertTitle": {
+    "message": "Stop! To może być oszustwo"
+  },
+  "pwCompareYours": {
+    "message": "Tego hasła używasz w:"
+  },
+  "pwCompareThis": {
+    "message": "A jesteś teraz na:"
+  },
+  "pwAlertExplain": {
+    "message": "To nie jest $P1$. Oszuści robią strony, które wyglądają prawie tak samo jak prawdziwe, i czekają, aż ktoś wpisze hasło. Najlepiej od razu stąd wyjść.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "compareRealBrand": {
+    "message": "Prawdziwa strona $P1$:",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "compareThisSite": {
+    "message": "Ta strona:"
+  },
+  "diffSub": {
+    "message": "W adresie jest „$P1$” zamiast „$P2$”.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "diffExtra": {
+    "message": "Jest tu jedna litera za dużo: „$P1$”.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "diffMissing": {
+    "message": "Brakuje jednej litery: „$P1$”.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "diffSwap": {
+    "message": "Dwie litery są zamienione miejscami: „$P1$”.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "diffSeveral": {
+    "message": "Kilka liter nie zgadza się z prawdziwym adresem."
+  },
+  "diffSuffix": {
+    "message": "Końcówka się nie zgadza: jest „.$P1$”, a powinno być „.$P2$”.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "diffHomograph": {
+    "message": "Litera „$P1$” jest z innego alfabetu. Tylko wygląda jak „$P2$”.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "diffOwner": {
+    "message": "Patrz na końcówkę adresu: ta strona należy do „$P1$”, a nie do $P2$.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "btnLeave": {
+    "message": "Zabierz mnie stąd"
+  },
+  "pwAlertTrustLink": {
+    "message": "Znam tę stronę, to nie oszustwo"
+  },
+  "pwConfirmTitle": {
+    "message": "Na pewno?"
+  },
+  "pwConfirmText": {
+    "message": "Idź dalej tylko wtedy, gdy wiesz na sto procent, że ta strona należy do $P1$ albo że celowo używasz tu tego samego hasła.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "pwConfirmNewAccount": {
+    "message": "Zakładasz tu nowe konto? To wymyśl inne hasło. Hasła do banku i poczty najlepiej nie używać nigdzie indziej."
+  },
+  "btnNoLeave": {
+    "message": "Nie, zabierz mnie stąd"
+  },
+  "pwConfirmYes": {
+    "message": "Tak, ufam tej stronie"
+  },
+  "linkAlertCalm": {
+    "message": "Spokojnie, nic się jeszcze nie otworzyło."
+  },
+  "linkAlertTitle": {
+    "message": "Ten link prowadzi gdzie indziej, niż pokazuje"
+  },
+  "linkAlertShown": {
+    "message": "Na linku jest napisane:"
+  },
+  "linkAlertReal": {
+    "message": "A naprawdę prowadzi do:"
+  },
+  "linkAlertExplain": {
+    "message": "To częsty trik oszustów: link wygląda znajomo, a kieruje na zupełnie inną stronę. Jeśli nie wiesz, skąd ta różnica, lepiej go nie otwierać."
+  },
+  "linkAlertStay": {
+    "message": "Nie otwieraj tego linku"
+  },
+  "linkAlertOpen": {
+    "message": "Otwórz mimo to"
+  },
+  "reuseTitle": {
+    "message": "Mała rada"
+  },
+  "reuseBody": {
+    "message": "Tego samego hasła używasz też na: $P1$.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "reuseAdvice": {
+    "message": "Lepiej mieć inne hasło do każdej strony. Wtedy nawet jeśli ktoś pozna jedno, reszta kont zostanie bezpieczna."
+  },
+  "btnUnderstood": {
+    "message": "Rozumiem"
+  },
+  "btnUnderstoodRemember": {
+    "message": "Rozumiem, nie pokazuj więcej na tej stronie"
+  },
+  "findLookalikeTitle": {
+    "message": "Ta strona może udawać $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "findLookalikeBody": {
+    "message": "Adres jest tylko podobny do prawdziwego. Nie wpisuj tu hasła ani numeru karty."
+  },
+  "findHomographTitle": {
+    "message": "Ta strona udaje $P1$ podrobionymi literami",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "findHomographBody": {
+    "message": "Adres wygląda normalnie, ale ma litery z innego alfabetu. Nie wpisuj tu niczego."
+  },
+  "findMixedTitle": {
+    "message": "Dziwny adres strony"
+  },
+  "findMixedBody": {
+    "message": "W adresie $P1$ są litery z różnych alfabetów. Tak często wyglądają podróbki, więc dobrze się przyjrzyj, zanim coś wpiszesz.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "findInsecureTitle": {
+    "message": "Ta strona nie jest zabezpieczona"
+  },
+  "findInsecureBody": {
+    "message": "Przy adresie nie ma kłódki, więc połączenie nie jest szyfrowane. Ktoś w tej samej sieci Wi-Fi mógłby podejrzeć hasło. Tu lepiej się nie logować."
+  },
+  "findCrossFormTitle": {
+    "message": "Hasło trafi na inną stronę"
+  },
+  "findCrossFormBody": {
+    "message": "Ten formularz wyśle hasło gdzie indziej, na $P1$. Jeśli nie wiesz dlaczego, nie loguj się.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "findBlocklistedTitle": {
+    "message": "Uważaj, ta strona jest na liście oszustw"
+  },
+  "findBlocklistedBody": {
+    "message": "Strona $P1$ jest na liście oszukańczych stron i została odblokowana tylko na chwilę. Nie podawaj tu haseł, numeru karty ani kodów BLIK.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "btnTrustSite": {
+    "message": "Ufam tej stronie"
+  },
+  "btnClose": {
+    "message": "Zamknij"
+  },
+  "warnPageTitle": {
+    "message": "Zatrzymaliśmy niebezpieczną stronę – CyberGuard"
+  },
+  "leftPageTitle": {
+    "message": "Wszystko w porządku – CyberGuard"
+  },
+  "warnKicker": {
+    "message": "Spokojnie, zatrzymaliśmy tę stronę, zanim zdążyła się otworzyć."
+  },
+  "warnTitle": {
+    "message": "Stop! Ta strona może Cię oszukać"
+  },
+  "warnTitleBrand": {
+    "message": "Stop! Ta strona udaje $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "warnLead": {
+    "message": "Jest na liście stron oszustów. Działa jak oszust „na wnuczka”: podaje się za kogoś, komu ufasz (bank, kuriera, sklep), żeby wyciągnąć od Ciebie pieniądze."
+  },
+  "warnDomainLabel": {
+    "message": "Adres zablokowanej strony:"
+  },
+  "srcCert": {
+    "message": "Skąd wiemy: lista ostrzeżeń CERT Polska"
+  },
+  "srcOpenphish": {
+    "message": "Skąd wiemy: OpenPhish, międzynarodowa lista stron wyłudzających dane"
+  },
+  "leftTitle": {
+    "message": "Dobrze! Podejrzana strona jest zamknięta"
+  },
+  "leftLead": {
+    "message": "Zamknęliśmy stronę $P1$.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "leftLeadNoDomain": {
+    "message": "Zamknęliśmy podejrzaną stronę."
+  },
+  "leftNothingSent": {
+    "message": "Jeśli zdążyło się tam wpisać hasło, zmień je jak najszybciej, ale na prawdziwej stronie serwisu."
+  },
+  "btnLeaveSafe": {
+    "message": "Zabierz mnie w bezpieczne miejsce"
+  },
+  "btnHome": {
+    "message": "Wróć na stronę startową"
+  },
+  "warnHowTitle": {
+    "message": "Jak działa takie oszustwo?"
+  },
+  "warnHow1": {
+    "message": "Dostajesz SMS albo e-mail z linkiem, np. że trzeba dopłacić do paczki albo że konto jest zablokowane."
+  },
+  "warnHow2": {
+    "message": "Link prowadzi na stronę, która wygląda jak prawdziwa."
+  },
+  "warnHow3": {
+    "message": "Wszystko, co tam wpiszesz (hasło, numer karty, kod BLIK), trafia prosto do oszusta."
+  },
+  "warnTip": {
+    "message": "Pamiętaj: prawdziwy bank nigdy nie prosi o hasło ani kod przez link w wiadomości."
+  },
+  "warnAlreadyTitle": {
+    "message": "Dane mogły już tam trafić?"
+  },
+  "warnAlreadyText": {
+    "message": "Bez paniki. Jest kilka prostych kroków, które warto zrobić od razu."
+  },
+  "btnWhatNow": {
+    "message": "Co mam teraz zrobić?"
+  },
+  "proceedSummary": {
+    "message": "Wiem, co robię, chcę wejść mimo to"
+  },
+  "proceedText": {
+    "message": "Odradzamy to. Wejdź tylko wtedy, gdy masz całkowitą pewność, że ta strona jest bezpieczna. Odblokujemy ją tylko do zamknięcia przeglądarki."
+  },
+  "proceedAck": {
+    "message": "Rozumiem, że ta strona może ukraść moje dane albo pieniądze."
+  },
+  "proceedBtn": {
+    "message": "Wejdź na stronę"
+  },
+  "proceedWait": {
+    "message": "Poczekaj $P1$ s…",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "proceedError": {
+    "message": "Coś poszło nie tak i nie udało się odblokować strony. Spróbuj jeszcze raz."
+  },
+  "footerPrivacy": {
+    "message": "CyberGuard działa tylko na Twoim komputerze. Nikomu nie wysyła, jakie strony odwiedzasz ani jakie masz hasła."
+  },
+  "popupActive": {
+    "message": "Ochrona włączona"
+  },
+  "popupHelpBtn": {
+    "message": "Oszust może mieć moje dane – co robić?"
+  },
+  "popupSettings": {
+    "message": "Ustawienia"
+  },
+  "statusOfficialTitle": {
+    "message": "To prawdziwa strona: $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusOfficialText": {
+    "message": "Adres $P1$ naprawdę należy do tej firmy.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusKnownTitle": {
+    "message": "Znasz tę stronę"
+  },
+  "statusKnownText": {
+    "message": "Logujesz się na $P1$ nie pierwszy raz.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusWarningTitle": {
+    "message": "Uważaj na tę stronę"
+  },
+  "statusWarningText": {
+    "message": "Adres $P1$ wygląda podejrzanie. Lepiej nie wpisuj tu hasła ani numeru karty.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusAllowedTitle": {
+    "message": "Ta strona jest na liście oszustw"
+  },
+  "statusAllowedText": {
+    "message": "$P1$ jest odblokowana tylko do zamknięcia przeglądarki. Nie podawaj tu żadnych danych.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusBlockedTitle": {
+    "message": "Zatrzymaliśmy niebezpieczną stronę"
+  },
+  "statusBlockedText": {
+    "message": "Zamiast oszukańczej strony widzisz nasze ostrzeżenie."
+  },
+  "statusInsecureTitle": {
+    "message": "Strona bez kłódki"
+  },
+  "statusInsecureText": {
+    "message": "Połączenie z $P1$ nie jest szyfrowane. Nie wpisuj tu hasła.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusUnknownTitle": {
+    "message": "Nie znamy tej strony"
+  },
+  "statusUnknownText": {
+    "message": "To nie znaczy, że $P1$ jest zła. Ale jeśli nie masz pewności, nie podawaj tu hasła ani numeru karty.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusInternalTitle": {
+    "message": "Strona przeglądarki"
+  },
+  "statusInternalText": {
+    "message": "Tu nie ma czego sprawdzać."
+  },
+  "popupBlockedCount": {
+    "message": "Zatrzymane niebezpieczne strony: $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupDatabase": {
+    "message": "Znamy $P1$ niebezpiecznych stron (aktualizacja: $P2$)",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "helpPageTitle": {
+    "message": "Co robić po oszustwie – CyberGuard"
+  },
+  "helpTitle": {
+    "message": "Oszust może mieć moje dane – co teraz?"
+  },
+  "helpIntro": {
+    "message": "Spokojnie, to może się przytrafić każdemu. Zrób poniższe kroki od razu. Im szybciej, tym lepiej."
+  },
+  "helpBankTitle": {
+    "message": "Karta, BLIK albo logowanie do banku"
+  },
+  "helpBank1": {
+    "message": "Zadzwoń do swojego banku. Numer znajdziesz na odwrocie karty albo w aplikacji banku. Nie dzwoń na numery z SMS-ów i maili."
+  },
+  "helpBank2": {
+    "message": "Poproś o zablokowanie karty i dostępu do konta przez internet."
+  },
+  "helpBank3": {
+    "message": "Sprawdźcie razem, czy z konta nie wyszły przelewy albo płatności, których nie robisz."
+  },
+  "helpPasswordTitle": {
+    "message": "Hasło do poczty, sklepu albo innej strony"
+  },
+  "helpPassword1": {
+    "message": "Zmień hasło na prawdziwej stronie, najlepiej z innego, pewnego komputera lub telefonu."
+  },
+  "helpPasswordSessions": {
+    "message": "Wyloguj się ze wszystkich urządzeń (zwykle w ustawieniach konta, w części „Bezpieczeństwo”). Jeśli oszust już jest zalogowany na Twoim koncie, sama zmiana hasła go nie wyrzuci, a to tak."
+  },
+  "helpPassword2": {
+    "message": "Jeśli to samo hasło masz gdzieś jeszcze, zmień je też tam."
+  },
+  "helpPassword3": {
+    "message": "Włącz logowanie dwuetapowe (kod SMS albo z aplikacji), jeśli strona to umożliwia."
+  },
+  "helpIdTitle": {
+    "message": "PESEL, dane z dowodu albo zdjęcie dokumentu"
+  },
+  "helpId1": {
+    "message": "Zastrzeż swój PESEL w aplikacji mObywatel albo na gov.pl (wpisz w wyszukiwarkę „zastrzeż PESEL”). To nic nie kosztuje."
+  },
+  "helpId2": {
+    "message": "Zastrzeż dowód osobisty w dowolnym banku (system Dokumenty Zastrzeżone) albo w urzędzie gminy."
+  },
+  "helpRemoteTitle": {
+    "message": "Ktoś kazał zainstalować program (np. AnyDesk, TeamViewer)"
+  },
+  "helpRemote1": {
+    "message": "Odłącz komputer od internetu i poproś kogoś zaufanego o pomoc w usunięciu tego programu. Przez taki program oszust może widzieć Twój ekran i sterować komputerem."
+  },
+  "helpReportTitle": {
+    "message": "Zgłoś oszustwo"
+  },
+  "helpReport1": {
+    "message": "Zgłoś stronę do CERT Polska:"
+  },
+  "helpReport2": {
+    "message": "Podejrzanego SMS-a przekaż za darmo na numer 8080."
+  },
+  "helpReport3": {
+    "message": "Jeśli zniknęły pieniądze, zgłoś to też na policję (112)."
+  },
+  "helpTalkTitle": {
+    "message": "Porozmawiaj z kimś bliskim"
+  },
+  "helpTalk1": {
+    "message": "Oszuści straszą i poganiają, żeby nie było czasu się zastanowić. Nie ma się czego wstydzić. Z drugą osobą łatwiej spokojnie przejść przez te kroki."
+  },
+  "helpCleanTitle": {
+    "message": "Wyczyść ślady z ostatniej godziny (nieobowiązkowe)"
+  },
+  "helpCleanText": {
+    "message": "Usuwa historię, ciasteczka, pamięć podręczną i zapamiętane dane z formularzy z ostatniej godziny."
+  },
+  "helpCleanNote": {
+    "message": "Pamiętaj, że to nie cofnie tego, co już trafiło do oszusta, i nie wyloguje go z Twoich kont. Najważniejsze są kroki powyżej. Po wyczyszczeniu na niektórych stronach trzeba będzie zalogować się od nowa."
+  },
+  "helpCleanBtn": {
+    "message": "Wyczyść ostatnią godzinę"
+  },
+  "helpCleanConfirm": {
+    "message": "Na pewno wyczyścić ostatnią godzinę?"
+  },
+  "helpCleanYes": {
+    "message": "Tak, wyczyść"
+  },
+  "btnCancel": {
+    "message": "Anuluj"
+  },
+  "helpCleanDone": {
+    "message": "Gotowe, ostatnia godzina jest wyczyszczona."
+  },
+  "helpCleanDenied": {
+    "message": "Przeglądarka nie dała zgody, więc nic nie zostało usunięte."
+  },
+  "helpCleanFailed": {
+    "message": "Nie udało się. Możesz to zrobić ręcznie w ustawieniach przeglądarki (Ctrl+Shift+Delete)."
+  },
+  "optionsPageTitle": {
+    "message": "Ustawienia – CyberGuard"
+  },
+  "welcomeTitle": {
+    "message": "CyberGuard już Cię chroni"
+  },
+  "welcomeLead": {
+    "message": "Nie musisz nic ustawiać. Od teraz CyberGuard:"
+  },
+  "welcome1": {
+    "message": "zatrzymuje znane oszukańcze strony (z list CERT Polska i OpenPhish),"
+  },
+  "welcome2": {
+    "message": "ostrzega, gdy hasło do banku, poczty albo urzędu wpisujesz na obcej stronie,"
+  },
+  "welcome3": {
+    "message": "ostrzega przed stronami, które udają znane firmy, i przed linkami, które prowadzą gdzie indziej, niż pokazują."
+  },
+  "welcomeNothingToDo": {
+    "message": "Tarcza obok paska adresu pokaże Ci, czy strona jest znana. Tę kartę możesz już zamknąć."
+  },
+  "optionsTitle": {
+    "message": "Ustawienia"
+  },
+  "optFeedTitle": {
+    "message": "Lista niebezpiecznych stron"
+  },
+  "optFeedToggle": {
+    "message": "Pobieraj nowe ostrzeżenia od CERT Polska (co 12 godzin)"
+  },
+  "optFeedPrivacy": {
+    "message": "CyberGuard tylko pobiera publiczną listę. Nigdy nie wysyła niczego o Tobie ani o tym, co odwiedzasz."
+  },
+  "optFeedUpdateNow": {
+    "message": "Sprawdź teraz"
+  },
+  "optFeedUpdating": {
+    "message": "Sprawdzam…"
+  },
+  "optFeedLast": {
+    "message": "Ostatnio sprawdzone: $P1$.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optFeedNever": {
+    "message": "Lista nie była jeszcze aktualizowana."
+  },
+  "optFeedError": {
+    "message": "Ostatnio nie udało się pobrać listy. Spróbujemy znowu za jakiś czas."
+  },
+  "optFeedBuilt": {
+    "message": "Chronimy przed $P1$ niebezpiecznymi stronami (lista z dnia $P2$).",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "optFeedTotal": {
+    "message": "Razem chronimy przed $P1$ niebezpiecznymi stronami: $P2$ z listy w rozszerzeniu (z dnia $P3$) i $P4$ dopisanych od tamtej pory przez CERT Polska.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      },
+      "p3": {
+        "content": "$3"
+      },
+      "p4": {
+        "content": "$4"
+      }
+    }
+  },
+  "optFeedRemoved": {
+    "message": "$P1$ stron CERT Polska usunął z listy, więc już ich nie blokujemy.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optPasswordsTitle": {
+    "message": "Zapamiętane hasła"
+  },
+  "optPasswordsText": {
+    "message": "CyberGuard nie zapisuje Twoich haseł. Zapisuje tylko ich „odcisk”, z którego nie da się odczytać hasła. Dzięki temu wie, na jakich stronach którego hasła używasz."
+  },
+  "optPasswordsEmpty": {
+    "message": "Na razie pusto. Lista pojawi się po pierwszym logowaniu."
+  },
+  "optForgetAll": {
+    "message": "Zapomnij wszystkie hasła"
+  },
+  "optForgetAllConfirm": {
+    "message": "Na pewno? CyberGuard będzie musiał uczyć się wszystkiego od nowa."
+  },
+  "optForgetAllYes": {
+    "message": "Tak, zapomnij"
+  },
+  "optPasswordN": {
+    "message": "Hasło $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optUsedOn": {
+    "message": "używane na: $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optProtectedBadge": {
+    "message": "chronione"
+  },
+  "optForget": {
+    "message": "Zapomnij"
+  },
+  "optTrustedTitle": {
+    "message": "Strony bez ostrzeżeń"
+  },
+  "optTrustedText": {
+    "message": "Tu są strony, przy których kliknięto „Ufam tej stronie” albo „Rozumiem, nie pokazuj więcej”. Ostrzeżenie o haśle do banku albo poczty i tak zawsze zadziała."
+  },
+  "optTrustedWhole": {
+    "message": "zaufana strona (żadnych ostrzeżeń)"
+  },
+  "optHiddenWarnings": {
+    "message": "ukryte ostrzeżenie: $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optShowAgain": {
+    "message": "Pokazuj znowu"
+  },
+  "findShortInsecure": {
+    "message": "brak zabezpieczenia (kłódki)"
+  },
+  "findShortCrossForm": {
+    "message": "hasło idzie na inną stronę"
+  },
+  "findShortLookalike": {
+    "message": "adres podobny do znanej firmy"
+  },
+  "findShortMixed": {
+    "message": "dziwne litery w adresie"
+  },
+  "findShortOther": {
+    "message": "inne"
+  },
+  "optEmptyList": {
+    "message": "Na razie nic tu nie ma."
+  },
+  "optAllowedTitle": {
+    "message": "Odblokowane do zamknięcia przeglądarki"
+  },
+  "optAllowedText": {
+    "message": "Te strony są na liście oszustw, ale zostały odblokowane. Po zamknięciu przeglądarki znowu będą zablokowane."
+  },
+  "optBlockAgain": {
+    "message": "Zablokuj znowu"
+  },
+  "optAboutTitle": {
+    "message": "O CyberGuard"
+  },
+  "optAbout1": {
+    "message": "Wszystko sprawdzamy na Twoim komputerze. Hasła nigdzie nie są wysyłane ani zapisywane."
+  },
+  "optAbout2": {
+    "message": "Listy niebezpiecznych stron bierzemy z CERT Polska (hole.cert.pl) i OpenPhish."
+  },
+  "optVersion": {
+    "message": "Wersja $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  }
+}

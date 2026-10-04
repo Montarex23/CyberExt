@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Every Monday 06:00 UTC: rebuild with the latest CERT Polska / OpenPhish lists.
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Translations are up to date
+        run: |
+          npm run build:locales
+          git diff --exit-code -- src/_locales
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Build phishing rules (downloads public feeds)
+        run: npm run build:rules
+
+      - name: End-to-end test in Chrome
+        run: npm run test:e2e
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+
+      - name: Package extension
+        run: npm run package
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cyberguard-extension
+          path: dist/*.zip
+          retention-days: 30
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-screenshots
+          path: tmp/e2e/
+          retention-days: 7

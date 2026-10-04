@@ -1,0 +1,205 @@
+body {
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 28px 16px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.hero {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 10px solid var(--danger);
+  border-radius: 20px;
+  padding: 24px 24px 20px;
+  text-align: center;
+}
+
+body[data-mode="left"] .hero {
+  border-top-color: var(--ok);
+}
+
+.hero-mascot {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.hero h1 {
+  color: var(--danger-text);
+  margin: 4px 0 10px;
+}
+
+body[data-mode="left"] .hero h1 {
+  color: var(--ok-text);
+}
+
+.hero .lead {
+  font-size: 1.15rem;
+  max-width: 600px;
+  margin: 0 auto 14px;
+}
+
+.domain-box {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.source {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.left-extra {
+  margin: 12px 0 0;
+}
+
+body[data-mode="blocked"] .left-extra,
+body[data-mode="left"] #proceed,
+body[data-mode="left"] #how,
+body[data-mode="left"] .kicker {
+  display: none;
+}
+
+.btn-xl {
+  min-height: 72px;
+  font-size: 1.35rem;
+  border-radius: 18px;
+}
+
+.steps3 {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  counter-reset: s;
+}
+
+.steps3 li {
+  counter-increment: s;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 14px 10px;
+  border-radius: 14px;
+  background: var(--brand-soft);
+  font-size: 0.95rem;
+}
+
+.steps3 li::before {
+  content: counter(s);
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-weight: 800;
+  color: var(--brand-strong);
+}
+
+.steps3 .pict {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  color: var(--brand);
+}
+
+.steps3 li.bad {
+  background: var(--danger-bg);
+}
+
+.steps3 li.bad::before,
+.steps3 li.bad .pict {
+  color: var(--danger-text);
+}
+
+.tip {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 0;
+  font-weight: 600;
+}
+
+.tip svg {
+  flex-shrink: 0;
+  color: var(--brand);
+  margin-top: 2px;
+}
+
+@media (max-width: 560px) {
+  .steps3 {
+    grid-template-columns: 1fr;
+  }
+
+  .steps3 li {
+    flex-direction: row;
+    text-align: left;
+    padding-left: 34px;
+  }
+}
+
+.card-info {
+  border-left: 8px solid var(--brand);
+  border-radius: 0 16px 16px 0;
+}
+
+.proceed {
+  margin-top: 12px;
+  font-size: 0.95rem;
+}
+
+.proceed summary {
+  cursor: pointer;
+  color: var(--muted);
+  text-decoration: underline;
+  padding: 8px 0;
+  width: fit-content;
+}
+
+.proceed-body {
+  margin-top: 12px;
+  background: var(--surface);
+  border: 2px solid var(--danger);
+  border-radius: 14px;
+  padding: 16px 20px;
+}
+
+.ack {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin: 8px 0 16px;
+  cursor: pointer;
+}
+
+.ack input {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.proceed-error {
+  margin-top: 12px;
+  color: var(--danger-text);
+  font-weight: 700;
+}
+
+.footer {
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 8px;
+}

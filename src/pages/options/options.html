@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pl" data-i18n-title="optionsPageTitle">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CyberGuard</title>
+  <link rel="stylesheet" href="../common.css" />
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+  <main class="container">
+    <section class="card welcome" id="welcome" hidden>
+      <div class="welcome-head">
+        <div class="pop-in" id="welcome-mascot"></div>
+        <h1 data-i18n="welcomeTitle"></h1>
+      </div>
+      <p class="lead" data-i18n="welcomeLead"></p>
+      <ul class="list">
+        <li data-i18n="welcome1"></li>
+        <li data-i18n="welcome2"></li>
+        <li data-i18n="welcome3"></li>
+      </ul>
+      <p data-i18n="welcomeNothingToDo"></p>
+    </section>
+
+    <h1 id="settings-title" data-i18n="optionsTitle"></h1>
+
+    <section class="card" aria-labelledby="feed-title">
+      <h2 id="feed-title" data-i18n="optFeedTitle"></h2>
+      <label class="switch-row">
+        <input type="checkbox" id="auto-update" role="switch" />
+        <span data-i18n="optFeedToggle"></span>
+      </label>
+      <p class="muted" data-i18n="optFeedPrivacy"></p>
+      <p id="feed-status"></p>
+      <button class="btn btn-secondary" id="btn-update" type="button" data-i18n="optFeedUpdateNow"></button>
+    </section>
+
+    <section class="card" aria-labelledby="pw-title">
+      <h2 id="pw-title" data-i18n="optPasswordsTitle"></h2>
+      <p data-i18n="optPasswordsText"></p>
+      <ul class="items" id="pw-list"></ul>
+      <p class="muted" id="pw-empty" data-i18n="optPasswordsEmpty" hidden></p>
+      <div id="pw-clear-start">
+        <button class="btn btn-danger" id="btn-forget-all" type="button" data-i18n="optForgetAll"></button>
+      </div>
+      <div id="pw-clear-confirm" hidden>
+        <p><strong data-i18n="optForgetAllConfirm"></strong></p>
+        <div class="row">
+          <button class="btn btn-danger" id="btn-forget-all-yes" type="button" data-i18n="optForgetAllYes"></button>
+          <button class="btn btn-secondary" id="btn-forget-all-no" type="button" data-i18n="btnCancel"></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="trusted-title">
+      <h2 id="trusted-title" data-i18n="optTrustedTitle"></h2>
+      <p data-i18n="optTrustedText"></p>
+      <ul class="items" id="trusted-list"></ul>
+      <p class="muted" id="trusted-empty" data-i18n="optEmptyList" hidden></p>
+    </section>
+
+    <section class="card" aria-labelledby="allowed-title">
+      <h2 id="allowed-title" data-i18n="optAllowedTitle"></h2>
+      <p data-i18n="optAllowedText"></p>
+      <ul class="items" id="allowed-list"></ul>
+      <p class="muted" id="allowed-empty" data-i18n="optEmptyList" hidden></p>
+    </section>
+
+    <section class="card" aria-labelledby="about-title">
+      <h2 id="about-title" data-i18n="optAboutTitle"></h2>
+      <p data-i18n="optAbout1"></p>
+      <p data-i18n="optAbout2"></p>
+      <p class="muted" id="version"></p>
+    </section>
+  </main>
+
+  <script src="../../shared/mascot.js"></script>
+  <script src="../i18n.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

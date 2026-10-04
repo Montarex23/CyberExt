@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pl" data-i18n-title="warnPageTitle">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CyberGuard</title>
+  <link rel="stylesheet" href="../common.css" />
+  <link rel="stylesheet" href="warning.css" />
+</head>
+<body data-mode="blocked">
+  <main class="container fade-in">
+
+    <section class="hero" id="hero" aria-labelledby="title">
+      <div class="hero-mascot pop-in" id="mascot"></div>
+      <p class="kicker" id="kicker"></p>
+      <h1 id="title"></h1>
+      <p class="lead" id="lead"></p>
+      <div class="domain-box" id="domain-box"></div>
+      <p class="source" id="source"></p>
+      <p class="left-extra" data-i18n="leftNothingSent"></p>
+    </section>
+
+    <button id="btn-leave" class="btn btn-primary btn-block btn-xl" type="button">
+      <span id="btn-leave-text"></span>
+    </button>
+
+    <section class="card" id="how" aria-labelledby="how-title">
+      <h2 id="how-title" data-i18n="warnHowTitle"></h2>
+      <ol class="steps3">
+        <li>
+          <span class="pict" aria-hidden="true">
+            <svg viewBox="0 0 48 48" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="13" y="4" width="22" height="40" rx="4"/><path d="M19 13h10M19 19h7"/><circle cx="24" cy="38" r="1.2" fill="currentColor"/>
+              <path d="M30 22l10-6v12z" fill="currentColor" stroke="none" opacity=".25"/>
+            </svg>
+          </span>
+          <span data-i18n="warnHow1"></span>
+        </li>
+        <li>
+          <span class="pict" aria-hidden="true">
+            <svg viewBox="0 0 48 48" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="8" width="40" height="32" rx="4"/><path d="M4 16h40"/>
+              <path d="M13 27c3-4 8-4 11-1 3-3 8-3 11 1-1 5-7 6-11 3-4 3-10 2-11-3z"/>
+            </svg>
+          </span>
+          <span data-i18n="warnHow2"></span>
+        </li>
+        <li class="bad">
+          <span class="pict" aria-hidden="true">
+            <svg viewBox="0 0 48 48" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="16" width="30" height="20" rx="3"/><path d="M4 22h30M9 30h8"/>
+              <path d="M32 10h10v10M42 10L30 22"/>
+            </svg>
+          </span>
+          <span data-i18n="warnHow3"></span>
+        </li>
+      </ol>
+      <p class="tip">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/><path d="M12 11v6M12 7.5v.01"/>
+        </svg>
+        <span data-i18n="warnTip"></span>
+      </p>
+    </section>
+
+    <section class="card card-info" aria-labelledby="already-title">
+      <h2 id="already-title" data-i18n="warnAlreadyTitle"></h2>
+      <p data-i18n="warnAlreadyText"></p>
+      <a class="btn btn-secondary" href="../help/help.html" data-i18n="btnWhatNow"></a>
+    </section>
+
+    <details class="proceed" id="proceed">
+      <summary data-i18n="proceedSummary"></summary>
+      <div class="proceed-body">
+        <p data-i18n="proceedText"></p>
+        <label class="ack">
+          <input type="checkbox" id="risk-ack" />
+          <span data-i18n="proceedAck"></span>
+        </label>
+        <button id="btn-proceed" class="btn btn-danger" type="button" disabled></button>
+        <p class="proceed-error" id="proceed-error" role="alert" hidden></p>
+      </div>
+    </details>
+
+    <footer class="footer muted" data-i18n="footerPrivacy"></footer>
+  </main>
+
+  <script src="../../shared/mascot.js"></script>
+  <script src="../../shared/compare-view.js"></script>
+  <script src="../i18n.js"></script>
+  <script src="warning.js"></script>
+</body>
+</html>
