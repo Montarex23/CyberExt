@@ -191,6 +191,18 @@
     return { dialog, backdrop };
   }
 
+  function openHelp(topic) {
+    try {
+      chrome.runtime.sendMessage({ type: 'OPEN_HELP', topic });
+    } catch {}
+  }
+
+  function findingTopic(ids) {
+    if (ids.has('lookalike') || ids.has('homograph') || ids.has('mixedScripts')) return 'lookalike';
+    if (ids.has('phishingContent')) return 'phishing';
+    return 'phishing';
+  }
+
   let alertPromise = null;
 
   function showPasswordAlert(alert) {
@@ -221,6 +233,7 @@
           el('p', {}, rich('pwAlertExplain', [alert.brandName])),
           el('div', { class: 'actions' },
             el('button', { class: 'primary', type: 'button', text: t('btnLeave'), onclick: () => finish('leave') }),
+            el('button', { class: 'secondary', type: 'button', text: t('btnLearnMorePassword'), onclick: () => openHelp('password') }),
             el('button', { class: 'linkish', type: 'button', text: t('pwAlertTrustLink'), onclick: step2 })
           )
         );
@@ -274,6 +287,7 @@
         el('p', { text: t('linkAlertExplain') }),
         el('div', { class: 'actions' },
           el('button', { class: 'primary', type: 'button', text: t('linkAlertStay'), onclick: () => finish('stay') }),
+          el('button', { class: 'secondary', type: 'button', text: t('btnLearnMoreLink'), onclick: () => openHelp('link') }),
           el('button', { class: 'linkish', type: 'button', text: t('linkAlertOpen'), onclick: () => finish('open') })
         )
       );
@@ -323,23 +337,30 @@
     insecure: () => [t('findInsecureTitle'), document.createTextNode(t('findInsecureBody'))],
     crossForm: (f) => [t('findCrossFormTitle'), rich('findCrossFormBody', [f.target])],
     blocklisted: (f) => [t('findBlocklistedTitle'), rich('findBlocklistedBody', [f.host])],
+    phishingContent: () => [t('phishingContentTitle'), document.createTextNode(t('phishingContentBody'))],
   };
-  const LEAVE_FOR = new Set(['lookalike', 'homograph', 'blocklisted', 'mixedScripts']);
+  const LEAVE_FOR = new Set(['lookalike', 'homograph', 'blocklisted', 'mixedScripts', 'phishingContent']);
   const TRUST_FOR = new Set(['lookalike', 'homograph', 'mixedScripts', 'crossForm']);
 
   let bannerEl = null;
+  let currentBannerFindings = [];
 
-  function hideBanner() {
+  function hideBanner(force = false) {
     if (!bannerEl) return;
+    if (!force && currentBannerFindings.some((f) => f.id === 'phishingContent')) {
+      return;
+    }
     bannerEl.remove();
     bannerEl = null;
-    openCount--;
+    currentBannerFindings = [];
+    openCount = Math.max(0, openCount - 1);
   }
 
   function showBanner(findings, actions) {
     const known = findings.filter((f) => FINDING_TEXT[f.id]);
-    hideBanner();
+    hideBanner(true);
     if (!known.length) return;
+    currentBannerFindings = [...known];
 
     const root = getRoot();
     openCount++;
@@ -354,8 +375,9 @@
     if (!ids.has('blocklisted') && [...ids].some((id) => TRUST_FOR.has(id))) {
       buttons.push(el('button', { class: 'secondary', type: 'button', text: t('btnTrustSite'), onclick: actions.onTrust }));
     }
-    if (!buttons.length) {
-      buttons.push(el('button', { class: 'secondary', type: 'button', text: t('btnUnderstoodRemember'), onclick: actions.onUnderstood }));
+    buttons.push(el('button', { class: 'secondary', type: 'button', text: t('btnLearnMore'), onclick: () => openHelp(findingTopic(ids)) }));
+    if (!buttons.length || ids.has('phishingContent')) {
+      buttons.push(el('button', { class: 'secondary', type: 'button', text: t('btnUnderstoodRemember'), onclick: actions.onUnderstood || actions.onClose }));
     }
 
     const content = [];
@@ -372,9 +394,9 @@
       head(level === 'danger' ? 'alarmed' : 'worried', 44, null, texts[0][0]),
       ...content,
       el('div', { class: 'row' }, ...buttons),
-      level === 'danger'
+      ids.has('blocklisted')
         ? null
-        : el('button', { class: 'close', type: 'button', 'aria-label': t('btnClose'), title: t('btnClose'), text: '×', onclick: actions.onClose })
+        : el('button', { class: 'close', type: 'button', 'aria-label': t('btnClose'), title: t('btnClose'), text: '×', onclick: actions.onClose || actions.onUnderstood })
     );
     root.append(bannerEl);
   }

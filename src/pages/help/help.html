@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CyberGuard</title>
+  <title>CyberGuard – Pomoc i Baza Wiedzy</title>
   <link rel="stylesheet" href="../common.css" />
   <link rel="stylesheet" href="help.css" />
 </head>
@@ -12,76 +12,157 @@
     <header class="intro">
       <div class="pop-in" id="help-mascot"></div>
       <div>
-        <h1 data-i18n="helpTitle"></h1>
-        <p class="lead" data-i18n="helpIntro"></p>
+        <h1 data-i18n="helpTitle">CyberGuard – Centrum Bezpieczeństwa</h1>
+        <p class="lead" data-i18n="helpIntro">Dowiedz się, jak działają ataki internetowe i co zrobić w razie zagrożenia.</p>
       </div>
     </header>
 
-    <ol class="steps">
-      <li class="card step step-urgent">
-        <h2 data-i18n="helpBankTitle"></h2>
-        <ul class="list">
-          <li data-i18n="helpBank1"></li>
-          <li data-i18n="helpBank2"></li>
-          <li data-i18n="helpBank3"></li>
-        </ul>
-      </li>
-
-      <li class="card step">
-        <h2 data-i18n="helpPasswordTitle"></h2>
-        <ul class="list">
-          <li data-i18n="helpPassword1"></li>
-          <li data-i18n="helpPasswordSessions"></li>
-          <li data-i18n="helpPassword2"></li>
-          <li data-i18n="helpPassword3"></li>
-        </ul>
-      </li>
-
-      <li class="card step">
-        <h2 data-i18n="helpIdTitle"></h2>
-        <ul class="list">
-          <li data-i18n="helpId1"></li>
-          <li data-i18n="helpId2"></li>
-        </ul>
-      </li>
-
-      <li class="card step">
-        <h2 data-i18n="helpRemoteTitle"></h2>
-        <ul class="list">
-          <li data-i18n="helpRemote1"></li>
-        </ul>
-      </li>
-
-      <li class="card step">
-        <h2 data-i18n="helpReportTitle"></h2>
-        <ul class="list">
-          <li><span data-i18n="helpReport1"></span> <a href="https://incydent.cert.pl" target="_blank" rel="noopener noreferrer">incydent.cert.pl</a></li>
-          <li data-i18n="helpReport2"></li>
-          <li data-i18n="helpReport3"></li>
-        </ul>
-      </li>
-
-      <li class="card step">
-        <h2 data-i18n="helpTalkTitle"></h2>
-        <p data-i18n="helpTalk1"></p>
-      </li>
-    </ol>
-
-    <section class="card cleanup" aria-labelledby="cleanup-title">
-      <h2 id="cleanup-title" data-i18n="helpCleanTitle"></h2>
-      <p data-i18n="helpCleanText"></p>
-      <p class="muted" data-i18n="helpCleanNote"></p>
-      <div id="clean-start">
-        <button class="btn btn-secondary" id="btn-clean" type="button" data-i18n="helpCleanBtn"></button>
+    <!-- ── Sekcja 1: Baza Wiedzy (Edukacja o atakach) ── -->
+    <section class="edu-section" id="edu" aria-labelledby="edu-heading">
+      <div class="section-head">
+        <h2 id="edu-heading" data-i18n="helpEduSectionTitle">Baza wiedzy – jak działają ataki i jak się chronić</h2>
+        <p class="muted" data-i18n="helpEduSectionIntro">Wyjaśniamy prostym językiem, na czym polegają popularne zagrożenia w sieci i jakie proste nawyki pozwolą Ci zachować pełne bezpieczeństwo.</p>
       </div>
-      <div id="clean-confirm" hidden>
-        <p><strong data-i18n="helpCleanConfirm"></strong></p>
-        <div class="row">
-          <button class="btn btn-danger" id="btn-clean-yes" type="button" data-i18n="helpCleanYes"></button>
-          <button class="btn btn-secondary" id="btn-clean-no" type="button" data-i18n="btnCancel"></button>
+
+      <div class="edu-cards">
+        <!-- 1. Phishing & Presja czasu -->
+        <article class="card edu-card" id="topic-phishing">
+          <div class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="1"/></svg>
+          </div>
+          <h3 data-i18n="helpTopicPhishingTitle">1. Wyłudzanie danych i presja czasu (Phishing)</h3>
+          <div class="edu-block edu-how">
+            <h4 data-i18n="helpTopicPhishingHowLabel">Jak działają oszuści?</h4>
+            <p data-i18n="helpTopicPhishingHowText">Przestępcy tworzą strony podszywające się pod banki, kurierów lub portale rządowe. Stosują presję emocjonalną, by wymusić szybkie wpisanie loginu i hasła.</p>
+          </div>
+          <div class="edu-block edu-protect">
+            <h4 data-i18n="helpTopicPhishingProtectLabel">Jak się chronić?</h4>
+            <p data-i18n="helpTopicPhishingProtectText">Bank ani urząd nigdy nie wysyła linków z żądaniem logowania. Wchodź na strony wpisując adres samodzielnie lub z zakładek. Włącz autoryzację dwuetapową (2FA).</p>
+          </div>
+        </article>
+
+        <!-- 2. Literówki i fałszywe adresy -->
+        <article class="card edu-card" id="topic-lookalike">
+          <div class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          </div>
+          <h3 data-i18n="helpTopicLookalikeTitle">2. Podrobione adresy stron (Literówki i fałszywe znaki)</h3>
+          <div class="edu-block edu-how">
+            <h4 data-i18n="helpTopicLookalikeHowLabel">Jak działają oszuści?</h4>
+            <p data-i18n="helpTopicLookalikeHowText">Oszuści rejestrują adresy łudząco podobne do prawdziwych stron – zamieniają litery (np. „rn” na „m”) lub używają liter z innych alfabetów, które wyglądają identycznie.</p>
+          </div>
+          <div class="edu-block edu-protect">
+            <h4 data-i18n="helpTopicLookalikeProtectLabel">Jak się chronić?</h4>
+            <p data-i18n="helpTopicLookalikeProtectText">Sprawdzaj dokładnie pasek adresu. CyberGuard automatycznie porównuje adres z oficjalną stroną i zaznacza fałszywe litery.</p>
+          </div>
+        </article>
+
+        <!-- 3. Kradzież i ponowne użycie haseł -->
+        <article class="card edu-card" id="topic-password">
+          <div class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          </div>
+          <h3 data-i18n="helpTopicPasswordTitle">3. Kradzież i ponowne używanie haseł</h3>
+          <div class="edu-block edu-how">
+            <h4 data-i18n="helpTopicPasswordHowLabel">Jak działają oszuści?</h4>
+            <p data-i18n="helpTopicPasswordHowText">Gdy przestępcy wykradną hasło z jednego forum lub małego sklepu, natychmiast próbują użyć go w Twojej poczcie, banku i portalach społecznościowych.</p>
+          </div>
+          <div class="edu-block edu-protect">
+            <h4 data-i18n="helpTopicPasswordProtectLabel">Jak się chronić?</h4>
+            <p data-i18n="helpTopicPasswordProtectText">Stosuj unikalne hasło do każdego ważnego konta. CyberGuard pilnuje Twoich kluczowych haseł i ostrzega, gdy wpiszesz hasło bankowe na innej witrynie.</p>
+          </div>
+        </article>
+
+        <!-- 4. Fałszywe linki -->
+        <article class="card edu-card" id="topic-link">
+          <div class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+          </div>
+          <h3 data-i18n="helpTopicLinkTitle">4. Fałszywe linki (Odnośniki prowadzące gdzie indziej)</h3>
+          <div class="edu-block edu-how">
+            <h4 data-i18n="helpTopicLinkHowLabel">Jak działają oszuści?</h4>
+            <p data-i18n="helpTopicLinkHowText">Napis na stronie lub w mailu pokazuje zaufany bank, ale kliknięcie odsyła Cię na serwer oszusta.</p>
+          </div>
+          <div class="edu-block edu-protect">
+            <h4 data-i18n="helpTopicLinkProtectLabel">Jak się chronić?</h4>
+            <p data-i18n="helpTopicLinkProtectText">Zawsze przed kliknięciem najedź kursorem na link i zobacz podgląd adresu w lewym dolnym rogu ekranu.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ── Sekcja 2: Pierwsza Pomoc (Gdy dane zostały wpisane) ── -->
+    <section class="emergency-section" id="emergency" aria-labelledby="emergency-heading">
+      <div class="section-head">
+        <h2 id="emergency-heading" data-i18n="helpEmergencySectionTitle">Pierwsza pomoc: Co zrobić, jeśli Twoje dane trafiły do oszustów?</h2>
+      </div>
+
+      <ol class="steps">
+        <li class="card step step-urgent">
+          <h3 data-i18n="helpBankTitle"></h3>
+          <ul class="list">
+            <li data-i18n="helpBank1"></li>
+            <li data-i18n="helpBank2"></li>
+            <li data-i18n="helpBank3"></li>
+          </ul>
+        </li>
+
+        <li class="card step">
+          <h3 data-i18n="helpPasswordTitle"></h3>
+          <ul class="list">
+            <li data-i18n="helpPassword1"></li>
+            <li data-i18n="helpPasswordSessions"></li>
+            <li data-i18n="helpPassword2"></li>
+            <li data-i18n="helpPassword3"></li>
+          </ul>
+        </li>
+
+        <li class="card step">
+          <h3 data-i18n="helpIdTitle"></h3>
+          <ul class="list">
+            <li data-i18n="helpId1"></li>
+            <li data-i18n="helpId2"></li>
+          </ul>
+        </li>
+
+        <li class="card step">
+          <h3 data-i18n="helpRemoteTitle"></h3>
+          <ul class="list">
+            <li data-i18n="helpRemote1"></li>
+          </ul>
+        </li>
+
+        <li class="card step">
+          <h3 data-i18n="helpReportTitle"></h3>
+          <ul class="list">
+            <li><span data-i18n="helpReport1"></span> <a href="https://incydent.cert.pl" target="_blank" rel="noopener noreferrer">incydent.cert.pl</a></li>
+            <li data-i18n="helpReport2"></li>
+            <li data-i18n="helpReport3"></li>
+          </ul>
+        </li>
+
+        <li class="card step">
+          <h3 data-i18n="helpTalkTitle"></h3>
+          <p data-i18n="helpTalk1"></p>
+        </li>
+      </ol>
+
+      <section class="card cleanup" aria-labelledby="cleanup-title">
+        <h3 id="cleanup-title" data-i18n="helpCleanTitle"></h3>
+        <p data-i18n="helpCleanText"></p>
+        <p class="muted" data-i18n="helpCleanNote"></p>
+        <div id="clean-start">
+          <button class="btn btn-secondary" id="btn-clean" type="button" data-i18n="helpCleanBtn"></button>
         </div>
-      </div>
-      <p class="result" id="clean-result" role="status" hidden></p>
+        <div id="clean-confirm" hidden>
+          <p><strong data-i18n="helpCleanConfirm"></strong></p>
+          <div class="row">
+            <button class="btn btn-danger" id="btn-clean-yes" type="button" data-i18n="helpCleanYes"></button>
+            <button class="btn btn-secondary" id="btn-clean-no" type="button" data-i18n="btnCancel"></button>
+          </div>
+        </div>
+        <p class="result" id="clean-result" role="status" hidden></p>
+      </section>
     </section>
   </main>
 

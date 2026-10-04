@@ -161,6 +161,23 @@ const contentHandlers = {
     });
   },
 
+  async IS_SITE_TRUSTED(msg, sender) {
+    const host = (msg && msg.host) || senderHost(sender) || tabHost(sender);
+    if (!host) return { isTrusted: false };
+    const site = CG.domain.siteKeyForTrust(host);
+    const { trustedSites } = await CG.store.get(['trustedSites']);
+    const isUserTrusted = !!(site && trustedSites && trustedSites[site]);
+    const isOfficial = !!(CG.knownSites && CG.knownSites.brandForHost(host));
+    return { isTrusted: isUserTrusted || isOfficial, site };
+  },
+
+  async OPEN_HELP(msg) {
+    const topic = msg && msg.topic ? encodeURIComponent(msg.topic) : '';
+    const url = chrome.runtime.getURL('pages/help/help.html' + (topic ? `?topic=${topic}` : ''));
+    await chrome.tabs.create({ url });
+    return { ok: true };
+  },
+
   async ANALYZE_PAGE(msg, sender) {
     if (sender.frameId !== 0 || !sender.tab) return { findings: [] };
     const { trustedSites, dismissedFindings } = await CG.store.get(['trustedSites', 'dismissedFindings']);

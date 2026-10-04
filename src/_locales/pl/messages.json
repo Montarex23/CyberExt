@@ -569,7 +569,7 @@
     "message": "Ustawienia – CyberGuard"
   },
   "welcomeTitle": {
-    "message": "CyberGuard już Cię chroni"
+    "message": "Witaj! CyberGuard już Cię chroni 🛡️"
   },
   "welcomeLead": {
     "message": "Nie musisz nic ustawiać. Od teraz CyberGuard:"
@@ -757,5 +757,95 @@
         "content": "$1"
       }
     }
+  },
+  "welcomeSubtitle": {
+    "message": "Od tej chwili działam w tle i dbam o Twoje bezpieczeństwo w sieci. Możesz spokojnie przeglądać internet – dam Ci znać, jeśli strona wyda się podejrzana."
+  },
+  "welcomeCloseBtn": {
+    "message": "Rozumiem, zamknij"
+  },
+  "phishingContentTitle": {
+    "message": "Podejrzana treść strony (możliwe wyłudzenie danych)"
+  },
+  "phishingContentBody": {
+    "message": "Ta strona wywiera presję czasu i żąda pilnego logowania lub potwierdzenia danych. Nie wpisuj tutaj swoich haseł!"
+  },
+  "btnLearnMore": {
+    "message": "Dowiedz się więcej 💡"
+  },
+  "btnLearnMorePassword": {
+    "message": "Jak chronić swoje hasła? 💡"
+  },
+  "btnLearnMoreLink": {
+    "message": "Jak działają fałszywe linki? 💡"
+  },
+  "helpEduSectionTitle": {
+    "message": "Baza wiedzy – jak działają ataki i jak się chronić"
+  },
+  "helpEduSectionIntro": {
+    "message": "Wyjaśniamy prostym językiem, na czym polegają popularne zagrożenia w sieci i jakie proste nawyki pozwolą Ci zachować pełne bezpieczeństwo."
+  },
+  "helpTopicPhishingTitle": {
+    "message": "1. Wyłudzanie danych i presja czasu (Phishing)"
+  },
+  "helpTopicPhishingHowLabel": {
+    "message": "Jak działają oszuści?"
+  },
+  "helpTopicPhishingHowText": {
+    "message": "Przestępcy tworzą strony podszywające się pod banki, kurierów (np. InPost, Poczta Polska) lub portale rządowe. Stosują silną presję emocjonalną – straszą natychmiastową blokadą konta, wstrzymaniem paczki czy koniecznością dopłaty drobnej kwoty, aby wymusić szybkie wpisanie loginu i hasła."
+  },
+  "helpTopicPhishingProtectLabel": {
+    "message": "Jak się chronić?"
+  },
+  "helpTopicPhishingProtectText": {
+    "message": "Pamiętaj: bank ani urząd nigdy nie wysyła linków z żądaniem pilnego logowania. Zawsze wchodź na strony wpisując adres samodzielnie lub z zakładek. Włącz autoryzację dwuetapową (2FA) w aplikacji bankowej."
+  },
+  "helpTopicLookalikeTitle": {
+    "message": "2. Podrobione adresy stron (Literówki i fałszywe znaki)"
+  },
+  "helpTopicLookalikeHowLabel": {
+    "message": "Jak działają oszuści?"
+  },
+  "helpTopicLookalikeHowText": {
+    "message": "Oszuści rejestrują adresy stron łudząco podobne do prawdziwych marek – zamieniają litery (np. „rn” zamiast „m”, „0” zamiast „o”) lub stosują litery z innych alfabetów (np. cyrylicy), które na ekranie wyglądają identycznie jak polskie."
+  },
+  "helpTopicLookalikeProtectLabel": {
+    "message": "Jak się chronić?"
+  },
+  "helpTopicLookalikeProtectText": {
+    "message": "Sprawdzaj dokładnie pasek adresu. CyberGuard automatycznie porównuje adres z oficjalną stroną i zaznacza fałszywe litery. Korzystaj z bezpiecznych zakładek w przeglądarce."
+  },
+  "helpTopicPasswordTitle": {
+    "message": "3. Kradzież i ponowne używanie haseł"
+  },
+  "helpTopicPasswordHowLabel": {
+    "message": "Jak działają oszuści?"
+  },
+  "helpTopicPasswordHowText": {
+    "message": "Wielu internautów używa tego samego hasła na wielu stronach. Gdy przestępcy wykradną hasło ze słabiej zabezpieczonego sklepu czy forum, natychmiast próbują zalogować się nim do Twojej poczty, banku i mediów społecznościowych."
+  },
+  "helpTopicPasswordProtectLabel": {
+    "message": "Jak się chronić?"
+  },
+  "helpTopicPasswordProtectText": {
+    "message": "Stosuj unikalne hasło do każdego ważnego konta (bank, poczta, media). CyberGuard pilnuje Twoich kluczowych haseł i natychmiast ostrzega, gdy przypadkowo zaczniesz wpisywać hasło bankowe na innej stronie."
+  },
+  "helpTopicLinkTitle": {
+    "message": "4. Fałszywe linki (Odnośniki prowadzące gdzie indziej)"
+  },
+  "helpTopicLinkHowLabel": {
+    "message": "Jak działają oszuści?"
+  },
+  "helpTopicLinkHowText": {
+    "message": "W mailu lub na stronie widzisz napis z adresem zaufanego banku, ale kliknięcie w niego przenosi Cię na zupełnie inną, złośliwą stronę oszusta. Tekst na ekranie nie odpowiada prawdziwemu celowi linku."
+  },
+  "helpTopicLinkProtectLabel": {
+    "message": "Jak się chronić?"
+  },
+  "helpTopicLinkProtectText": {
+    "message": "Przed kliknięciem najedź kursorem myszy na link i sprawdź podgląd adresu w lewym dolnym rogu ekranu. CyberGuard sam wykrywa takie pułapki i wyświetla ostrzeżenie."
+  },
+  "helpEmergencySectionTitle": {
+    "message": "Pierwsza pomoc: Co zrobić, jeśli Twoje dane trafiły do oszustów?"
   }
 }

@@ -5,10 +5,20 @@
   const $ = (id) => document.getElementById(id);
   const lang = t('langCode');
 
-  if (new URLSearchParams(location.search).get('welcome') === '1') {
+  const isWelcome = new URLSearchParams(location.search).get('welcome') === '1';
+  if (isWelcome) {
+    document.body.classList.add('is-welcome');
     $('welcome').hidden = false;
-    $('settings-title').hidden = true;
-    $('welcome-mascot').innerHTML = self.CyberGuard.mascot.svg('happy', 88);
+    $('settings-view').hidden = true;
+    $('welcome-mascot').innerHTML = self.CyberGuard.mascot.svg('happy', 96);
+    $('btn-close-welcome').addEventListener('click', () => {
+      try {
+        window.close();
+      } catch {}
+      document.body.classList.remove('is-welcome');
+      $('welcome').hidden = true;
+      $('settings-view').hidden = false;
+    });
   }
   $('version').textContent = t('optVersion', [chrome.runtime.getManifest().version]);
 
