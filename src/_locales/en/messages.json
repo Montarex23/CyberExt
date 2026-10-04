@@ -569,7 +569,7 @@
     "message": "Settings – CyberGuard"
   },
   "welcomeTitle": {
-    "message": "CyberGuard is already protecting you"
+    "message": "Welcome! CyberGuard is protecting you 🛡️"
   },
   "welcomeLead": {
     "message": "You don't need to set anything up. From now on, CyberGuard:"
@@ -757,5 +757,95 @@
         "content": "$1"
       }
     }
+  },
+  "welcomeSubtitle": {
+    "message": "From now on, I am working in the background to keep you safe online. Browse the web with peace of mind – I will alert you if anything looks suspicious."
+  },
+  "welcomeCloseBtn": {
+    "message": "Got it, close"
+  },
+  "phishingContentTitle": {
+    "message": "Suspicious page content (possible phishing)"
+  },
+  "phishingContentBody": {
+    "message": "This page exerts time pressure and demands urgent verification or login. Do not enter passwords or personal data here!"
+  },
+  "btnLearnMore": {
+    "message": "Learn more 💡"
+  },
+  "btnLearnMorePassword": {
+    "message": "How to protect your passwords? 💡"
+  },
+  "btnLearnMoreLink": {
+    "message": "How do deceptive links work? 💡"
+  },
+  "helpEduSectionTitle": {
+    "message": "Knowledge Base: How attacks work & how to stay safe"
+  },
+  "helpEduSectionIntro": {
+    "message": "We explain in simple terms how common online threats work and what easy habits will keep you completely safe."
+  },
+  "helpTopicPhishingTitle": {
+    "message": "1. Data Harvesting & Urgency Pressure (Phishing)"
+  },
+  "helpTopicPhishingHowLabel": {
+    "message": "How do scammers operate?"
+  },
+  "helpTopicPhishingHowText": {
+    "message": "Criminals create sites that look like banks, delivery services (e.g. InPost, postal services), or government portals. They use urgent pressure — threatening account blocks or delivery cancellations to trick you into entering credentials without thinking."
+  },
+  "helpTopicPhishingProtectLabel": {
+    "message": "How to protect yourself?"
+  },
+  "helpTopicPhishingProtectText": {
+    "message": "Remember: banks and institutions never send links demanding urgent logins. Always visit websites by typing their address directly or using bookmarks. Enable two-factor authentication (2FA)."
+  },
+  "helpTopicLookalikeTitle": {
+    "message": "2. Fake Web Addresses (Typos & Lookalike letters)"
+  },
+  "helpTopicLookalikeHowLabel": {
+    "message": "How do scammers operate?"
+  },
+  "helpTopicLookalikeHowText": {
+    "message": "Scammers register domain names deceptively similar to real brands — swapping letters (like \"rn\" for \"m\" or \"0\" for \"o\") or using characters from other alphabets (Cyrillic) that look identical on screen."
+  },
+  "helpTopicLookalikeProtectLabel": {
+    "message": "How to protect yourself?"
+  },
+  "helpTopicLookalikeProtectText": {
+    "message": "Carefully check the browser address bar. CyberGuard automatically compares the address with the genuine brand and highlights discrepancies."
+  },
+  "helpTopicPasswordTitle": {
+    "message": "3. Password Theft & Credential Reuse"
+  },
+  "helpTopicPasswordHowLabel": {
+    "message": "How do scammers operate?"
+  },
+  "helpTopicPasswordHowText": {
+    "message": "Many people reuse the same password across multiple sites. When criminals breach an ordinary store or forum, they immediately test that password on email, banking, and social accounts."
+  },
+  "helpTopicPasswordProtectLabel": {
+    "message": "How to protect yourself?"
+  },
+  "helpTopicPasswordProtectText": {
+    "message": "Use a unique password for every critical account (bank, email, identity). CyberGuard monitors your essential passwords and warns you if you start typing a bank password on a foreign site."
+  },
+  "helpTopicLinkTitle": {
+    "message": "4. Deceptive Links (Links going elsewhere)"
+  },
+  "helpTopicLinkHowLabel": {
+    "message": "How do scammers operate?"
+  },
+  "helpTopicLinkHowText": {
+    "message": "You see a link displaying the address of a trusted bank, but clicking it takes you to a completely different, malicious server. The visible text does not match the actual destination."
+  },
+  "helpTopicLinkProtectLabel": {
+    "message": "How to protect yourself?"
+  },
+  "helpTopicLinkProtectText": {
+    "message": "Hover over links before clicking to check the destination URL in the bottom-left corner of your browser. CyberGuard catches these deceptive links automatically."
+  },
+  "helpEmergencySectionTitle": {
+    "message": "First Aid: What to do if you submitted data on a scam site"
   }
 }

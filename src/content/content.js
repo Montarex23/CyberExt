@@ -390,26 +390,33 @@
     lastFactsKey = key;
 
     const result = await send({ type: 'ANALYZE_PAGE', ...facts });
-    const findings = (result && result.findings) || [];
+    const domainFindings = (result && result.findings) || [];
+    const contentFindings = (CG.contentFindings) || [];
+    const findings = [...domainFindings, ...contentFindings];
     const findingsKey = findings.map((f) => f.id).join(',');
     if (!findings.length || findingsKey === dismissedKey) {
-      CG.ui.hideBanner();
+      if (!contentFindings.length) {
+        CG.ui.hideBanner();
+      }
       return;
     }
     CG.ui.showBanner(findings, {
       onLeave: () => send({ type: 'LEAVE_PAGE' }),
       onTrust: async () => {
-        CG.ui.hideBanner();
+        CG.contentFindings = [];
+        CG.ui.hideBanner(true);
         await send({ type: 'TRUST_SITE' });
       },
       onUnderstood: async () => {
         dismissedKey = findingsKey;
-        CG.ui.hideBanner();
+        CG.contentFindings = [];
+        CG.ui.hideBanner(true);
         await send({ type: 'DISMISS_FINDINGS', ids: findings.map((f) => f.id) });
       },
       onClose: () => {
         dismissedKey = findingsKey;
-        CG.ui.hideBanner();
+        CG.contentFindings = [];
+        CG.ui.hideBanner(true);
       },
     });
   }

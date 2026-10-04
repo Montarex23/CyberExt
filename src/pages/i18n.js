@@ -21,10 +21,18 @@
 
   function apply(root = document) {
     root.querySelectorAll('[data-i18n]').forEach((el) => {
-      el.textContent = t(el.dataset.i18n);
+      const msg = chrome.i18n.getMessage(el.dataset.i18n);
+      if (msg) {
+        el.textContent = msg;
+      } else if (!el.textContent.trim()) {
+        el.textContent = el.dataset.i18n;
+      }
     });
     root.querySelectorAll('[data-i18n-aria]').forEach((el) => {
-      el.setAttribute('aria-label', t(el.dataset.i18nAria));
+      const msg = chrome.i18n.getMessage(el.dataset.i18nAria);
+      if (msg) {
+        el.setAttribute('aria-label', msg);
+      }
     });
   }
 

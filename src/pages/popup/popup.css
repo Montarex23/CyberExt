@@ -1,16 +1,11 @@
 body {
   width: 380px;
-  padding: 0 0 12px;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
 }
 
-body > *:not(.header) {
-  margin-left: 16px;
-  margin-right: 16px;
-}
-
+/* ── Header ── */
 .header {
   display: flex;
   align-items: center;
@@ -43,8 +38,23 @@ body > *:not(.header) {
   height: 10px;
   border-radius: 50%;
   background: #5ed3be;
+  animation: pulse 2s ease-in-out infinite;
 }
 
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ── Content Area ── */
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+}
+
+/* ── Status Card ── */
 .status {
   display: flex;
   gap: 14px;
@@ -96,6 +106,7 @@ body > *:not(.header) {
   color: var(--danger-text);
 }
 
+/* ── Stats ── */
 .stats {
   font-size: 0.9rem;
   display: flex;
@@ -103,9 +114,12 @@ body > *:not(.header) {
   gap: 2px;
 }
 
+/* ── Footer ── */
 .footer {
   display: flex;
   justify-content: flex-end;
+  padding-top: 4px;
+  border-top: 1px solid var(--border);
 }
 
 .link {

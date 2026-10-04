@@ -7,6 +7,19 @@
 
   $('help-mascot').innerHTML = self.CyberGuard.mascot.svg('calm', 80);
 
+  // Auto-scroll and highlight requested topic (e.g. ?topic=phishing)
+  const params = new URLSearchParams(location.search);
+  const topic = params.get('topic');
+  if (topic) {
+    const target = $(`topic-${topic}`);
+    if (target) {
+      setTimeout(() => {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        target.classList.add('highlight-card');
+      }, 150);
+    }
+  }
+
   function showResult(key, ok) {
     const el = $('clean-result');
     el.textContent = t(key);

@@ -1,60 +1,178 @@
 .container {
-  max-width: 760px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 32px 16px 48px;
   display: flex;
   flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Welcome Hero ── */
+.welcome-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 48px 32px 40px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, var(--ok-bg) 0%, var(--brand-soft) 100%);
+  border: 2px solid var(--ok);
+}
+
+.welcome-hero h1 {
+  color: var(--ok-text);
+  margin: 16px 0 8px;
+  font-size: 2.2rem;
+}
+
+.welcome-subtitle {
+  font-size: 1.15rem;
+  max-width: 520px;
+  margin: 0 auto 24px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.welcome-mascot {
+  display: flex;
+  justify-content: center;
+}
+
+.welcome-close-btn {
+  min-width: 220px;
+}
+
+body.is-welcome {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.is-welcome .container {
+  max-width: 600px;
+  width: 100%;
+  padding: 24px 16px;
+}
+
+body.is-welcome .welcome-hero {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Settings Grid ── */
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 }
 
-.welcome {
-  border: 2px solid var(--ok);
-  background: var(--ok-bg);
-}
-
-.welcome h1 {
-  color: var(--ok-text);
-  margin: 0;
-}
-
-.welcome-head {
+.tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 24px;
   display: flex;
-  align-items: center;
-  gap: 18px;
-  margin-bottom: 12px;
+  flex-direction: column;
+  gap: 6px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.lead {
-  font-size: 1.2rem;
+.tile:hover {
+  border-color: var(--brand);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
 
-.switch-row {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  font-weight: 700;
-  cursor: pointer;
-  margin-bottom: 12px;
-}
-
-.switch-row input {
-  width: 28px;
-  height: 28px;
+.tile-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  display: grid;
+  place-items: center;
+  margin-bottom: 8px;
   flex-shrink: 0;
 }
 
+.tile h2 {
+  font-size: 1.2rem;
+  margin: 0 0 4px;
+}
+
+.tile-desc {
+  font-size: 0.92rem;
+  color: var(--muted);
+  margin: 0 0 8px;
+  line-height: 1.5;
+}
+
+.tile-status {
+  font-size: 0.9rem;
+  margin: 4px 0 8px;
+  color: var(--muted);
+}
+
+.tile-about {
+  grid-column: 1 / -1;
+}
+
+.btn-sm {
+  min-height: 44px;
+  padding: 10px 18px;
+  font-size: 0.95rem;
+}
+
+/* ── Switch ── */
+.switch-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.switch-row input {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+/* ── List Items ── */
 .items {
   list-style: none;
-  margin: 0 0 16px;
-  padding: 0;
+  margin: 0 0 12px;
+  padding: 2px 4px 2px 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.items::-webkit-scrollbar {
+  width: 6px;
+}
+
+.items::-webkit-scrollbar-track {
+  background: var(--surface-alt, #f1f5f9);
+  border-radius: 4px;
+}
+
+.items::-webkit-scrollbar-thumb {
+  background: var(--border, #cbd5e1);
+  border-radius: 4px;
+}
+
+.items::-webkit-scrollbar-thumb:hover {
+  background: var(--muted, #94a3b8);
 }
 
 .item {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
   justify-content: space-between;
   border: 1px solid var(--border);
@@ -64,17 +182,19 @@
 
 .item-text {
   overflow-wrap: anywhere;
+  font-size: 0.92rem;
 }
 
 .item .btn {
-  min-height: 44px;
-  padding: 8px 16px;
+  min-height: 40px;
+  padding: 6px 14px;
   flex-shrink: 0;
+  font-size: 0.9rem;
 }
 
 .badge {
   display: inline-block;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 700;
   border-radius: 999px;
   padding: 2px 10px;
@@ -87,7 +207,26 @@
 .row {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 680px) {
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tile-about {
+    grid-column: auto;
+  }
+
+  .welcome-hero {
+    padding: 32px 20px 28px;
+  }
+
+  .welcome-hero h1 {
+    font-size: 1.7rem;
+  }
 }
 
 @media (max-width: 480px) {
